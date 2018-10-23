@@ -1,6 +1,11 @@
 package space.nyanko.nyankoapplication;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -47,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         //tv.setText(stringFromJNI());
 
         initRecyclerView();
+
+        // Some C/C++ functions access filesystem so request the user file r/w permissions
+        requestAppPermissions();
     }
 
     @Override
@@ -74,13 +82,46 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView() {
         Log.d(TAG,"initRecyclerView called");
 
-        mFileNames.add("abc");
-        mFileNames.add("123");
-        mFileNames.add("456");
+        //mFileNames.add(stringFromJNI());
+        String entries = listDir();
+        Log.d(TAG,entries);
+        String[] names = entries.split("\\n");
+        for(String entry : names) {
+            mFileNames.add(entry);
+        }
+        //mFileNames.add("123");
+        //mFileNames.add("456");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mFileNames);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void requestAppPermissions() {
+        if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+
+        if(hasReadPermissions() && hasWritePermissions()) {
+            return;
+        }
+
+
+        int myRequestCode = 12;
+
+        ActivityCompat.requestPermissions(this,
+                new String[] {
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, myRequestCode); // your request code
+    }
+
+    private boolean hasReadPermissions() {
+        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private boolean hasWritePermissions() {
+        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
     /**
@@ -88,4 +129,5 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+    public native String listDir();
 }

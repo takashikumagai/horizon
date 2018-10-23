@@ -39,7 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         final int pos = holder.getAdapterPosition();
 
-        holder.fileName.setText(mFileNames.get(0));
+        holder.fileName.setText(mFileNames.get(pos));
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
