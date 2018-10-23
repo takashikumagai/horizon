@@ -1,6 +1,9 @@
 package space.nyanko.nyankoapplication;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,7 +13,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+
+    private ArrayList<String> mFileNames = new ArrayList<>();
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -36,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
         //tv.setText(stringFromJNI());
+
+        initRecyclerView();
     }
 
     @Override
@@ -58,6 +69,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initRecyclerView() {
+        Log.d(TAG,"initRecyclerView called");
+
+        mFileNames.add("abc");
+        mFileNames.add("123");
+        mFileNames.add("456");
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mFileNames);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     /**
