@@ -11,18 +11,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = "RecyclerViewAdapter";
 
-    private ArrayList<String> mFileNames = new ArrayList<>();
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> fileNames) {
-        mFileNames = fileNames;
+    private DirectoryNavigator directoryNavigator;
+
+    public void refreshDirectoryContentList(String directoryPath) {
+        directoryNavigator.setCurrentDirectory(directoryPath);
+        notifyDataSetChanged();
+    }
+
+    public RecyclerViewAdapter(Context context, DirectoryNavigator directoryNavigator) {
         mContext = context;
+
+        this.directoryNavigator = directoryNavigator;
     }
 
     @NonNull
@@ -39,21 +48,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         final int pos = holder.getAdapterPosition();
 
-        holder.fileName.setText(mFileNames.get(pos));
+        ArrayList<File> entries = directoryNavigator.getCurrentDirectoryEntries();
+        final File entry = entries.get(pos);
+        holder.fileName.setText(entry.getName());
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked");
 
-                Toast.makeText(mContext, mFileNames.get(pos), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, entry.getName(), Toast.LENGTH_SHORT).show();
+
+                if( entry.isDirectory() ) {
+                    refreshDirectoryContentList(entry.getPath());
+                }
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mFileNames.size();
+        return directoryNavigator.getCurrentDirectoryEntries().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

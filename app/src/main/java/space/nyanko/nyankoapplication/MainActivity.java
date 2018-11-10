@@ -18,13 +18,19 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private ArrayList<String> mFileNames = new ArrayList<>();
+    //private ArrayList<String> mFileNames = new ArrayList<>();
+
+    //private String currentDirectory = "/storage/emulated/0";
+    private DirectoryNavigator directoryNavigator = new DirectoryNavigator();
+
+    private RecyclerViewAdapter recyclerViewAdapter = null;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -83,18 +89,33 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG,"initRecyclerView called");
 
         //mFileNames.add(stringFromJNI());
-        String entries = listDir();
-        Log.d(TAG,entries);
-        String[] names = entries.split("\\n");
-        for(String entry : names) {
-            mFileNames.add(entry);
-        }
+        //String entries = listDir();
+        //Log.d(TAG,entries);
+        //String[] names = entries.split("\\n");
+        //for(String entry : names) {
+        //    mFileNames.add(entry);
+        //}
         //mFileNames.add("123");
         //mFileNames.add("456");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mFileNames);
-        recyclerView.setAdapter(adapter);
+        recyclerViewAdapter = new RecyclerViewAdapter(this, directoryNavigator );
+        recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public boolean areSamePaths(String path1, String path2) {
+        return new File(path1).equals(new File(path2));
+    }
+
+    public void onBackPressed() {
+        if( areSamePaths(directoryNavigator.getCurrentDirectory(), "/storage/emulated/0") ) {
+            super.onBackPressed();
+        } else {
+            directoryNavigator.moveToParentDirectory();
+            if(recyclerViewAdapter != null) {
+                recyclerViewAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     private void requestAppPermissions() {
