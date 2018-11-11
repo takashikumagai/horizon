@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -101,6 +102,28 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewAdapter = new RecyclerViewAdapter(this, directoryNavigator );
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void setTabListeners() {
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.d(TAG,"onTabSelected called");
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG,"onTabUnselected called");
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG,"onTabReselected called");
+
+            }
+        });
     }
 
     public boolean areSamePaths(String path1, String path2) {
