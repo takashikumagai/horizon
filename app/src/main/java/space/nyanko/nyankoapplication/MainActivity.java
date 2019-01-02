@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -85,6 +86,22 @@ public class MainActivity extends AppCompatActivity {
         initRecyclerView();
 
         setTabListeners();
+
+        View v = findViewById(R.id.new_tab);
+        if(v == null) {
+            Log.d(TAG,"!v");
+        }
+
+        final Button newTabButton = (Button)v;
+        if(newTabButton == null) {
+            Log.d(TAG,"!newTabButton");
+        }
+
+        //newTabButton.setOnClickListener(new View.OnClickListener() {
+        //    public void onClick(View v) {
+        //        Log.d(TAG,"newTabButton.onClick");
+        //    }
+        //});
     }
 
     @Override
@@ -103,6 +120,48 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Log.d(TAG,"R.id.action_settings");
+            return true;
+        } else if(id == R.id.close_tab) {
+            Log.d(TAG,"R.id.close_tab");
+            TabLayout tabLayout = findViewById(R.id.tabLayout);
+            int pos = tabLayout.getSelectedTabPosition();
+            if(pos < 0) {
+                Log.d(TAG,"R.id.ct pos<0");
+                return false;
+            }
+            TabLayout.Tab tab = tabLayout.getTabAt(pos);
+            if(tab==null) {
+                Log.d(TAG,"R.id.ct !tab");
+                return false;
+            }
+
+            tabLayout.removeTab(tab);
+
+            return true;
+        } else if(id == R.id.new_tab) {
+            Log.d(TAG,"R.id.new_tab");
+            TabLayout tabLayout = findViewById(R.id.tabLayout);
+            tabLayout.addTab(tabLayout.newTab());
+            TabLayout.Tab newTab = tabLayout.getTabAt(tabLayout.getTabCount()-1);
+            if(newTab == null) {
+                Log.d(TAG,"!newTab");
+                return true;
+            }
+            newTab.setText("newtab");
+            View child =
+            tabLayout.getChildAt(tabLayout.getTabCount()-1);
+            if(child == null) {
+                Log.d(TAG,"!child");
+                return true;
+            }
+            child.setOnLongClickListener( new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Log.d(TAG,"onLC");
+                    return true;
+                }
+            });
             return true;
         }
 
