@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-adb logcat MainActivity:D RecyclerViewAdapter:V DirectoryNavigation:D StorageSelector:D DirectoryNavigator:D *:S
+adb logcat MainActivity:D RecyclerViewAdapter:V DirectoryNavigation:D StorageSelector:D DirectoryNavigator:D Playback:D *:S
