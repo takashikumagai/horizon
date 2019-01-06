@@ -1,6 +1,7 @@
 package space.nyanko.nyankoapplication;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -103,7 +105,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     refreshDirectoryContentList(entry.getPath());
                 } else if( entry.isFile() ) {
                     if( isMediaFile(entry.getName()) ) {
-
+                        // A playable media file, e.g. an mp3 fle, was tapped/clicked
+                        Log.d(TAG, "is media file");
+                        Playback player = mainActivity.getPlayerOfSelectedTab();
+                        if(player == null) {
+                            Log.d(TAG, "!player");
+                            return;
+                        }
+                        player.clearQueue();
+                        player.addToQueue(entry.getName());
+                        player.startFirstInQueue();
+                        //Button btn = (Button)findViewById(R.id.play_pause);
+                        //btn.setText("||");
+                        //Log.d(TAG, "started playing");
                     }
                 }
             }

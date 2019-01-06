@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private MediaPlayer mediaPlayer = new MediaPlayer();
+    //private MediaPlayer mediaPlayer = new MediaPlayer();
 
     private ArrayList<Playback> playbacks = new ArrayList<Playback>();
 
@@ -50,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG,"s.oC");
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"oC");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,11 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                if( mediaPlayer != null && mediaPlayer.isPlaying() ) {
-                    mediaPlayer.stop();
-                }
+                //if( mediaPlayer != null && mediaPlayer.isPlaying() ) {
+                //    mediaPlayer.stop();
+                //}
             }
         });
+        fab.setVisibility(View.GONE);
 
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         // Some C/C++ functions access filesystem so request the user file r/w permissions
         requestAppPermissions();
 
-        for(int i=0; i<5; i++) {
+        for(int i=0; i<1; i++) {
             playbacks.add( new Playback() );
 
             fileSystemNavigators.add( new FileSystemNavigator() );
@@ -86,6 +89,38 @@ public class MainActivity extends AppCompatActivity {
         initRecyclerView();
 
         setTabListeners();
+
+        Button btn = (Button)findViewById(R.id.play_pause_button);
+        if(btn != null) {
+            Log.d(TAG,"!play/pause btn");
+        }
+
+        btn.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "btn pressed (play/pause)");
+                Button self = (Button) view;//findViewById(R.id.play_pause);
+
+                MediaPlayer mediaPlayer = Playback.getMediaPlayer();
+                // Both isPlaying() and pause() can throw IllegalStateException.
+
+                try {
+                    if (mediaPlayer.isPlaying()) {
+                        Log.d(TAG, "pausing");
+                        mediaPlayer.pause();
+                        self.setText("▶");
+                    } else {
+                        Log.d(TAG, "playing/resuming");
+                        mediaPlayer.start(); // Start/resume playback
+                        self.setText("||");
+                    }
+                } catch (IllegalStateException ise) {
+                    Log.d(TAG,"ise caught");
+                } catch (Exception e) {
+                    Log.d(TAG,"Exception caught");
+                }
+            }
+        });
 
         View v = findViewById(R.id.new_tab);
         if(v == null) {
@@ -137,6 +172,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             tabLayout.removeTab(tab);
+            if(pos < fileSystemNavigators.size()) {
+                fileSystemNavigators.remove(pos);
+            } else {
+                Log.w(TAG,"!!!fsn.size");
+            }
+            if(pos < playbacks.size()) {
+                playbacks.remove(pos);
+            } else {
+                Log.w(TAG,"!!!playbacks.size");
+            }
 
             return true;
         } else if(id == R.id.new_tab) {
@@ -149,19 +194,26 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             newTab.setText("newtab");
-            View child =
-            tabLayout.getChildAt(tabLayout.getTabCount()-1);
-            if(child == null) {
-                Log.d(TAG,"!child");
-                return true;
-            }
-            child.setOnLongClickListener( new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d(TAG,"onLC");
-                    return true;
-                }
-            });
+//            View child = tabLayout.getChildAt(tabLayout.getTabCount()-1);
+//            if(child == null) {
+//                Log.d(TAG,"!child");
+//                return true;
+//            }
+//            child.setOnLongClickListener( new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View v) {
+//                    Log.d(TAG,"onLC");
+//                    return true;
+//                }
+//            });
+
+            // Add an FS navigator and a player
+
+            fileSystemNavigators.add( new FileSystemNavigator() );
+            fileSystemNavigators.get(fileSystemNavigators.size() - 1).initialize();
+
+            playbacks.add( new Playback() );
+
             return true;
         }
 
@@ -279,6 +331,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public Playback getPlayerOfSelectedTab() {
+
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        if(tabLayout == null) {
+            return null;
+        }
+        int pos = tabLayout.getSelectedTabPosition();
+        if(pos < 0 || playbacks.size() <= pos) {
+            // No selected tab
+            Log.d(TAG, "pos<0");
+            return null;
+        } else {
+            return playbacks.get(pos);
+        }
+    }
+
     private void requestAppPermissions() {
         if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.d(TAG,"SDK_INT < LOLLIPOP");
@@ -307,6 +375,14 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean hasWritePermissions() {
         return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    //public MediaPlayer getMediaPlayer() {
+    //    return mediaPlayer;
+    //}
+
+    public ArrayList<Playback> getPlaybacks() {
+        return playbacks;
     }
 
     /**
