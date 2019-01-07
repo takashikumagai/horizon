@@ -4,6 +4,7 @@ import android.util.Log;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -77,6 +78,7 @@ public class Playback {
     public void clearQueue() {
         Log.d(TAG, "clearing queue");
         mediaFilePathQueue.clear();
+        pointedMediaIndex = -1;
     }
 
     public void startCurrentlyPointedMediaInQueue() {
@@ -126,6 +128,15 @@ public class Playback {
         }
     }
 
+    public void addToQueue(ArrayList<File> mediaFiles) {
+        for(File file : mediaFiles) {
+            mediaFilePathQueue.add(file.getPath());
+        }
+
+        if(0 < mediaFiles.size() && pointedMediaIndex == -1) {
+            pointedMediaIndex = 0;
+        }
+    }
 //    public void startFirstInQueue() {
 //        if(mediaFilePathQueue.size() == 0) {
 //            Log.d(TAG, "queue is empty");

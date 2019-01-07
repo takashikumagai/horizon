@@ -61,8 +61,44 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG,"fab.oC");
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                if(currentPlayerIndex < 0) {
+                    Log.w(TAG,"fab.oC.cPI<0");
+                    return;
+                }
+
+                if(fileSystemNavigators.size() <= currentPlayerIndex) {
+                    Log.w(TAG, "fSN.sz<=cPI");
+                    return;
+                }
+
+                ArrayList<File> filesAndDirs
+                        = fileSystemNavigators.get(currentPlayerIndex).getCurrentDirectoryEntries();
+
+                // Put all the media files in the current directory to the queue and start playing
+                ArrayList<File> mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs);
+                Log.d(TAG,"mFs.sz: " + mediaFiles.size());
+
+                if(mediaFiles.size() == 0) {
+                    Log.w(TAG,"0!mFs.sz");
+                    return;
+                }
+
+                if(playbacks.size() <= currentPlayerIndex) {
+                    Log.w(TAG, "players.sz<=cPI");
+                    return;
+                }
+
+                Playback player = playbacks.get(currentPlayerIndex);
+                player.clearQueue();
+                player.addToQueue(mediaFiles);
+                player.startCurrentlyPointedMediaInQueue();
+
+                // Update background colors of queued tracks
+                recyclerViewAdapter.notifyDataSetChanged();
 
                 //if( mediaPlayer != null && mediaPlayer.isPlaying() ) {
                 //    mediaPlayer.stop();
@@ -326,6 +362,10 @@ public class MainActivity extends AppCompatActivity {
 
         FileSystemNavigator navigator = getCurrentFileSystemNavigator();
         int ret = navigator.moveToParent();
+
+        // Show/hide FAB depending on whether the directory contains
+        // one or more media files.
+        updateFloatingActionButtonVisibility();
         
         if(recyclerViewAdapter != null) {
             recyclerViewAdapter.notifyDataSetChanged();
@@ -374,6 +414,38 @@ public class MainActivity extends AppCompatActivity {
             return null;
         } else {
             return playbacks.get(pos);
+        }
+    }
+
+    FloatingActionButton getFloatingActionButton() {
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        if(fab==null) { // Sanity check
+            Log.e(TAG, "!fab");
+        }
+        return fab;
+    }
+
+    public void updateFloatingActionButtonVisibility() {
+        int index = currentPlayerIndex;
+        if(index < 0 || fileSystemNavigators.size() <= index) {
+            Log.d(TAG,"uFABV !i" + index);
+            return;
+        }
+
+        AbstractDirectoryNavigator navigator = fileSystemNavigators.get(index).getCurrentNavigator();
+
+        if(navigator == null) {
+            Log.d(TAG,"uFABV !cn");
+            return;
+        }
+
+        FloatingActionButton fab = getFloatingActionButton();
+        if(navigator.isAtLeastOneMediaFilePresent()) {
+            Log.d(TAG, "fab visible");
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            Log.d(TAG, "fab gone");
+            fab.setVisibility(View.GONE);
         }
     }
 

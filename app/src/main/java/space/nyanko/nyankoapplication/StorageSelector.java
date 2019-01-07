@@ -114,4 +114,9 @@ public class StorageSelector extends AbstractDirectoryNavigator {
             }
         }
     }
-}
+
+    @Override
+    public boolean isAtLeastOneMediaFilePresent() {
+        return false;
+    }
+    }

@@ -97,6 +97,7 @@ public class DirectoryNavigator extends AbstractDirectoryNavigator {
         return currentDirectoryEntries;
     }
 
+
     @Override
     public AbstractDirectoryNavigator moveToParent() {
 
@@ -126,5 +127,17 @@ public class DirectoryNavigator extends AbstractDirectoryNavigator {
         updateCurrentDirectoryEntries();
 
         return this;
+    }
+
+    @Override
+    public boolean isAtLeastOneMediaFilePresent() {
+        Log.d(TAG,"iALOMFP: " + currentDirectoryEntries.size());
+        for(File entry : currentDirectoryEntries) {
+            if(HorizonUtils.isMediaFile(entry.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

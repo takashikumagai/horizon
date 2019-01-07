@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,8 +116,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if( entry.isDirectory() ) {
                     navigator.moveToChild(pos);
                     refreshDirectoryContentList(entry.getPath());
+
+                    mainActivity.updateFloatingActionButtonVisibility();
+
                 } else if( entry.isFile() ) {
-                    if( isMediaFile(entry.getName()) ) {
+                    if( HorizonUtils.isMediaFile(entry.getName()) ) {
                         // A playable media file, e.g. an mp3 fle, was tapped/clicked
                         Log.d(TAG, "is media file");
                         Playback player = mainActivity.getPlayerOfSelectedTab();
@@ -156,23 +160,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //        return DirectoryNavigation.getNavigator().getCurrentDirectoryEntries().size();
     }
 
-    private String getExtension(String fileName) {
-        int i = fileName.lastIndexOf('.');
-        if (i > 0) {
-            return fileName.substring(i+1);
-        } else {
-            return "";
-        }
-    }
-
-    private boolean isMediaFile(String fileName) {
-        String ext = getExtension(fileName);
-        if(ext.equals("mp3")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 //    private void resetBackgroundColors(View view) {
 //        ViewParent vp = view.getParent();

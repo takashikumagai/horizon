@@ -15,5 +15,7 @@ public abstract class AbstractDirectoryNavigator {
 
     abstract AbstractDirectoryNavigator moveToChild(int pos);
 
+    abstract boolean isAtLeastOneMediaFilePresent();
+
     //abstract int changeDirectory(String childDirPath);
 }
