@@ -74,7 +74,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Log.d(TAG,"onBVH: !entry");
             return;
         }
-        holder.fileName.setText(entry.getName());
 
         final MainActivity mainActivity = (MainActivity)mContext;
         int st = mainActivity.getMediaFileStatus(entry.getPath());
@@ -90,11 +89,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         // Set the icon based on the file type
         if( entry.isDirectory() ) {
+
+            // Set the name of the directory
+            holder.fileName.setText(entry.getName());
+
             if(holder.fileTypeIcon != null) {
                 Log.d(TAG,"setting the round icon.");
                 holder.fileTypeIcon.setImageResource(R.drawable.ic_file);
             }
         } else {
+            // We are dealing with a file.
+
+            // See if this one is a media file, e.g. mp3
+            boolean isMediaFile = HorizonUtils.isMediaFile(entry.getName());
+            if(isMediaFile) {
+                String title = HorizonUtils.getMediaFileTitle(entry);
+                if(0 < title.length()) {
+                    // The media file has a meta tag; use the title instead of its file name
+                    holder.fileName.setText("\uD83D\uDC31" + title);
+                } else {
+                    // Does not have the title; just set the file name
+                    holder.fileName.setText(entry.getName());
+                }
+            }
             if(holder.fileTypeIcon != null) {
                 Log.d(TAG,"setting the square icon.");
                 holder.fileTypeIcon.setImageResource(R.drawable.ic_file);
