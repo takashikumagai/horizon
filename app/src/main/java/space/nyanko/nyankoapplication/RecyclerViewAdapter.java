@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -74,6 +75,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         holder.fileName.setText(entry.getName());
 
+        final MainActivity mainActivity = (MainActivity)mContext;
+        int st = mainActivity.getMediaFileStatus(entry.getPath());
+        int color = 0xffff00ff;
+        if(st == 0) {
+            color = 0xfff6f6f6;
+        } else if(st == 1) { // playing
+            color = 0xffb4d296;
+        } else if(st == 2) { // queued
+            color = 0xffb0ce92;
+        }
+        holder.itemView.setBackgroundColor(color);
+
         // Set the icon based on the file type
         if( entry.isDirectory() ) {
             if(holder.fileTypeIcon != null) {
@@ -97,7 +110,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Toast.makeText(mContext, entry.getName(), Toast.LENGTH_SHORT).show();
 
                 // Update the tab label
-                MainActivity mainActivity = (MainActivity)mContext;
                 mainActivity.setSelectedTabLabel(entry.getName());
 
                 if( entry.isDirectory() ) {
@@ -113,8 +125,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             return;
                         }
                         player.clearQueue();
-                        player.addToQueue(entry.getName());
-                        player.startFirstInQueue();
+                        player.addToQueue(entry.getPath());
+                        player.startCurrentlyPointedMediaInQueue();
+
+                        notifyDataSetChanged();
+
+                        //resetBackgroundColors(view);
+
+                        // Change the BG color of the playing track.
+                        //view.setBackgroundColor(0xffb4d296);
+
                         //Button btn = (Button)findViewById(R.id.play_pause);
                         //btn.setText("||");
                         //Log.d(TAG, "started playing");
@@ -153,6 +173,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             return false;
         }
     }
+
+//    private void resetBackgroundColors(View view) {
+//        ViewParent vp = view.getParent();
+//        RecyclerView recyclerView = vp.findViewById(R.id.recycler_view);
+//        if(recyclerView == null) {
+//            Log.d(TAG, "!rV");
+//            return;
+//        }
+//        int count = recyclerView.getLayoutManager().getItemCount();
+//        Log.d(TAG, "item_count: " + count );
+//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 

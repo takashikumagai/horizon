@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Playback> playbacks = new ArrayList<Playback>();
 
-    private int currentFileSystemNavigatorIndex = -1;
+    private int currentPlayerIndex = -1;
 
     //==================== Model ====================
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             fileSystemNavigators.add( new FileSystemNavigator() );
             fileSystemNavigators.get(i).initialize();
         }
-        currentFileSystemNavigatorIndex = 0;
+        currentPlayerIndex = 0;
 
         initRecyclerView();
 
@@ -171,16 +171,40 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
 
-            tabLayout.removeTab(tab);
             if(pos < fileSystemNavigators.size()) {
                 fileSystemNavigators.remove(pos);
             } else {
                 Log.w(TAG,"!!!fsn.size");
             }
+
             if(pos < playbacks.size()) {
                 playbacks.remove(pos);
             } else {
                 Log.w(TAG,"!!!playbacks.size");
+            }
+
+            Log.d(TAG,"removing tab");
+            tabLayout.removeTab(tab);
+            // If there are any tab(s) left, onTabSelected has already been invoked
+            Log.d(TAG,"tab removed");
+
+            if(currentPlayerIndex != tabLayout.getSelectedTabPosition()) {
+                Log.w(TAG,"urrentPlayerIndex != tabLayout.getSelectedTabPosition()");
+                currentPlayerIndex = tabLayout.getSelectedTabPosition();
+            }
+
+            if(currentPlayerIndex < playbacks.size()) {
+                Playback.setCurrentPlayer(playbacks.get(currentPlayerIndex));
+            } else {
+                Log.w(TAG,"playbacks.size<=cPI");
+            }
+
+            if(tabLayout.getTabCount() == 0) {
+                Log.d(TAG,"All tabs removed");
+
+                // Notify recycler view adapter because otherwise the file list will remain
+                // as no new tab is selected and as such onTabSelected() is not called.
+                recyclerViewAdapter.notifyDataSetChanged();
             }
 
             return true;
@@ -242,13 +266,13 @@ public class MainActivity extends AppCompatActivity {
 
     private FileSystemNavigator getCurrentFileSystemNavigator() {
 
-        if(currentFileSystemNavigatorIndex < 0
-                || fileSystemNavigators.size() <= currentFileSystemNavigatorIndex ) {
+        if(currentPlayerIndex < 0
+                || fileSystemNavigators.size() <= currentPlayerIndex ) {
             Log.w(TAG,"invalid cFSNI");
             return null;
         }
 
-        return fileSystemNavigators.get(currentFileSystemNavigatorIndex);
+        return fileSystemNavigators.get(currentPlayerIndex);
     }
 
     private void setTabListeners() {
@@ -264,10 +288,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                currentFileSystemNavigatorIndex = pos;
+                currentPlayerIndex = pos;
 
                 recyclerViewAdapter.setCurrentFileSystemNavigator(fileSystemNavigators.get(pos));
                 recyclerViewAdapter.notifyDataSetChanged();
+
+                if(pos < playbacks.size()) {
+                    Playback.setCurrentPlayer(playbacks.get(pos));
+                } else {
+                    Log.w(TAG,"pos<playbacks.size");
+                }
 
 //                switchTab(pos);
             }
@@ -344,6 +374,31 @@ public class MainActivity extends AppCompatActivity {
             return null;
         } else {
             return playbacks.get(pos);
+        }
+    }
+
+    /**
+     * @brief Returns the status of the given media file
+     *
+     *
+     * @param filePath
+     * @return 1: currently playing, 2: queued, 0: else
+     */
+    public int getMediaFileStatus(String filePath) {
+
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        int tabPos = tabLayout.getSelectedTabPosition();
+        if(tabPos < 0 || playbacks.size() <= tabPos) {
+            return 0;
+        }
+
+        Playback player = playbacks.get(tabPos);
+        if(player.isPointed(filePath)) {
+            return 1;
+        } else if(player.isInQueue(filePath)){
+            return 2;
+        } else {
+            return 0;
         }
     }
 
