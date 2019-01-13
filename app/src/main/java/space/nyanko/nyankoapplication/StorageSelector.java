@@ -119,4 +119,4 @@ public class StorageSelector extends AbstractDirectoryNavigator {
     public boolean isAtLeastOneMediaFilePresent() {
         return false;
     }
-    }
+}

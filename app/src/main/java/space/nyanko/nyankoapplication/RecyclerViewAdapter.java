@@ -103,12 +103,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             // See if this one is a media file, e.g. mp3
             boolean isMediaFile = HorizonUtils.isMediaFile(entry.getName());
             if(isMediaFile) {
-                String title = HorizonUtils.getMediaFileTitle(entry);
-                if(0 < title.length()) {
-                    // The media file has a meta tag; use the title instead of its file name
-                    holder.fileName.setText("\uD83D\uDC31" + title);
+                if(HorizonOptions.showId3TagTitles) {
+                    String title = HorizonUtils.getMediaFileTitle(entry);
+                    if(0 < title.length()) {
+                        // The media file has a meta tag; use the title instead of its file name
+                        holder.fileName.setText("\uD83D\uDC31" + title);
+                    } else {
+                        // Does not have the title; just set the file name
+                        holder.fileName.setText(entry.getName());
+                    }
                 } else {
-                    // Does not have the title; just set the file name
+                    // Option is set not to get meta tag; just set the file name
                     holder.fileName.setText(entry.getName());
                 }
             }

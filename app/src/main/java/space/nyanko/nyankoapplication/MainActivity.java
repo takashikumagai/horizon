@@ -1,8 +1,13 @@
 package space.nyanko.nyankoapplication;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.pm.PackageManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.support.v4.media.session.MediaButtonReceiver;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -97,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
                 player.addToQueue(mediaFiles);
                 player.startCurrentlyPointedMediaInQueue();
 
+                View pc = findViewById(R.id.playback_control);
+                pc.setVisibility(View.VISIBLE);
+
                 // Update background colors of queued tracks
                 recyclerViewAdapter.notifyDataSetChanged();
 
@@ -106,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         fab.setVisibility(View.GONE);
+
+        View pc = findViewById(R.id.playback_control);
+        pc.setVisibility(View.GONE);
 
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
@@ -131,32 +142,37 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"!play/pause btn");
         }
 
-        btn.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "btn pressed (play/pause)");
-                Button self = (Button) view;//findViewById(R.id.play_pause);
+        btn.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "btn pressed (play/pause)");
+                        Button self = (Button) view;//findViewById(R.id.play_pause);
 
-                MediaPlayer mediaPlayer = Playback.getMediaPlayer();
-                // Both isPlaying() and pause() can throw IllegalStateException.
+                        MediaPlayer mediaPlayer = Playback.getMediaPlayer();
+                        // Both isPlaying() and pause() can throw IllegalStateException.
 
-                try {
-                    if (mediaPlayer.isPlaying()) {
-                        Log.d(TAG, "pausing");
-                        mediaPlayer.pause();
-                        self.setText("▶");
-                    } else {
-                        Log.d(TAG, "playing/resuming");
-                        mediaPlayer.start(); // Start/resume playback
-                        self.setText("||");
+                        try {
+                            if (mediaPlayer.isPlaying()) {
+                                Log.d(TAG, "pausing");
+                                mediaPlayer.pause();
+                                self.setText("▶");
+                            } else {
+                                Log.d(TAG, "playing/resuming");
+                                mediaPlayer.start(); // Start/resume playback
+                                self.setText("||");
+                            }
+                        } catch (IllegalStateException ise) {
+                            Log.d(TAG, "ise caught");
+                        } catch (Exception e) {
+                            Log.d(TAG, "Exception caught");
+                        }
                     }
-                } catch (IllegalStateException ise) {
-                    Log.d(TAG,"ise caught");
-                } catch (Exception e) {
-                    Log.d(TAG,"Exception caught");
-                }
-            }
-        });
+                });
+
+        Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
+        startService(serviceIntent);
+
 
         View v = findViewById(R.id.new_tab);
         if(v == null) {
@@ -173,6 +189,17 @@ public class MainActivity extends AppCompatActivity {
         //        Log.d(TAG,"newTabButton.onClick");
         //    }
         //});
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"oD");
+
+        // For now we stop the service so that we can test their behavior from the start
+        // every time we close and restart the app
+        Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
+        stopService(serviceIntent);
     }
 
     @Override
