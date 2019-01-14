@@ -170,6 +170,18 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         super.onDestroy();
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Log.d(TAG,"oTR");
+        super.onTaskRemoved(rootIntent);
+
+        // Stop the service
+        // In the debug phase, it's convenient to have the service destroyed every time
+        // so that we can get a fresh start every time we run the app.
+        // Whether to provide this as an option for the production is a matter of debate.
+        stopSelf();
+    }
+
     public void initMediaSession() {
         ComponentName mediaButtonReceiver
                 = new ComponentName(getApplicationContext(), MediaButtonReceiver.class);
