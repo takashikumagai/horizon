@@ -91,6 +91,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if( entry.isDirectory() ) {
 
             // Set the name of the directory
+            Log.d(TAG,"setting text: " + entry.getName());
             holder.fileName.setText(entry.getName());
 
             if(holder.fileTypeIcon != null) {
@@ -116,6 +117,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     // Option is set not to get meta tag; just set the file name
                     holder.fileName.setText(entry.getName());
                 }
+            } else {
+                // Do nothing; don't display it unless it's a media file.
             }
             if(holder.fileTypeIcon != null) {
                 Log.d(TAG,"setting the square icon.");

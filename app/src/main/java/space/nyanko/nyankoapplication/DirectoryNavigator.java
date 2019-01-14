@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class DirectoryNavigator extends AbstractDirectoryNavigator {
 
@@ -48,7 +49,37 @@ public class DirectoryNavigator extends AbstractDirectoryNavigator {
             return;
         }
 
+        String names = "";
+        for( File file : fileList ) {
+            names += file.getName() + ", ";
+        }
+        Log.d(TAG,"names (" + fileList.length + "): " + names);
+
         ArrayList<File> entries = new ArrayList<File>(Arrays.asList(fileList));
+
+        boolean displayOnlyMediaFiles = true;
+        if(displayOnlyMediaFiles) {
+            // Filter file list. Note that after this 'entries' contains directories
+            // and media files.
+
+            ArrayList<File> filtered = new ArrayList<File>();
+
+            // Gave up on using lambda because of this error:
+            // Error: Call requires API level 24 (current min is 19): java.util.ArrayList#removeIf [NewApi]
+            //entries.removeIf(e -> !e.isDirectory() && !);
+            for(File fileOrDir : entries) {
+                if(fileOrDir.isDirectory() || HorizonUtils.isMediaFile(fileOrDir.getPath())) {
+                    filtered.add(fileOrDir);
+                }
+            }
+
+            entries = filtered;
+        }
+
+        // Sort the files and directories inside the current directory
+        // Note that each element of entries can be a file or a directory.
+        Collections.sort(entries);
+
         currentDirectoryEntries = entries;
     }
 

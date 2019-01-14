@@ -18,6 +18,7 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserServiceCompat;
 import android.util.Log;
 import java.util.List;
+import java.util.Set;
 
 
 public class BackgroundAudioService extends MediaBrowserServiceCompat {
@@ -44,7 +45,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         }
         @Override
         public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
-            Log.d(TAG,"oMBE");
+            super.onMediaButtonEvent(mediaButtonEvent);
+            Log.d(TAG,"oMBE: " + mediaButtonEvent.toString());
+            Bundle extras = mediaButtonEvent.getExtras();
+            Log.d(TAG,"extras: " + ((extras!=null) ? extras.toString() : "null"));
+            Set<String> cats = mediaButtonEvent.getCategories();
+            Log.d(TAG,"categories: " + ((cats!=null) ? cats.toString() : "null"));
+            Log.d(TAG,"data uri: " + mediaButtonEvent.getDataString() );
             return super.onMediaButtonEvent(mediaButtonEvent);
         }
         @Override
