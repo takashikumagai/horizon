@@ -16,6 +16,7 @@ import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserServiceCompat;
+import android.view.KeyEvent;
 import android.util.Log;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +50,28 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
             Log.d(TAG,"oMBE: " + mediaButtonEvent.toString());
             Bundle extras = mediaButtonEvent.getExtras();
             Log.d(TAG,"extras: " + ((extras!=null) ? extras.toString() : "null"));
+            if(extras==null) {
+                Log.d(TAG,"!ex");
+            } else {
+                for(String key : extras.keySet()) {
+                    Object value = extras.get(key);
+                    Log.d(TAG, String.format("%s %s (%s)",
+                            key, value.toString(), value.getClass().getName()));
+                }
+                Object obj = extras.get("android.intent.extra.KEY_EVENT");
+                if(obj==null) {
+                    Log.d(TAG,"!obj");
+                } else {
+                    KeyEvent keyEvent = (KeyEvent)obj;
+                    if(keyEvent==null) {
+                        Log.d(TAG,"!kE");
+                    } else {
+                        int action = keyEvent.getAction();
+                        int code = keyEvent.getKeyCode();
+                        Log.d(TAG,String.format("kE a: %d, kc: %d",action,code));
+                    }
+                }
+            }
             Set<String> cats = mediaButtonEvent.getCategories();
             Log.d(TAG,"categories: " + ((cats!=null) ? cats.toString() : "null"));
             Log.d(TAG,"data uri: " + mediaButtonEvent.getDataString() );
