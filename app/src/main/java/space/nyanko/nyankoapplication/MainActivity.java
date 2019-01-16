@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.pm.PackageManager;
 import android.content.ComponentName;
 import android.content.Intent;
+//import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -33,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    //private MediaPlayer mediaPlayer = new MediaPlayer();
-
     private ArrayList<Playback> playbacks = new ArrayList<Playback>();
 
     private int currentPlayerIndex = -1;
@@ -47,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     //private DirectoryNavigator directoryNavigator = new DirectoryNavigator();
 
     private RecyclerViewAdapter recyclerViewAdapter = null;
+
+    //private ServiceConnection serviceConnection = null;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -170,9 +171,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        // Start the main service of the app
+        // This service survives even after this activity is destroyed, e.g. by user
+        // swiping it from the task list
         Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
         startService(serviceIntent);
 
+//        serviceConnection = new ServiceConnection();
+//        boolean res = bindService(serviceIntent,serviceConnection,0);
+//        Log.d(TAG,"bS: " + res);
+//        if(res) {
+//            ;
+//        }
+        //serviceConnection
 
         View v = findViewById(R.id.new_tab);
         if(v == null) {
@@ -198,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
         // For now we stop the service so that we can test their behavior from the start
         // every time we close and restart the app
-        Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
-        stopService(serviceIntent);
+        //Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
+        //stopService(serviceIntent);
     }
 
     @Override

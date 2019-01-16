@@ -2,7 +2,6 @@ package space.nyanko.nyankoapplication;
 
 import android.util.Log;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,20 +19,26 @@ public class Playback {
 
     private static final String TAG = "Playback";
 
-    private static MediaPlayer mediaPlayer = new MediaPlayer();
-
-    private static int initialized = 0;
-
     private static Playback currentPlayer;
+
+    /**
+     * Set by the service
+     */
+    private static MediaPlayer mediaPlayer;
+
+    // 0 stopped
+    // 1 playing
+    // 2 paused
+    int state = 0;
 
     /**
      * @brief Index to the currently played or paused media file in queue
      *
      */
-    private int pointedMediaIndex = -1;
+    public int pointedMediaIndex = -1;
 
     // Play position in milliseconds
-    private int position = 0;
+    public int position = 0;
 
     /**
      * \brief Stores pathnames of playable media files (e.g. .mp3, .wav)
@@ -42,37 +47,15 @@ public class Playback {
      */
     public ArrayList<String> mediaFilePathQueue = new ArrayList<String>();
 
-    // 0 stopped
-    // 1 playing
-    // 2 paused
-    int state = 0;
-
     public Playback() {
-        if(initialized == 0) {
-            mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-
-                    Log.d(TAG, "playback complete");
-
-                    if (currentPlayer == null) {
-                        Log.d(TAG, "No player set");
-                        return;
-                    }
-
-                    // Play the next media in queue
-                    if(pointedMediaIndex < mediaFilePathQueue.size() - 1) {
-                        pointedMediaIndex += 1;
-                        currentPlayer.startCurrentlyPointedMediaInQueue();
-                    }
-                }
-            });
-            initialized = 1;
-        }
     }
 
     public static MediaPlayer getMediaPlayer() {
         return mediaPlayer;
+    }
+
+    public static void setMediaPlayer(MediaPlayer mediaPlayer) {
+        Playback.mediaPlayer = mediaPlayer;
     }
 
     public void clearQueue() {
@@ -82,6 +65,12 @@ public class Playback {
     }
 
     public void startCurrentlyPointedMediaInQueue() {
+
+        MediaPlayer mediaPlayer = getMediaPlayer();
+        if(mediaPlayer == null) {
+            Log.w(TAG,"!mP");
+            return;
+        }
 
         if(pointedMediaIndex < 0) {
             Log.d(TAG, "pMI<0");
@@ -112,6 +101,18 @@ public class Playback {
             Log.e(TAG, "caught an IO exception: " + ioe.toString() + " File: " + mediaFilepath);
         } catch(Exception e) {
             Log.e(TAG, "caught an exception: " + e.toString() + " File: " + mediaFilepath);
+        }
+
+        // Notify the service once we start playing tracks in a queue
+        // - Or to be more exact, we give the service a reference to the instance
+        //   storing the playback information (queue, currently played track, etc)
+        // - Note that this particular instance of Playback survivies the activity destruction
+        //   and recreation
+        BackgroundAudioService service = BackgroundAudioService.getInstance();
+        if(service == null) {
+            Log.w(TAG,"!service");
+        } else {
+            service.setCurrentPlaybackQueue(currentPlayer);
         }
     }
 
@@ -184,7 +185,26 @@ public class Playback {
         return false;
     }
 
+
+    // Play the next media in queue
+
+    public void onCompletion(MediaPlayer mp) {
+
+        if(currentPlayer==null) {
+            Log.d(TAG,"!cP");
+            return;
+        }
+
+        if(pointedMediaIndex < mediaFilePathQueue.size() - 1) {
+            pointedMediaIndex += 1;
+            startCurrentlyPointedMediaInQueue();
+        }
+    }
+
     public static void setCurrentPlayer(Playback currentPlayer) {
         Playback.currentPlayer = currentPlayer;
+
+        // Notify the service
+        //BackgroundAudioService.setCurrentPlaybackQueue(currentPlayer);
     }
 }

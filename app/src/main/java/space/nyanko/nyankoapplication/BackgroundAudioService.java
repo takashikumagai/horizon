@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.ComponentName;
 import android.service.media.MediaBrowserService.BrowserRoot;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.AudioManager;
 import android.text.TextUtils;
 import android.support.v4.media.session.MediaButtonReceiver;
@@ -26,7 +27,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
     private static final String TAG = "BackgroundAudioService";
 
+    private static BackgroundAudioService self;
+
+    private MediaPlayer mediaPlayer;
+
     private MediaSessionCompat mediaSession = null;
+
+    private Playback currentPlayback;
 
     private BroadcastReceiver noisyReceiver = new BroadcastReceiver() {
         @Override
@@ -69,6 +76,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                         int action = keyEvent.getAction();
                         int code = keyEvent.getKeyCode();
                         Log.d(TAG,String.format("kE a: %d, kc: %d",action,code));
+                        if(action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PAUSE) {
+                            Log.d(TAG,"mp.pause");
+                            mediaPlayer.pause();
+                        } else if(action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PLAY) {
+                            Log.d(TAG,"mp.start");
+                            mediaPlayer.start();
+                        }
                     }
                 }
             }
@@ -105,7 +119,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         public void onAudioFocusChange(int focusChange) {
             Log.d(TAG,"oAFC: " + focusChange);
 
-            MediaPlayer mediaPlayer = Playback.getMediaPlayer();
+            //MediaPlayer mediaPlayer = Playback.getMediaPlayer();
 
             if(mediaPlayer == null) {
                 Log.d(TAG,"!mP");
@@ -156,6 +170,14 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         Log.d(TAG,"ctor");
     }
 
+    public static BackgroundAudioService getInstance() {
+        return self;
+    }
+
+    public void setCurrentPlaybackQueue(Playback playbackQueue) {
+        currentPlayback = playbackQueue;
+    }
+
     @Override
     public BrowserRoot onGetRoot(String clientPackageName, int clientUid, Bundle rootHints) {
         if(TextUtils.equals(clientPackageName, getPackageName())) {
@@ -176,6 +198,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         super.onCreate();
         Log.d(TAG,"oC");
 
+        if(self == null) {
+            self = this;
+        } else {
+            Log.e(TAG,"More than one BAService has been created.");
+        }
+
+        initMediaPlayer();
         initMediaSession();
         initNoisyReceiver();
     }
@@ -190,6 +219,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     @Override
     public void onDestroy() {
         Log.d(TAG,"oD");
+        self = null;
         super.onDestroy();
     }
 
@@ -203,6 +233,28 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         // so that we can get a fresh start every time we run the app.
         // Whether to provide this as an option for the production is a matter of debate.
         stopSelf();
+    }
+
+    public void initMediaPlayer() {
+
+        mediaPlayer = new MediaPlayer();
+
+        mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                Log.d(TAG, "playback complete");
+
+                if (currentPlayback == null) {
+                    Log.d(TAG, "No playback queue set");
+                    return;
+                }
+
+                currentPlayback.onCompletion(mp);
+            }
+        });
+
+        Playback.setMediaPlayer(mediaPlayer);
     }
 
     public void initMediaSession() {
