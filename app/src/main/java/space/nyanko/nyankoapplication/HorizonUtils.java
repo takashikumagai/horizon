@@ -31,7 +31,7 @@ public class HorizonUtils {
 
     public static boolean isMediaFile(String fileName) {
         String ext = getExtension(fileName);
-        if(ext.equals("mp3")) {
+        if(ext.equals("mp3") || ext.equals("wav")) {
             return true;
         } else {
             return false;
