@@ -189,6 +189,7 @@ public class Playback {
     // Play the next media in queue
 
     public void onCompletion(MediaPlayer mp) {
+        Log.d(TAG,"oC pMI: " + pointedMediaIndex);
 
         if(currentPlayer==null) {
             Log.d(TAG,"!cP");
