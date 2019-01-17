@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             fileSystemNavigators.get(i).initialize();
         }
         currentPlayerIndex = 0;
+        Playback.setCurrentPlayer(playbacks.get(currentPlayerIndex));
 
         initRecyclerView();
 
