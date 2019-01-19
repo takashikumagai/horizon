@@ -11,7 +11,7 @@ public class DirectoryNavigator extends AbstractDirectoryNavigator {
 
     private static final String TAG = "DirectoryNavigator";
 
-    private File currentDirectory;// = "/storage/emulated/0";
+    private File currentDirectory;
 
     private ArrayList<File> currentDirectoryEntries = new ArrayList<>();
 
