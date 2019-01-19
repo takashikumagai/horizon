@@ -126,18 +126,22 @@ public class MainActivity extends AppCompatActivity {
         // Some C/C++ functions access filesystem so request the user file r/w permissions
         requestAppPermissions();
 
-        for(int i=0; i<1; i++) {
-            playbacks.add( new Playback() );
-
+        int numInitialTabs = 1;
+        for(int i=0; i<numInitialTabs; i++) {
             fileSystemNavigators.add( new FileSystemNavigator() );
             fileSystemNavigators.get(i).initialize();
         }
-        currentPlayerIndex = 0;
-        Playback.setCurrentPlayer(playbacks.get(currentPlayerIndex));
 
         initRecyclerView();
 
         setTabListeners();
+
+        for(int i=0; i<numInitialTabs; i++) {
+            playbacks.add( new Playback() );
+            playbacks.get(i).setRecyclerViewAdapter(recyclerViewAdapter);
+        }
+        currentPlayerIndex = 0;
+        Playback.setCurrentPlayer(playbacks.get(currentPlayerIndex));
 
         Button btn = (Button)findViewById(R.id.play_pause_button);
         if(btn != null) {
@@ -324,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
             fileSystemNavigators.get(fileSystemNavigators.size() - 1).initialize();
 
             playbacks.add( new Playback() );
+            playbacks.get(playbacks.size()-1).setRecyclerViewAdapter(recyclerViewAdapter);
 
             return true;
         }

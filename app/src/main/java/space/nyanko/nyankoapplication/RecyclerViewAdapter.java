@@ -24,6 +24,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private static final String TAG = "RecyclerViewAdapter";
 
+    /**
+     * @brief Ref to MainActivity
+     */
     private Context mContext;
 
     private FileSystemNavigator currentFileSystemNavigator;
@@ -81,9 +84,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if(st == 0) {
             color = 0xfff6f6f6;
         } else if(st == 1) { // playing
-            color = 0xffb4d296;
+            color = 0xffaecc90;
         } else if(st == 2) { // queued
-            color = 0xffb0ce92;
+            color = 0xffb4d296;
         }
         holder.itemView.setBackgroundColor(color);
 

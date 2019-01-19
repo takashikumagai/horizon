@@ -47,6 +47,8 @@ public class Playback {
      */
     public ArrayList<String> mediaFilePathQueue = new ArrayList<String>();
 
+    private RecyclerViewAdapter recyclerViewAdapter;
+
     public Playback() {
     }
 
@@ -102,6 +104,9 @@ public class Playback {
         } catch(Exception e) {
             Log.e(TAG, "caught an exception: " + e.toString() + " File: " + mediaFilepath);
         }
+
+        // Repaint GUI as a currently played track has just been changed.
+        recyclerViewAdapter.notifyDataSetChanged();
 
         // Notify the service once we start playing tracks in a queue
         // - Or to be more exact, we give the service a reference to the instance
@@ -200,6 +205,10 @@ public class Playback {
             pointedMediaIndex += 1;
             startCurrentlyPointedMediaInQueue();
         }
+    }
+
+    public void setRecyclerViewAdapter(RecyclerViewAdapter adapter) {
+        recyclerViewAdapter = adapter;
     }
 
     public static void setCurrentPlayer(Playback currentPlayer) {
