@@ -7,14 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.mpatric.mp3agic.ID3v1;
-import com.mpatric.mp3agic.ID3v1Tag;
-import com.mpatric.mp3agic.ID3v2;
-import com.mpatric.mp3agic.ID3v24Tag;
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.NotSupportedException;
-import com.mpatric.mp3agic.UnsupportedTagException;
+import android.media.MediaMetadataRetriever;
 
 public class HorizonUtils {
 
@@ -49,6 +42,12 @@ public class HorizonUtils {
         return mediaFiles;
     }
 
+    /**
+     * @brief Returns the title metadata
+     *
+     * @param f
+     * @return Title or null if the media tag was not found.
+     */
     public static String getMediaFileTitle(File f) {
         Log.d(TAG,"gMFT");
 
@@ -56,32 +55,19 @@ public class HorizonUtils {
             return "";
         }
 
-        try {
-            String ext = getExtension(f.getName());
-            if(ext.equals("mp3")) {
-                Mp3File mp3file = new Mp3File(f.getPath());
-                if(mp3file.hasId3v1Tag()) {
-                    ID3v1 id3v1Tag = mp3file.getId3v1Tag();
-                    return id3v1Tag.getTitle();
-                } else if(mp3file.hasId3v2Tag()) {
-                    ID3v2 id3v2Tag = mp3file.getId3v2Tag();
-                    return id3v2Tag.getTitle();
-                } else {
-                    Log.d(TAG,"not id3 tag found");
-                    return "";
-                }
-            } else {
-                Log.d(TAG,"ext!=mp3");
-                return "";
+        if(isMediaFile(f.getName())) {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(f.getPath());
+            String title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            if(title == null) {
+                Log.d(TAG,"!t");
+                return null;
             }
-        } catch(IOException ioe) {
-            Log.e(TAG, "ioe msg: " + ioe.getMessage() + " File: " + f.getPath());
-        } catch(UnsupportedTagException ute) {
-            Log.e(TAG,"UnsupportedTagException");
-        } catch(InvalidDataException ide) {
-            Log.e(TAG,"InvalidDataException");
+
+            return title;
         }
 
+        Log.d(TAG,"!iMF");
         return "";
     }
 }

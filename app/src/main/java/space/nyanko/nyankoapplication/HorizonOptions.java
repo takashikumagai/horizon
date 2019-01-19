@@ -17,5 +17,5 @@ public class HorizonOptions {
      *
      *
      */
-    public static boolean showId3TagTitles = false;
+    public static boolean showId3TagTitles = true;
 }
