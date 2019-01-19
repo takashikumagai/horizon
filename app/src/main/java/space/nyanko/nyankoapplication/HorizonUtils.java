@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import android.media.MediaMetadataRetriever;
 
@@ -69,5 +70,34 @@ public class HorizonUtils {
 
         Log.d(TAG,"!iMF");
         return "";
+    }
+
+    /**
+     * @brief Retrieves metadata tags from a media file, e.g. an mp3 file.
+     *
+     * @param f
+     * @return a hashmap where each entry is an integer representing a tag and the tag value,
+     * or null if arg is invalid
+     */
+    public static HashMap<Integer,String> getMediaFileMetaTags(File f, int[] tags) {
+        Log.d(TAG,"gMFT");
+
+        HashMap<Integer,String> tagMaps = new HashMap<Integer,String>();
+
+        if(f==null) {
+            return null;
+        }
+
+        if(isMediaFile(f.getName())) {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(f.getPath());
+            for(int tag : tags) {
+                String value = mmr.extractMetadata(tag);
+                tagMaps.put(tag,value);
+            }
+        } else {
+            Log.d(TAG,"not a media file");
+        }
+        return tagMaps;
     }
 }
