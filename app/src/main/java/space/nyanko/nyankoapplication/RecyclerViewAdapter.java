@@ -2,6 +2,7 @@ package space.nyanko.nyankoapplication;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.MediaMetadataRetriever;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+//import android.widget.RelativeLayout;
+import android.support.constraint.ConstraintLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -107,15 +110,38 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             // See if this one is a media file, e.g. mp3
             boolean isMediaFile = HorizonUtils.isMediaFile(entry.getName());
             if(isMediaFile) {
-                if(HorizonOptions.showId3TagTitles) {
-                    String title = HorizonUtils.getMediaFileTitle(entry);
-                    if(0 < title.length()) {
+                if(HorizonOptions.showMetaTagTitles) {
+                    int tags[] = {
+                            MediaMetadataRetriever.METADATA_KEY_TITLE,
+                            MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER,
+                            MediaMetadataRetriever.METADATA_KEY_DURATION
+                    };
+//                    String title = HorizonUtils.getMediaFileTitle(entry);
+                    HashMap<Integer,String> metaTags
+                            = HorizonUtils.getMediaFileMetaTags(entry,tags);
+                    String title = metaTags.get(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                    if(title != null && 0 < title.length()) {
                         // The media file has a meta tag; use the title instead of its file name
-                        holder.fileName.setText("\uD83D\uDC31" + title);
+                        holder.fileName.setText("[T] " + title);
                     } else {
-                        // Does not have the title; just set the file name
+                        // Does not have the title tag; just set the file name
                         holder.fileName.setText(entry.getName());
                     }
+
+                    String secondRow = "";
+                    String track = metaTags.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+                    if(track != null) {
+                        secondRow = String.format("(%s)",track);
+                    } else {
+                        secondRow = "(-)";
+                    }
+
+                    String duration = metaTags.get(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    if(duration != null) {
+                        secondRow += ", " + duration;
+                    }
+                    holder.secondaryRow.setText(secondRow);
+
                 } else {
                     // Option is set not to get meta tag; just set the file name
                     holder.fileName.setText(entry.getName());
@@ -202,14 +228,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView fileName;
         ImageView fileTypeIcon;
-        RelativeLayout parentLayout;
+
+        TextView fileName;
+
+        TextView secondaryRow;
+
+        ConstraintLayout parentLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             fileName = itemView.findViewById(R.id.file_name);
+            secondaryRow = itemView.findViewById(R.id.secondary_row);
             parentLayout = itemView.findViewById(R.id.parent_layout);
 
             // Icon for showing the file type

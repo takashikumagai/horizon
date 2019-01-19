@@ -13,9 +13,10 @@ public class HorizonOptions {
     private static final String TAG = "HorizonOptions";
 
     /**
-     * \brief whether to extract metadata from mp3 files.
+     * \brief whether to extract metadata from media files.
      *
+     * - true: shows the meta tag title, falls back to the file name if
      *
      */
-    public static boolean showId3TagTitles = true;
+    public static boolean showMetaTagTitles = true;
 }

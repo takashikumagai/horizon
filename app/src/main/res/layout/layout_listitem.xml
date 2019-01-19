@@ -1,27 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:padding="15dp"
+    android:layout_height="56dp"
+    android:padding="8dp"
     android:id="@+id/parent_layout">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
         android:id="@+id/file_type_icon"
-        android:padding="0dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="1dp"
+        android:background="#99F"
         android:layout_margin="0dp"
         android:src="@mipmap/ic_launcher"
         />
 
     <TextView
+        android:id="@+id/file_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/secondary_row"
+        app:layout_constraintStart_toEndOf="@id/file_type_icon"
+        android:padding="1dp"
+        android:layout_marginLeft="3dp"
         android:text="default_text"
-        android:id="@+id/file_name"
-        android:textColor="#000"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
-        android:textSize="17sp"/>
+        android:textColor="#111"
+        android:background="#FF0"
+        android:textSize="16sp"/>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/secondary_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/file_name"
+        app:layout_constraintStart_toEndOf="@id/file_type_icon"
+        android:padding="1dp"
+        android:layout_marginLeft="3dp"
+        android:text="2nd row of media entry"
+        android:textColor="#666"
+        android:background="#3F3"
+        android:textSize="10sp"
+        />
+
+</android.support.constraint.ConstraintLayout>
