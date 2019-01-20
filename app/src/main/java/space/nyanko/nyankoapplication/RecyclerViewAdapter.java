@@ -138,7 +138,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                     String duration = metaTags.get(MediaMetadataRetriever.METADATA_KEY_DURATION);
                     if(duration != null) {
-                        secondRow += ", " + duration;
+                        String hhmmss = HorizonUtils.millisecondsToHhmmss(Long.parseLong(duration));
+                        secondRow += ", " + hhmmss;
                     }
                     holder.secondaryRow.setText(secondRow);
 
