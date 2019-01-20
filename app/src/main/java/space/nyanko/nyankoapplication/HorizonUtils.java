@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import android.media.MediaMetadataRetriever;
 
@@ -99,5 +100,15 @@ public class HorizonUtils {
             Log.d(TAG,"not a media file");
         }
         return tagMaps;
+    }
+
+    public static String millisecondsToHhmmss(long milliseconds) {
+        return
+        String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(milliseconds),
+                TimeUnit.MILLISECONDS.toMinutes(milliseconds) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds)),
+                TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
     }
 }
