@@ -38,7 +38,7 @@ public class Playback {
     public int pointedMediaIndex = -1;
 
     // Play position in milliseconds
-    public int position = 0;
+    private int playbackPosition = 0;
 
     /**
      * \brief Stores pathnames of playable media files (e.g. .mp3, .wav)
@@ -107,18 +107,6 @@ public class Playback {
 
         // Repaint GUI as a currently played track has just been changed.
         recyclerViewAdapter.notifyDataSetChanged();
-
-        // Notify the service once we start playing tracks in a queue
-        // - Or to be more exact, we give the service a reference to the instance
-        //   storing the playback information (queue, currently played track, etc)
-        // - Note that this particular instance of Playback survivies the activity destruction
-        //   and recreation
-        BackgroundAudioService service = BackgroundAudioService.getInstance();
-        if(service == null) {
-            Log.w(TAG,"!service");
-        } else {
-            service.setCurrentPlaybackQueue(currentPlayer);
-        }
     }
 
     public void addToQueue(String mediaFilePath) {
@@ -216,5 +204,13 @@ public class Playback {
 
         // Notify the service
         //BackgroundAudioService.setCurrentPlaybackQueue(currentPlayer);
+    }
+
+    public void saveCurrentPlaybackPosition() {
+        if(mediaPlayer == null) {
+            Log.w(TAG,"sCPP !mP");
+        }
+
+        playbackPosition = mediaPlayer.getCurrentPosition();
     }
 }

@@ -36,6 +36,20 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Playback> playbacks = new ArrayList<Playback>();
 
+    /**
+     * @brief Index to the tab where a track is playing
+     *
+     * - Note that this can be any tab. Example: the user starts playing an album
+     *   on one tab and then switches to another for browsing other media files.
+     *   In this case, this variable points to the first tab.
+     *
+     */
+    private int currentlyPlayedQueueIndex = -1;
+
+    /**
+     * @brief Index to the currently selected tab, i.e. tab on the screen
+     *
+     */
     private int currentPlayerIndex = -1;
 
     //==================== Model ====================
@@ -98,10 +112,12 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                onMediaStartRequestedOnScreen();
                 Playback player = playbacks.get(currentPlayerIndex);
                 player.clearQueue();
                 player.addToQueue(mediaFiles);
                 player.startCurrentlyPointedMediaInQueue();
+                onMediaStartedOnScreen();
 
                 View pc = findViewById(R.id.playback_control);
                 pc.setVisibility(View.VISIBLE);
@@ -566,6 +582,45 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<Playback> getPlaybacks() {
         return playbacks;
+    }
+
+    public void onMediaStartRequestedOnScreen() {
+        if(currentlyPlayedQueueIndex != currentPlayerIndex) {
+            // currently played tab != selected tab.
+            if(0 <= currentlyPlayedQueueIndex) {
+                if(currentlyPlayedQueueIndex < playbacks.size()) {
+                    playbacks.get(currentlyPlayedQueueIndex).saveCurrentPlaybackPosition();
+                } else {
+                    Log.w(TAG,"sz<=cPQI");
+                }
+            }
+        }
+    }
+
+    public void onMediaStartedOnScreen() {
+
+        if(currentPlayerIndex < 0 || playbacks.size() <= currentPlayerIndex) {
+            Log.w(TAG,"cPI: "+currentPlayerIndex);
+            return;
+        }
+
+        currentlyPlayedQueueIndex = currentPlayerIndex;
+
+        // Notify the service once we start playing tracks in a queue
+        // - Or to be more exact, we give the service a reference to the instance
+        //   storing the playback information (queue, currently played track, etc)
+        // - Note that this particular instance of Playback survivies the activity destruction
+        //   and recreation
+        BackgroundAudioService service = BackgroundAudioService.getInstance();
+        if(service == null) {
+            Log.w(TAG,"!service");
+        } else {
+            service.setCurrentlyPlayedPlaybackQueue(playbacks.get(currentlyPlayedQueueIndex));
+        }
+    }
+
+    public int getCurrentlyPlayedQueueIndex() {
+        return currentlyPlayedQueueIndex;
     }
 
     /**

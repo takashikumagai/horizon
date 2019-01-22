@@ -33,7 +33,15 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
     private MediaSessionCompat mediaSession = null;
 
-    private Playback currentPlayback;
+    /**
+     * Might not need this one perhaps
+     */
+    private Playback currentlySelected;
+
+    /**
+     * Points to the currently played playback queue
+     */
+    private Playback currentlyPlayed;
 
     private BroadcastReceiver noisyReceiver = new BroadcastReceiver() {
         @Override
@@ -174,8 +182,12 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         return self;
     }
 
-    public void setCurrentPlaybackQueue(Playback playbackQueue) {
-        currentPlayback = playbackQueue;
+    public void setCurrentlySelectedPlaybackQueue(Playback selectedPlaybackQueue) {
+        currentlySelected = selectedPlaybackQueue;
+    }
+
+    public void setCurrentlyPlayedPlaybackQueue(Playback playedPlaybackQueue) {
+        currentlyPlayed = playedPlaybackQueue;
     }
 
     @Override
@@ -245,12 +257,12 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
                 Log.d(TAG, "playback complete");
 
-                if (currentPlayback == null) {
+                if (currentlyPlayed == null) {
                     Log.d(TAG, "No playback queue set");
                     return;
                 }
 
-                currentPlayback.onCompletion(mp);
+                currentlyPlayed.onCompletion(mp);
             }
         });
 
