@@ -77,60 +77,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG,"fab.oC");
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                if(currentPlayerIndex < 0) {
-                    Log.w(TAG,"fab.oC.cPI<0");
-                    return;
-                }
-
-                if(fileSystemNavigators.size() <= currentPlayerIndex) {
-                    Log.w(TAG, "fSN.sz<=cPI");
-                    return;
-                }
-
-                ArrayList<File> filesAndDirs
-                        = fileSystemNavigators.get(currentPlayerIndex).getCurrentDirectoryEntries();
-
-                // Put all the media files in the current directory to the queue and start playing
-                ArrayList<File> mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs);
-                Log.d(TAG,"mFs.sz: " + mediaFiles.size());
-
-                if(mediaFiles.size() == 0) {
-                    Log.w(TAG,"0!mFs.sz");
-                    return;
-                }
-
-                if(playbacks.size() <= currentPlayerIndex) {
-                    Log.w(TAG, "players.sz<=cPI");
-                    return;
-                }
-
-                onMediaStartRequestedOnScreen();
-                Playback player = playbacks.get(currentPlayerIndex);
-                player.clearQueue();
-                player.addToQueue(mediaFiles);
-                player.startCurrentlyPointedMediaInQueue();
-                onMediaStartedOnScreen();
-
-                View pc = findViewById(R.id.playback_control);
-                pc.setVisibility(View.VISIBLE);
-
-                // Update background colors of queued tracks
-                recyclerViewAdapter.notifyDataSetChanged();
-
-                //if( mediaPlayer != null && mediaPlayer.isPlaying() ) {
-                //    mediaPlayer.stop();
-                //}
-            }
-        });
-        fab.setVisibility(View.GONE);
+        initFloatingActionButton();
 
         View pc = findViewById(R.id.playback_control);
         pc.setVisibility(View.GONE);
@@ -438,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
         // Show/hide FAB depending on whether the directory contains
         // one or more media files.
         updateFloatingActionButtonVisibility();
-        
+
         if(recyclerViewAdapter != null) {
             recyclerViewAdapter.notifyDataSetChanged();
         }
@@ -621,6 +568,64 @@ public class MainActivity extends AppCompatActivity {
 
     public int getCurrentlyPlayedQueueIndex() {
         return currentlyPlayedQueueIndex;
+    }
+
+    public void initFloatingActionButton() {
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "fab.oC");
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                if (currentPlayerIndex < 0) {
+                    Log.w(TAG, "fab.oC.cPI<0");
+                    return;
+                }
+
+                if (fileSystemNavigators.size() <= currentPlayerIndex) {
+                    Log.w(TAG, "fSN.sz<=cPI");
+                    return;
+                }
+
+                ArrayList<File> filesAndDirs
+                        = fileSystemNavigators.get(currentPlayerIndex).getCurrentDirectoryEntries();
+
+                // Put all the media files in the current directory to the queue and start playing
+                ArrayList<File> mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs);
+                Log.d(TAG, "mFs.sz: " + mediaFiles.size());
+
+                if (mediaFiles.size() == 0) {
+                    Log.w(TAG, "0!mFs.sz");
+                    return;
+                }
+
+                if (playbacks.size() <= currentPlayerIndex) {
+                    Log.w(TAG, "players.sz<=cPI");
+                    return;
+                }
+
+                onMediaStartRequestedOnScreen();
+                Playback player = playbacks.get(currentPlayerIndex);
+                player.clearQueue();
+                player.addToQueue(mediaFiles);
+                player.startCurrentlyPointedMediaInQueue();
+                onMediaStartedOnScreen();
+
+                View pc = findViewById(R.id.playback_control);
+                pc.setVisibility(View.VISIBLE);
+
+                // Update background colors of queued tracks
+                recyclerViewAdapter.notifyDataSetChanged();
+
+                //if( mediaPlayer != null && mediaPlayer.isPlaying() ) {
+                //    mediaPlayer.stop();
+                //}
+            }
+        });
+        fab.setVisibility(View.GONE);
     }
 
     /**
