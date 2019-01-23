@@ -106,38 +106,7 @@ public class MainActivity extends AppCompatActivity {
         currentPlayerIndex = 0;
         Playback.setCurrentPlayer(playbacks.get(currentPlayerIndex));
 
-        Button btn = (Button)findViewById(R.id.play_pause_button);
-        if(btn != null) {
-            Log.d(TAG,"!play/pause btn");
-        }
-
-        btn.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d(TAG, "btn pressed (play/pause)");
-                        Button self = (Button) view;//findViewById(R.id.play_pause);
-
-                        MediaPlayer mediaPlayer = Playback.getMediaPlayer();
-                        // Both isPlaying() and pause() can throw IllegalStateException.
-
-                        try {
-                            if (mediaPlayer.isPlaying()) {
-                                Log.d(TAG, "pausing");
-                                mediaPlayer.pause();
-                                self.setText("▶");
-                            } else {
-                                Log.d(TAG, "playing/resuming");
-                                mediaPlayer.start(); // Start/resume playback
-                                self.setText("||");
-                            }
-                        } catch (IllegalStateException ise) {
-                            Log.d(TAG, "ise caught");
-                        } catch (Exception e) {
-                            Log.d(TAG, "Exception caught");
-                        }
-                    }
-                });
+        initPlayeQueueMediaControlButtons();
 
         // Start the main service of the app
         // This service survives even after this activity is destroyed, e.g. by user
@@ -626,6 +595,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         fab.setVisibility(View.GONE);
+    }
+
+    public void initPlayeQueueMediaControlButtons() {
+        Button btn = (Button)findViewById(R.id.play_pause_button);
+        if(btn == null) {
+            Log.d(TAG,"!play/pause btn");
+            return;
+        }
+
+        btn.setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "btn pressed (play/pause)");
+                    Button self = (Button) view;//findViewById(R.id.play_pause);
+
+                    MediaPlayer mediaPlayer = Playback.getMediaPlayer();
+                    // Both isPlaying() and pause() can throw IllegalStateException.
+
+                    try {
+                        if (mediaPlayer.isPlaying()) {
+                            Log.d(TAG, "btn pausing");
+                            mediaPlayer.pause();
+                            self.setText("▶");
+                        } else {
+                            Log.d(TAG, "btn playing/resuming");
+                            mediaPlayer.start(); // Start/resume playback
+                            self.setText("||");
+                        }
+                    } catch (IllegalStateException ise) {
+                        Log.d(TAG, "ise caught");
+                    } catch (Exception e) {
+                        Log.d(TAG, "Exception caught");
+                    }
+                }
+            });
+
     }
 
     /**
