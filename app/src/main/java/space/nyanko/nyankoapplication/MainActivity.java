@@ -82,6 +82,17 @@ public class MainActivity extends AppCompatActivity {
         View pc = findViewById(R.id.playback_control);
         pc.setVisibility(View.GONE);
 
+        View ptc = findViewById(R.id.playing_track_control);
+        ptc.setVisibility(View.GONE);
+
+        View playingTrackName = findViewById(R.id.playing_track_name);
+        playingTrackName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "oC");
+                switchToFileSystemView();
+            }
+        });
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
         //tv.setText(stringFromJNI());
@@ -533,6 +544,27 @@ public class MainActivity extends AppCompatActivity {
         } else {
             service.setCurrentlyPlayedPlaybackQueue(playbacks.get(currentlyPlayedQueueIndex));
         }
+
+//        View ptc = findViewById(R.id.playing_track_control);
+//        ptc.setVisibility(View.VISIBLE);
+    }
+
+    public void switchToPlayQueueView() {
+
+        // Hide the playing track control and show the play queue
+        // media control.
+        View ptc = findViewById(R.id.playing_track_control);
+        ptc.setVisibility(View.GONE);
+        View pc = findViewById(R.id.playback_control);
+        pc.setVisibility(View.VISIBLE);
+    }
+
+    public void switchToFileSystemView() {
+
+        View ptc = findViewById(R.id.playing_track_control);
+        ptc.setVisibility(View.VISIBLE);
+        View pc = findViewById(R.id.playback_control);
+        pc.setVisibility(View.GONE);
     }
 
     public int getCurrentlyPlayedQueueIndex() {
@@ -583,8 +615,7 @@ public class MainActivity extends AppCompatActivity {
                 player.startCurrentlyPointedMediaInQueue();
                 onMediaStartedOnScreen();
 
-                View pc = findViewById(R.id.playback_control);
-                pc.setVisibility(View.VISIBLE);
+                switchToPlayQueueView();
 
                 // Update background colors of queued tracks
                 recyclerViewAdapter.notifyDataSetChanged();

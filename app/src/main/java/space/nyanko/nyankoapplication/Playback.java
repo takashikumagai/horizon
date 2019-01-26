@@ -49,6 +49,8 @@ public class Playback {
 
     private RecyclerViewAdapter recyclerViewAdapter;
 
+//    private int tabViewMode = 0;
+
     public Playback() {
     }
 
@@ -212,5 +214,9 @@ public class Playback {
         }
 
         playbackPosition = mediaPlayer.getCurrentPosition();
+    }
+
+    public ArrayList<String> getMediaFilePathQueue() {
+        return mediaFilePathQueue;
     }
 }

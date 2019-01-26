@@ -36,6 +36,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //private DirectoryNavigator directoryNavigator;
 
+    /**
+     * @breif 0: filesystem, 1: play queue
+     *
+     */
+    private int viewMode = 0;
+
     public RecyclerViewAdapter(Context context) {//, DirectoryNavigator directoryNavigator) {
         mContext = context;
 
@@ -63,8 +69,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Log.d(TAG,"onBindViewHolder: called.");
+        Log.d(TAG, "onBindViewHolder: called.");
 
+        if(viewMode == 0) {
+            setFileOrDirectoryToHolder(holder, position);
+        } else if (viewMode == 1) {
+            setMediaInQueueToHolder(holder, position);
+        } else {
+            Log.e(TAG, "!!vM");
+        }
+    }
+
+    public void setFileOrDirectoryToHolder(@NonNull ViewHolder holder, final int position) {
+        Log.d(TAG,"sFODTH");
         //FileSystemNavigator currentFileSystemNavigator = null;
 
         final int pos = holder.getAdapterPosition();
@@ -168,54 +185,88 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 // Update the tab label
                 mainActivity.setSelectedTabLabel(entry.getName());
 
-                if( entry.isDirectory() ) {
-                    navigator.moveToChild(pos);
-                    refreshDirectoryContentList(entry.getPath());
-
-                    mainActivity.updateFloatingActionButtonVisibility();
-
-                } else if( entry.isFile() ) {
-                    if( HorizonUtils.isMediaFile(entry.getName()) ) {
-                        // A playable media file, e.g. an mp3 fle, was tapped/clicked
-                        Log.d(TAG, "is media file");
-                        Playback player = mainActivity.getPlayerOfSelectedTab();
-                        if(player == null) {
-                            Log.d(TAG, "!player");
-                            return;
-                        }
-                        mainActivity.onMediaStartRequestedOnScreen();
-                        player.clearQueue();
-                        player.addToQueue(entry.getPath());
-                        player.startCurrentlyPointedMediaInQueue();
-                        mainActivity.onMediaStartedOnScreen();
-
-
-                        notifyDataSetChanged();
-
-                        //resetBackgroundColors(view);
-
-                        // Change the BG color of the playing track.
-                        //view.setBackgroundColor(0xffb4d296);
-
-                        //Button btn = (Button)findViewById(R.id.play_pause);
-                        //btn.setText("||");
-                        //Log.d(TAG, "started playing");
-                    }
+                if(viewMode == 0) {
+                    onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity);
+                } else if(viewMode == 1) {
+                    onEntryClickedInPlayQueueMode(entry);
                 }
             }
         });
     }
 
+    public void onEntryClickedInFileSystemViewMode(File entry,
+                                                   int pos,
+                                                   FileSystemNavigator navigator,
+                                                   MainActivity mainActivity) {
+        if( entry.isDirectory() ) {
+            navigator.moveToChild(pos);
+            refreshDirectoryContentList(entry.getPath());
+
+            mainActivity.updateFloatingActionButtonVisibility();
+
+        } else if( entry.isFile() ) {
+            if( HorizonUtils.isMediaFile(entry.getName()) ) {
+                // A playable media file, e.g. an mp3 fle, was tapped/clicked
+                Log.d(TAG, "is media file");
+                Playback player = mainActivity.getPlayerOfSelectedTab();
+                if(player == null) {
+                    Log.d(TAG, "!player");
+                    return;
+                }
+                mainActivity.onMediaStartRequestedOnScreen();
+                player.clearQueue();
+                player.addToQueue(entry.getPath());
+                player.startCurrentlyPointedMediaInQueue();
+                mainActivity.onMediaStartedOnScreen();
+
+
+                notifyDataSetChanged();
+
+                //resetBackgroundColors(view);
+
+                // Change the BG color of the playing track.
+                //view.setBackgroundColor(0xffb4d296);
+
+                //Button btn = (Button)findViewById(R.id.play_pause);
+                //btn.setText("||");
+                //Log.d(TAG, "started playing");
+            }
+        }
+    }
+
+    public void onEntryClickedInPlayQueueMode(File entry) {
+
+        // Jump to the tapped/clicked track
+    }
+
+    public void setMediaInQueueToHolder(@NonNull ViewHolder holder, final int position) {
+        Playback playback = null;
+
+        ArrayList<String> queue = playback.getMediaFilePathQueue();
+        if(position < 0 || queue.size() <= position) {
+            Log.w(TAG,"sMIQTH pos: " + position);
+            return;
+        }
+        String path = queue.get(position);
+    }
+
     @Override
     public int getItemCount() {
 
-        if(currentFileSystemNavigator != null) {
-            return currentFileSystemNavigator.getNumCurrentDirectoryEntries();
+        if(viewMode == 0) {
+            if(currentFileSystemNavigator != null) {
+                return currentFileSystemNavigator.getNumCurrentDirectoryEntries();
+            } else {
+                Log.d(TAG,"gIC: !cFSN.");
+                return 0;
+            }
+        } else if(viewMode == 1){
+            Playback playback = null;
+            return playback.getMediaFilePathQueue().size();
         } else {
-            Log.d(TAG,"gIC: !cFSN.");
+            Log.e(TAG,"gIC !!vM");
             return 0;
         }
-//        return DirectoryNavigation.getNavigator().getCurrentDirectoryEntries().size();
     }
 
 
