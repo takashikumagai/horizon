@@ -240,14 +240,28 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public void setMediaInQueueToHolder(@NonNull ViewHolder holder, final int position) {
+        Log.d(TAG,"sMIQTH");
+        //FileSystemNavigator currentFileSystemNavigator = null;
+
+        final int pos = holder.getAdapterPosition();
+
         Playback playback = null;
 
         ArrayList<String> queue = playback.getMediaFilePathQueue();
-        if(position < 0 || queue.size() <= position) {
-            Log.w(TAG,"sMIQTH pos: " + position);
+        if(pos < 0 || queue.size() <= pos) {
+            Log.w(TAG,"sMIQTH pos: " + pos);
             return;
         }
-        String path = queue.get(position);
+        String path = queue.get(pos);
+
+
+        File f = new File(path);
+        if(f != null) {
+            holder.fileName.setText(f.getName());
+        } else {
+            holder.fileName.setText("!f");
+        }
+        holder.secondaryRow.setText("In Queue");
     }
 
     @Override
