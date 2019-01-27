@@ -56,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<FileSystemNavigator> fileSystemNavigators = new ArrayList<FileSystemNavigator>();
 
-    //private String currentDirectory = "/storage/emulated/0";
-    //private DirectoryNavigator directoryNavigator = new DirectoryNavigator();
-
     private RecyclerViewAdapter recyclerViewAdapter = null;
 
     //private ServiceConnection serviceConnection = null;
