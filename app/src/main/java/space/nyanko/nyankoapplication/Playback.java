@@ -111,6 +111,33 @@ public class Playback {
         recyclerViewAdapter.notifyDataSetChanged();
     }
 
+    public boolean playPrevTrack() {
+        if(pointedMediaIndex <= 0) {
+            return false;
+        }
+
+        pointedMediaIndex -= 1;
+
+        startCurrentlyPointedMediaInQueue();
+
+        return true;
+    }
+
+    public boolean playNextTrack() {
+        if(pointedMediaIndex < 0) {
+            return false;
+        }
+        if(mediaFilePathQueue.size() - 1 <= pointedMediaIndex) {
+            return false;
+        }
+
+        pointedMediaIndex += 1;
+
+        startCurrentlyPointedMediaInQueue();
+
+        return true;
+    }
+
     public void addToQueue(String mediaFilePath) {
         Log.d(TAG, "addToQueue");
         if(500 <= mediaFilePathQueue.size()) {

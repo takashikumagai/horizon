@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
         );
 
-        initPlayeQueueMediaControlButtons();
+        initPlayQueueMediaControlButtons();
 
         // Start the main service of the app
         // This service survives even after this activity is destroyed, e.g. by user
@@ -650,7 +650,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setVisibility(View.GONE);
     }
 
-    public void initPlayeQueueMediaControlButtons() {
+    public void initPlayQueueMediaControlButtons() {
         Button btn = (Button)findViewById(R.id.play_pause_button);
         if(btn == null) {
             Log.d(TAG,"!play/pause btn");
@@ -685,6 +685,53 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+        Button prevTrackBtn = (Button)findViewById(R.id.prev_track);
+        if(prevTrackBtn == null) {
+            Log.d(TAG,"!pTB");
+            return;
+        }
+
+        prevTrackBtn.setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "btn:p (prev)");
+                    Button self = (Button) view;
+
+                    if(currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+                        return;
+                    }
+
+                    onMediaStartRequestedOnScreen();
+                    MediaPlayerTab tab = mediaPlayerTabs.get(currentPlayerIndex);
+                    tab.getPlaybackQueue().playPrevTrack();
+                    onMediaStartedOnScreen();
+                }
+            });
+
+        Button nextTrackBtn = (Button)findViewById(R.id.next_track);
+        if(nextTrackBtn == null) {
+            Log.d(TAG,"!nTB");
+            return;
+        }
+
+        nextTrackBtn.setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "btn:p (next)");
+                    Button self = (Button) view;
+
+                    if(currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+                        return;
+                    }
+
+                    onMediaStartRequestedOnScreen();
+                    MediaPlayerTab tab = mediaPlayerTabs.get(currentPlayerIndex);
+                    tab.getPlaybackQueue().playNextTrack();
+                    onMediaStartedOnScreen();
+                }
+            });
     }
 
     public void showPlayingTrackControl() {
