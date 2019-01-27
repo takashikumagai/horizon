@@ -486,7 +486,13 @@ public class MainActivity extends AppCompatActivity {
     //    return mediaPlayer;
     //}
 
-    public void onMediaStartRequestedOnScreen() {
+    public boolean onMediaStartRequestedOnScreen() {
+
+        boolean granted = BackgroundAudioService.getInstance().retrievedAudioFocus();
+        if(!granted) {
+            return false;
+        }
+
         if(currentlyPlayedQueueIndex != currentPlayerIndex) {
             // currently played tab != selected tab.
             if(0 <= currentlyPlayedQueueIndex) {
@@ -498,6 +504,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        return true;
     }
 
     public void onMediaStartedOnScreen() {
@@ -618,7 +626,11 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                onMediaStartRequestedOnScreen();
+                boolean readyToPlay = onMediaStartRequestedOnScreen();
+                if(!readyToPlay) {
+                    Log.d(TAG, "!rTP");
+                    return;
+                }
                 Playback player = mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue();
                 player.clearQueue();
                 player.addToQueue(mediaFiles);

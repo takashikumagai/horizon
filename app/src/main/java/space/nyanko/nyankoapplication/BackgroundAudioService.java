@@ -43,6 +43,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
      */
     private Playback currentlyPlayed;
 
+    private MyMediaSessionCallback mediaSessionCallback;
+
     private BroadcastReceiver noisyReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -108,7 +110,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         public void onPlay() {
             Log.d(TAG,"onPlay");
             super.onPlay();
-            if( !successfullyRetrievedAudioFocus() ) {
+            if( !retrievedAudioFocus() ) {
                 return;
             }
         }
@@ -136,22 +138,27 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
             switch( focusChange ) {
                 case AudioManager.AUDIOFOCUS_LOSS: {
+                    Log.d(TAG,"oAFC AL");
+
                     if( mediaPlayer.isPlaying() ) {
                         mediaPlayer.stop();
                     }
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
+                    Log.d(TAG,"oAFC ALT");
                     mediaPlayer.pause();
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: {
+                    Log.d(TAG,"oAFC ALTCD");
                     if( mediaPlayer != null ) {
                         mediaPlayer.setVolume(0.3f, 0.3f);
                     }
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_GAIN: {
+                    Log.d(TAG,"oAFC AG");
                     if( mediaPlayer != null ) {
                         if( !mediaPlayer.isPlaying() ) {
                             mediaPlayer.start();
@@ -161,15 +168,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                     break;
                 }
             }
-        }
-
-        private boolean successfullyRetrievedAudioFocus() {
-            AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-
-            int result = audioManager.requestAudioFocus(this,
-                    AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
-            return result == AudioManager.AUDIOFOCUS_GAIN;
         }
     }
 
@@ -275,7 +273,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         mediaSession = new MediaSessionCompat(
                 getApplicationContext(), "mySessionTag", mediaButtonReceiver, null);
 
-        MediaSessionCompat.Callback msc = new MyMediaSessionCallback();
+        mediaSessionCallback = new MyMediaSessionCallback();
+        MediaSessionCompat.Callback msc = mediaSessionCallback;
         mediaSession.setCallback(msc);
         mediaSession.setFlags(
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
@@ -297,5 +296,20 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         //Handles headphones coming unplugged. cannot be done through a manifest receiver
         IntentFilter filter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
         registerReceiver(noisyReceiver, filter);
+    }
+
+    /**
+     * @biref Attempts to retrieve audio focus
+     *
+     *
+     * @return true if the audio focus was granted
+     */
+    public boolean retrievedAudioFocus() {
+        AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
+        int result = audioManager.requestAudioFocus(mediaSessionCallback,
+                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
+        return result == AudioManager.AUDIOFOCUS_GAIN;
     }
 }

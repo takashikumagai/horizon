@@ -213,7 +213,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     Log.d(TAG, "!player");
                     return;
                 }
-                mainActivity.onMediaStartRequestedOnScreen();
+                boolean readyToPlay = mainActivity.onMediaStartRequestedOnScreen();
+                if(!readyToPlay) {
+                    Log.d(TAG, "!rTP");
+                    return;
+                }
                 player.clearQueue();
                 player.addToQueue(entry.getPath());
                 player.startCurrentlyPointedMediaInQueue();
