@@ -247,10 +247,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final int pos = holder.getAdapterPosition();
 
         final MainActivity mainActivity = (MainActivity)mContext;
-        ArrayList<Playback> playbacks = mainActivity.getPlaybacks();
-        Playback playback = playbacks.get(mainActivity.getCurrentlyPlayedQueueIndex());
+        ArrayList<MediaPlayerTab> tabs = mainActivity.getMediaPlayerTabs();
+        MediaPlayerTab mediaPlayerTab = tabs.get(mainActivity.getCurrentlyPlayedQueueIndex());
 
-        ArrayList<String> queue = playback.getMediaFilePathQueue();
+        ArrayList<String> queue = mediaPlayerTab.getPlaybackQueue().getMediaFilePathQueue();
         if(pos < 0 || queue.size() <= pos) {
             Log.w(TAG,"sMIQTH pos: " + pos);
             return;
@@ -279,9 +279,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         } else if(viewMode == 1){
             final MainActivity mainActivity = (MainActivity)mContext;
-            ArrayList<Playback> playbacks = mainActivity.getPlaybacks();
-            Playback playback = playbacks.get(mainActivity.getCurrentlyPlayedQueueIndex());
-            return playback.getMediaFilePathQueue().size();
+            ArrayList<MediaPlayerTab> tabs = mainActivity.getMediaPlayerTabs();
+            MediaPlayerTab tab = tabs.get(mainActivity.getCurrentlyPlayedQueueIndex());
+            return tab.getPlaybackQueue().getMediaFilePathQueue().size();
         } else {
             Log.e(TAG,"gIC !!vM");
             return 0;

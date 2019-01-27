@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private ArrayList<Playback> playbacks = new ArrayList<Playback>();
-
     /**
      * @brief Index to the tab where a track is playing
      *
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     //==================== Model ====================
 
-    private ArrayList<FileSystemNavigator> fileSystemNavigators = new ArrayList<FileSystemNavigator>();
+    private ArrayList<MediaPlayerTab> mediaPlayerTabs = new ArrayList<MediaPlayerTab>();
 
     private RecyclerViewAdapter recyclerViewAdapter = null;
 
@@ -96,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         int numInitialTabs = 1;
         for(int i=0; i<numInitialTabs; i++) {
-            fileSystemNavigators.add( new FileSystemNavigator() );
-            fileSystemNavigators.get(i).initialize();
+            mediaPlayerTabs.add( new MediaPlayerTab() );
         }
 
         initRecyclerView();
@@ -105,11 +102,12 @@ public class MainActivity extends AppCompatActivity {
         setTabListeners();
 
         for(int i=0; i<numInitialTabs; i++) {
-            playbacks.add( new Playback() );
-            playbacks.get(i).setRecyclerViewAdapter(recyclerViewAdapter);
+            mediaPlayerTabs.get(i).getPlaybackQueue().setRecyclerViewAdapter(recyclerViewAdapter);
         }
         currentPlayerIndex = 0;
-        Playback.setCurrentPlayer(playbacks.get(currentPlayerIndex));
+        Playback.setCurrentPlayer(
+                mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+        );
 
         initPlayeQueueMediaControlButtons();
 
@@ -199,16 +197,10 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
 
-            if(pos < fileSystemNavigators.size()) {
-                fileSystemNavigators.remove(pos);
+            if(pos < mediaPlayerTabs.size()) {
+                mediaPlayerTabs.remove(pos);
             } else {
                 Log.w(TAG,"!!!fsn.size");
-            }
-
-            if(pos < playbacks.size()) {
-                playbacks.remove(pos);
-            } else {
-                Log.w(TAG,"!!!playbacks.size");
             }
 
             Log.d(TAG,"removing tab");
@@ -221,10 +213,11 @@ public class MainActivity extends AppCompatActivity {
                 currentPlayerIndex = tabLayout.getSelectedTabPosition();
             }
 
-            if(currentPlayerIndex < playbacks.size()) {
-                Playback.setCurrentPlayer(playbacks.get(currentPlayerIndex));
+            if(currentPlayerIndex < mediaPlayerTabs.size()) {
+                Playback.setCurrentPlayer(
+                        mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue());
             } else {
-                Log.w(TAG,"playbacks.size<=cPI");
+                Log.w(TAG,"mPTs.size<=cPI");
             }
 
             if(tabLayout.getTabCount() == 0) {
@@ -261,11 +254,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Add an FS navigator and a player
 
-            fileSystemNavigators.add( new FileSystemNavigator() );
-            fileSystemNavigators.get(fileSystemNavigators.size() - 1).initialize();
-
-            playbacks.add( new Playback() );
-            playbacks.get(playbacks.size()-1).setRecyclerViewAdapter(recyclerViewAdapter);
+            mediaPlayerTabs.add( new MediaPlayerTab() );
+            mediaPlayerTabs.get(mediaPlayerTabs.size()-1).getPlaybackQueue()
+                    .setRecyclerViewAdapter(recyclerViewAdapter);
 
             return true;
         }
@@ -290,18 +281,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerViewAdapter.setCurrentFileSystemNavigator(fileSystemNavigators.get(0));
+        recyclerViewAdapter.setCurrentFileSystemNavigator(
+                mediaPlayerTabs.get(0).getFileSystemNavigator()
+        );
     }
 
     private FileSystemNavigator getCurrentFileSystemNavigator() {
 
         if(currentPlayerIndex < 0
-                || fileSystemNavigators.size() <= currentPlayerIndex ) {
+                || mediaPlayerTabs.size() <= currentPlayerIndex ) {
             Log.w(TAG,"invalid cFSNI");
             return null;
         }
 
-        return fileSystemNavigators.get(currentPlayerIndex);
+        return mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator();
     }
 
     private void setTabListeners() {
@@ -312,23 +305,21 @@ public class MainActivity extends AppCompatActivity {
                 int pos = tab.getPosition();
                 Log.d(TAG,"onTabSelected called: " + tab.getText() + " (pos: " + pos + ")");
 
-                if(pos < 0 || fileSystemNavigators.size() <= pos) {
+                if(pos < 0 || mediaPlayerTabs.size() <= pos) {
                     Log.w(TAG,"oTS: invalid tab pos");
                     return;
                 }
 
                 currentPlayerIndex = pos;
 
-                recyclerViewAdapter.setCurrentFileSystemNavigator(fileSystemNavigators.get(pos));
+                recyclerViewAdapter.setCurrentFileSystemNavigator(
+                        mediaPlayerTabs.get(pos).getFileSystemNavigator());
                 recyclerViewAdapter.notifyDataSetChanged();
 
-                if(pos < playbacks.size()) {
-                    Playback.setCurrentPlayer(playbacks.get(pos));
-                } else {
-                    Log.w(TAG,"pos<playbacks.size");
-                }
+                Playback.setCurrentPlayer(
+                        mediaPlayerTabs.get(pos).getPlaybackQueue());
 
-//                switchTab(pos);
+//              switchTab(pos);
             }
 
             @Override
@@ -350,6 +341,11 @@ public class MainActivity extends AppCompatActivity {
     //public boolean areSamePaths(String path1, String path2) {
     //    return new File(path1).equals(new File(path2));
     //}
+
+
+    public ArrayList<MediaPlayerTab> getMediaPlayerTabs() {
+        return mediaPlayerTabs;
+    }
 
     public void onBackPressed() {
 
@@ -411,12 +407,12 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
         int pos = tabLayout.getSelectedTabPosition();
-        if(pos < 0 || playbacks.size() <= pos) {
+        if(pos < 0 || mediaPlayerTabs.size() <= pos) {
             // No selected tab
             Log.d(TAG, "pos<0");
             return null;
         } else {
-            return playbacks.get(pos);
+            return mediaPlayerTabs.get(pos).getPlaybackQueue();
         }
     }
 
@@ -430,12 +426,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateFloatingActionButtonVisibility() {
         int index = currentPlayerIndex;
-        if(index < 0 || fileSystemNavigators.size() <= index) {
+        if(index < 0 || mediaPlayerTabs.size() <= index) {
             Log.d(TAG,"uFABV !i" + index);
             return;
         }
 
-        AbstractDirectoryNavigator navigator = fileSystemNavigators.get(index).getCurrentNavigator();
+        AbstractDirectoryNavigator navigator
+                = mediaPlayerTabs.get(index).getFileSystemNavigator().getCurrentNavigator();
 
         if(navigator == null) {
             Log.d(TAG,"uFABV !cn");
@@ -463,11 +460,11 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         int tabPos = tabLayout.getSelectedTabPosition();
-        if(tabPos < 0 || playbacks.size() <= tabPos) {
+        if(tabPos < 0 || mediaPlayerTabs.size() <= tabPos) {
             return 0;
         }
 
-        Playback player = playbacks.get(tabPos);
+        Playback player = mediaPlayerTabs.get(tabPos).getPlaybackQueue();
         if(player.isPointed(filePath)) {
             return 1;
         } else if(player.isInQueue(filePath)){
@@ -511,16 +508,13 @@ public class MainActivity extends AppCompatActivity {
     //    return mediaPlayer;
     //}
 
-    public ArrayList<Playback> getPlaybacks() {
-        return playbacks;
-    }
-
     public void onMediaStartRequestedOnScreen() {
         if(currentlyPlayedQueueIndex != currentPlayerIndex) {
             // currently played tab != selected tab.
             if(0 <= currentlyPlayedQueueIndex) {
-                if(currentlyPlayedQueueIndex < playbacks.size()) {
-                    playbacks.get(currentlyPlayedQueueIndex).saveCurrentPlaybackPosition();
+                if(currentlyPlayedQueueIndex < mediaPlayerTabs.size()) {
+                    mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
+                            .saveCurrentPlaybackPosition();
                 } else {
                     Log.w(TAG,"sz<=cPQI");
                 }
@@ -530,7 +524,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onMediaStartedOnScreen() {
 
-        if(currentPlayerIndex < 0 || playbacks.size() <= currentPlayerIndex) {
+        if(currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
             Log.w(TAG,"cPI: "+currentPlayerIndex);
             return;
         }
@@ -546,7 +540,9 @@ public class MainActivity extends AppCompatActivity {
         if(service == null) {
             Log.w(TAG,"!service");
         } else {
-            service.setCurrentlyPlayedPlaybackQueue(playbacks.get(currentlyPlayedQueueIndex));
+            service.setCurrentlyPlayedPlaybackQueue(
+                    mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
+            );
         }
 
 //        View ptc = findViewById(R.id.playing_track_control);
@@ -575,12 +571,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void switchToFileSystemView() {
 
-        if(currentlyPlayedQueueIndex < 0 || playbacks.size() <= currentlyPlayedQueueIndex) {
+        if(currentlyPlayedQueueIndex < 0 || mediaPlayerTabs.size() <= currentlyPlayedQueueIndex) {
             Log.d(TAG,"sTFSV !!cPQI");
             return;
         }
 
-        Playback playbackQueue = playbacks.get(currentlyPlayedQueueIndex);
+        Playback playbackQueue
+                = mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue();
 
         if(0 < playbackQueue.getMediaFilePathQueue().size()) {
             showPlayingTrackControl();
@@ -620,13 +617,14 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (fileSystemNavigators.size() <= currentPlayerIndex) {
+                if (mediaPlayerTabs.size() <= currentPlayerIndex) {
                     Log.w(TAG, "fSN.sz<=cPI");
                     return;
                 }
 
                 ArrayList<File> filesAndDirs
-                        = fileSystemNavigators.get(currentPlayerIndex).getCurrentDirectoryEntries();
+                        = mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
+                        .getCurrentDirectoryEntries();
 
                 // Put all the media files in the current directory to the queue and start playing
                 ArrayList<File> mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs);
@@ -637,13 +635,13 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (playbacks.size() <= currentPlayerIndex) {
-                    Log.w(TAG, "players.sz<=cPI");
+                if (mediaPlayerTabs.size() <= currentPlayerIndex) {
+                    Log.w(TAG, "mPTs.sz<=cPI");
                     return;
                 }
 
                 onMediaStartRequestedOnScreen();
-                Playback player = playbacks.get(currentPlayerIndex);
+                Playback player = mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue();
                 player.clearQueue();
                 player.addToQueue(mediaFiles);
                 player.startCurrentlyPointedMediaInQueue();
