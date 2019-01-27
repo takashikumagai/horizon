@@ -267,15 +267,6 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView() {
         Log.d(TAG,"initRecyclerView called");
 
-        //mFileNames.add(stringFromJNI());
-        //String entries = listDir();
-        //Log.d(TAG,entries);
-        //String[] names = entries.split("\\n");
-        //for(String entry : names) {
-        //    mFileNames.add(entry);
-        //}
-        //mFileNames.add("123");
-        //mFileNames.add("456");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerViewAdapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -338,11 +329,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //public boolean areSamePaths(String path1, String path2) {
-    //    return new File(path1).equals(new File(path2));
-    //}
-
-
     public ArrayList<MediaPlayerTab> getMediaPlayerTabs() {
         return mediaPlayerTabs;
     }
@@ -375,14 +361,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.e(TAG,"oBP !!vM");
         }
-//        if( areSamePaths(DirectoryNavigation.getNavigator().getCurrentDirectory(), "/storage/emulated/0") ) {
-//            super.onBackPressed();
-//        } else {
-//            DirectoryNavigation.moveToParentDirectory();
-//            if(recyclerViewAdapter != null) {
-//                recyclerViewAdapter.notifyDataSetChanged();
-//            }
-//        }
     }
 
     public void setSelectedTabLabel(String text) {
