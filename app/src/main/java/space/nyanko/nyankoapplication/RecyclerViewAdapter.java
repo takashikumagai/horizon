@@ -219,6 +219,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 player.startCurrentlyPointedMediaInQueue();
                 mainActivity.onMediaStartedOnScreen();
 
+                mainActivity.showPlayingTrackControl();
 
                 notifyDataSetChanged();
 
@@ -245,7 +246,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         final int pos = holder.getAdapterPosition();
 
-        Playback playback = null;
+        final MainActivity mainActivity = (MainActivity)mContext;
+        ArrayList<Playback> playbacks = mainActivity.getPlaybacks();
+        Playback playback = playbacks.get(mainActivity.getCurrentlyPlayedQueueIndex());
 
         ArrayList<String> queue = playback.getMediaFilePathQueue();
         if(pos < 0 || queue.size() <= pos) {
@@ -275,12 +278,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 return 0;
             }
         } else if(viewMode == 1){
-            Playback playback = null;
+            final MainActivity mainActivity = (MainActivity)mContext;
+            ArrayList<Playback> playbacks = mainActivity.getPlaybacks();
+            Playback playback = playbacks.get(mainActivity.getCurrentlyPlayedQueueIndex());
             return playback.getMediaFilePathQueue().size();
         } else {
             Log.e(TAG,"gIC !!vM");
             return 0;
         }
+    }
+
+    int getViewMode() { return viewMode; }
+
+    void setViewMode(int mode) {
+        viewMode = mode;
     }
 
 

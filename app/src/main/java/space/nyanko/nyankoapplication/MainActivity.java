@@ -79,18 +79,15 @@ public class MainActivity extends AppCompatActivity {
 
         initFloatingActionButton();
 
-        View pc = findViewById(R.id.playback_control);
-        pc.setVisibility(View.GONE);
-
-        View ptc = findViewById(R.id.playing_track_control);
-        ptc.setVisibility(View.GONE);
+        hidePlaybackQueueControl();
+        hidePlayingTrackControl();
 
         View playingTrackName = findViewById(R.id.playing_track_name);
         playingTrackName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "oC");
-                switchToFileSystemView();
+                switchToPlaybackQueueView();
             }
         });
         // Example of a call to a native method
@@ -359,21 +356,31 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBackPressed() {
 
-        FileSystemNavigator navigator = getCurrentFileSystemNavigator();
-        int ret = navigator.moveToParent();
-
-        // Show/hide FAB depending on whether the directory contains
-        // one or more media files.
-        updateFloatingActionButtonVisibility();
-
-        if(recyclerViewAdapter != null) {
-            recyclerViewAdapter.notifyDataSetChanged();
+        if(recyclerViewAdapter == null) {
+            Log.w(TAG,"rVA");
+            return;
         }
 
-        setSelectedTabLabel(navigator.getCurrentDirectoryName());
+        int viewMode = recyclerViewAdapter.getViewMode();
+        if(viewMode == 0) {
+            FileSystemNavigator navigator = getCurrentFileSystemNavigator();
+            int ret = navigator.moveToParent();
 
-        if(ret != 0) {
-            super.onBackPressed();
+            // Show/hide FAB depending on whether the directory contains
+            // one or more media files.
+            updateFloatingActionButtonVisibility();
+
+            recyclerViewAdapter.notifyDataSetChanged();
+
+            setSelectedTabLabel(navigator.getCurrentDirectoryName());
+
+            if (ret != 0) {
+                super.onBackPressed();
+            }
+        } else if(viewMode == 1) {
+            switchToFileSystemView();
+        } else {
+            Log.e(TAG,"oBP !!vM");
         }
 //        if( areSamePaths(DirectoryNavigation.getNavigator().getCurrentDirectory(), "/storage/emulated/0") ) {
 //            super.onBackPressed();
@@ -549,23 +556,53 @@ public class MainActivity extends AppCompatActivity {
 //        ptc.setVisibility(View.VISIBLE);
     }
 
-    public void switchToPlayQueueView() {
+    public void switchToPlaybackQueueView() {
 
         // Hide the playing track control and show the play queue
         // media control.
-        View ptc = findViewById(R.id.playing_track_control);
-        ptc.setVisibility(View.GONE);
-        View pc = findViewById(R.id.playback_control);
-        pc.setVisibility(View.VISIBLE);
+        hidePlayingTrackControl();
+        showPlaybackQueueControl();
+
+
+        recyclerViewAdapter.setViewMode(1);
+
+        recyclerViewAdapter.notifyDataSetChanged();
+
+//        MediaPlayerTab mediaPlayerTab = getCurrentMediaPlayerTab();
+//        if(mediaPlayerTab != null) {
+//            mediaPlayerTab.setMode(1);
+//        } else {
+//            Log.d(TAG,"!mPT");
+//        }
     }
 
     public void switchToFileSystemView() {
 
-        View ptc = findViewById(R.id.playing_track_control);
-        ptc.setVisibility(View.VISIBLE);
+        if(currentlyPlayedQueueIndex < 0 || playbacks.size() <= currentlyPlayedQueueIndex) {
+            Log.d(TAG,"sTFSV !!cPQI");
+            return;
+        }
+
+        Playback playbackQueue = playbacks.get(currentlyPlayedQueueIndex);
+
+        if(0 < playbackQueue.getMediaFilePathQueue().size()) {
+            showPlayingTrackControl();
+        }
+        hidePlaybackQueueControl();
+
+        recyclerViewAdapter.setViewMode(0);
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    public void showPlaybackQueueControl() {
+        View pc = findViewById(R.id.playback_control);
+        pc.setVisibility(View.VISIBLE);
+    }
+    public void hidePlaybackQueueControl() {
         View pc = findViewById(R.id.playback_control);
         pc.setVisibility(View.GONE);
     }
+
 
     public int getCurrentlyPlayedQueueIndex() {
         return currentlyPlayedQueueIndex;
@@ -615,7 +652,7 @@ public class MainActivity extends AppCompatActivity {
                 player.startCurrentlyPointedMediaInQueue();
                 onMediaStartedOnScreen();
 
-                switchToPlayQueueView();
+                switchToPlaybackQueueView();
 
                 // Update background colors of queued tracks
                 recyclerViewAdapter.notifyDataSetChanged();
@@ -663,6 +700,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    }
+
+    public void showPlayingTrackControl() {
+        Log.d(TAG, "sPTB");
+
+        // Show the playing track info and control (pause/resume)
+        View ptc = findViewById(R.id.playing_track_control);
+        ptc.setVisibility(View.VISIBLE);
+    }
+    public void hidePlayingTrackControl() {
+        Log.d(TAG, "hPTC");
+
+        // Show the playing track info and control (pause/resume)
+        View ptc = findViewById(R.id.playing_track_control);
+        ptc.setVisibility(View.GONE);
     }
 
     /**
