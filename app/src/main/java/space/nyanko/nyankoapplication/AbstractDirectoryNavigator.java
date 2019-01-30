@@ -1,9 +1,10 @@
 package space.nyanko.nyankoapplication;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class AbstractDirectoryNavigator {
+public abstract class AbstractDirectoryNavigator implements Serializable {
 
     /**
      * @brief Returns a list containing 2 types of objects

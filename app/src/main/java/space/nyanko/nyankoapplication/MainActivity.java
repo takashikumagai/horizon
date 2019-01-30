@@ -58,9 +58,24 @@ public class MainActivity extends AppCompatActivity {
 
     //private ServiceConnection serviceConnection = null;
 
+    private static int tabIdCounter = 1000;
+
+    public class EmptyClass {
+        EmptyClass() {
+            Log.d(TAG,"ctor of EmptyClass");
+        }
+    }
+
+    private static EmptyClass emptyClass;
+
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
+    }
+
+    public MainActivity() {
+        super();
+        Log.d(TAG,"ctor");
     }
 
     @Override
@@ -92,30 +107,50 @@ public class MainActivity extends AppCompatActivity {
         // Some C/C++ functions access filesystem so request the user file r/w permissions
         requestAppPermissions();
 
+        Log.d(TAG,"num mptabs: " + mediaPlayerTabs.size());
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        Log.d(TAG,"num tablayout tabs: " + tabLayout.getTabCount());
+
         int numInitialTabs = 1;
-        for(int i=0; i<numInitialTabs; i++) {
-            mediaPlayerTabs.add( new MediaPlayerTab() );
+
+        if(savedInstanceState == null) {
+            for(int i=0; i<numInitialTabs; i++) {
+                mediaPlayerTabs.add( new MediaPlayerTab() );
+            }
         }
 
         initRecyclerView();
 
+        if(savedInstanceState == null) {
+            if(0 < mediaPlayerTabs.size()) {
+                recyclerViewAdapter.setCurrentFileSystemNavigator(
+                        mediaPlayerTabs.get(0).getFileSystemNavigator()
+                );
+            }
+        }
+
         setTabListeners();
 
-        for(int i=0; i<numInitialTabs; i++) {
-            mediaPlayerTabs.get(i).getPlaybackQueue().setRecyclerViewAdapter(recyclerViewAdapter);
+        if(savedInstanceState == null) {
+            for(int i=0; i<numInitialTabs; i++) {
+                mediaPlayerTabs.get(i).getPlaybackQueue().setRecyclerViewAdapter(recyclerViewAdapter);
+            }
+            currentPlayerIndex = 0;
+            Playback.setCurrentPlayer(
+                    mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+            );
         }
-        currentPlayerIndex = 0;
-        Playback.setCurrentPlayer(
-                mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
-        );
 
         initPlayQueueMediaControlButtons();
 
-        // Start the main service of the app
-        // This service survives even after this activity is destroyed, e.g. by user
-        // swiping it from the task list
-        Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
-        startService(serviceIntent);
+        // TODO: do this only once at startup
+        if(savedInstanceState == null) {
+            // Start the main service of the app
+            // This service survives even after this activity is destroyed, e.g. by user
+            // swiping it from the task list
+            Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
+            startService(serviceIntent);
+        }
 
 //        serviceConnection = new ServiceConnection();
 //        boolean res = bindService(serviceIntent,serviceConnection,0);
@@ -140,6 +175,10 @@ public class MainActivity extends AppCompatActivity {
         //        Log.d(TAG,"newTabButton.onClick");
         //    }
         //});
+
+        if(emptyClass == null) {
+            emptyClass = new EmptyClass();
+        }
     }
 
     @Override
@@ -151,6 +190,54 @@ public class MainActivity extends AppCompatActivity {
         // every time we close and restart the app
         //Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
         //stopService(serviceIntent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putSerializable("mediaPlayerTabs",mediaPlayerTabs);
+        savedInstanceState.putInt("currentPlayerIndex",currentPlayerIndex);
+        savedInstanceState.putInt("currentlyPlayedQueueIndex",currentlyPlayedQueueIndex);
+
+        // Save the view hierarchy
+        super.onSaveInstanceState(savedInstanceState);
+
+        Log.d(TAG,"oSIS");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mediaPlayerTabs = (ArrayList<MediaPlayerTab>)savedInstanceState.getSerializable("mediaPlayerTabs");
+        currentPlayerIndex = savedInstanceState.getInt("currentPlayerIndex");
+        currentlyPlayedQueueIndex = savedInstanceState.getInt("currentlyPlayedQueueIndex");
+
+        Log.d(TAG,"oRIS");
+
+        if(recyclerViewAdapter == null) {
+            Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!! recyclerViewAdapter !!!!!!!!!!!!!!!!!!!!!!");
+        }
+
+        for(MediaPlayerTab mptab: mediaPlayerTabs) {
+
+            // recyclerViewAdapter has already been re-created in onCreate()
+            mptab.getPlaybackQueue().setRecyclerViewAdapter(recyclerViewAdapter);
+
+            //mptab.getName();
+            TabLayout tabLayout = findViewById(R.id.tabLayout);
+            tabLayout.addTab(tabLayout.newTab().setText(""));
+        }
+
+        if(currentPlayerIndex < mediaPlayerTabs.size()) {
+            // Set the FS navigator of the currently selected tab
+            recyclerViewAdapter.setCurrentFileSystemNavigator(
+                    mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
+            );
+        }
+
+        //recyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -238,6 +325,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG,"!newTab");
                 return true;
             }
+            //newTab.setId(tabIdCounter);
+            tabIdCounter += 1;
             newTab.setText("newtab");
 //            View child = tabLayout.getChildAt(tabLayout.getTabCount()-1);
 //            if(child == null) {
@@ -271,10 +360,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewAdapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        recyclerViewAdapter.setCurrentFileSystemNavigator(
-                mediaPlayerTabs.get(0).getFileSystemNavigator()
-        );
     }
 
     private FileSystemNavigator getCurrentFileSystemNavigator() {

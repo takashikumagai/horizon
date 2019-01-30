@@ -4,6 +4,7 @@ import android.util.Log;
 import android.media.MediaPlayer;
 
 import java.io.File;
+import java.io.Serializable;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  * - There are as many playback instanes as the number of tabs.
  *
  */
-public class Playback {
+public class Playback implements Serializable {
 
     private static final String TAG = "Playback";
 
@@ -47,7 +48,7 @@ public class Playback {
      */
     public ArrayList<String> mediaFilePathQueue = new ArrayList<String>();
 
-    private RecyclerViewAdapter recyclerViewAdapter;
+    private transient RecyclerViewAdapter recyclerViewAdapter;
 
 //    private int tabViewMode = 0;
 

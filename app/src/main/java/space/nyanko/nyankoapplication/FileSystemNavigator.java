@@ -3,9 +3,10 @@ package space.nyanko.nyankoapplication;
 import android.util.Log;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FileSystemNavigator {
+public class FileSystemNavigator implements Serializable {
 
     private static final String TAG = "FileSystemNavigator";
 

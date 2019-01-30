@@ -17,12 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.Serializable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class MediaPlayerTab {
+public class MediaPlayerTab implements Serializable {
     private static final String TAG = "MediaPlayerTab";
 
     private FileSystemNavigator fileSystemNavigator;
