@@ -117,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
             for(int i=0; i<numInitialTabs; i++) {
                 mediaPlayerTabs.add( new MediaPlayerTab() );
             }
+
+            tabLayout.addTab(tabLayout.newTab().setText(
+                    mediaPlayerTabs.get(0).getFileSystemNavigator().getCurrentDirectoryName()
+            ));
         }
 
         initRecyclerView();
@@ -220,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!! recyclerViewAdapter !!!!!!!!!!!!!!!!!!!!!!");
         }
 
+        Log.d(TAG,"oRIS mPTs.sz: " + mediaPlayerTabs.size());
         for(MediaPlayerTab mptab: mediaPlayerTabs) {
 
             // recyclerViewAdapter has already been re-created in onCreate()
@@ -227,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
 
             //mptab.getName();
             TabLayout tabLayout = findViewById(R.id.tabLayout);
-            tabLayout.addTab(tabLayout.newTab().setText(""));
+            tabLayout.addTab(tabLayout.newTab().setText(
+                    mptab.getFileSystemNavigator().getCurrentDirectoryName()
+            ));
         }
 
         if(currentPlayerIndex < mediaPlayerTabs.size()) {
