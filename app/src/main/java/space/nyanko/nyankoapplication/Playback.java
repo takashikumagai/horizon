@@ -52,6 +52,7 @@ public class Playback implements Serializable {
 
 //    private int tabViewMode = 0;
 
+
     public Playback() {
     }
 
@@ -94,6 +95,12 @@ public class Playback implements Serializable {
         String mediaFilepath = "";
         try {
             mediaFilepath = mediaFilePathQueue.get(pointedMediaIndex);
+
+            BackgroundAudioService service = BackgroundAudioService.getInstance();
+            if(service != null) {
+                service.setMetadata();
+            }
+
             Log.d(TAG, "resetting");
             mediaPlayer.reset();
             Log.d(TAG, "setDataSource: " + mediaFilepath);

@@ -15,8 +15,11 @@ import android.media.AudioManager;
 import android.text.TextUtils;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserServiceCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.MediaMetadataCompat.Builder;
 import android.view.KeyEvent;
 import android.util.Log;
 import java.util.List;
@@ -32,6 +35,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     private MediaPlayer mediaPlayer;
 
     private MediaSessionCompat mediaSession = null;
+
+    private PlaybackStateCompat playbackState;
+
+    private Builder metadataBuilder;
 
     /**
      * Might not need this one perhaps
@@ -289,6 +296,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         mediaSession.setMediaButtonReceiver(pendingIntent);
 
         mediaSession.setActive(true);
+
+        metadataBuilder = new android.support.v4.media.MediaMetadataCompat.Builder();
     }
 
     private void initNoisyReceiver() {
@@ -311,5 +320,22 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                 AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         return result == AudioManager.AUDIOFOCUS_GAIN;
+    }
+
+    public void setMetadata() {
+
+        if(mediaSession == null) {
+            Log.d(TAG,"sMd !mP");
+            return;
+        }
+        if(metadataBuilder == null) {
+            Log.d(TAG,"sMd !mB");
+            return;
+        }
+        // Update metadata
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "album_title");
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, "track_title");
+        MediaMetadataCompat metadata = metadataBuilder.build();
+        mediaSession.setMetadata(metadata);
     }
 }
