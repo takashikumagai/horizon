@@ -13,10 +13,13 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.AudioManager;
 import android.text.TextUtils;
-import android.support.v4.media.session.MediaButtonReceiver;
+import androidx.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaBrowserServiceCompat;
+import androidx.media.MediaBrowserServiceCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.MediaMetadataCompat.Builder;
 import android.view.KeyEvent;
 import android.util.Log;
 import java.util.List;
@@ -32,6 +35,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     private MediaPlayer mediaPlayer;
 
     private MediaSessionCompat mediaSession = null;
+
+    private PlaybackStateCompat playbackState;
+
+    private Builder metadataBuilder;
 
     /**
      * Might not need this one perhaps
@@ -217,6 +224,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         initMediaPlayer();
         initMediaSession();
         initNoisyReceiver();
+
+        if(mediaSession != null) {
+            // Init notification/lock screen controls
+            LockScreenMediaControl.createNotificationChannel(this);
+
+            LockScreenMediaControl.init(this, mediaSession);
+        }
     }
 
     @Override
@@ -237,6 +251,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     public void onTaskRemoved(Intent rootIntent) {
         Log.d(TAG,"oTR");
         super.onTaskRemoved(rootIntent);
+
+        hideMediaControls();
 
         // Stop the service
         // In the debug phase, it's convenient to have the service destroyed every time
@@ -289,6 +305,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         mediaSession.setMediaButtonReceiver(pendingIntent);
 
         mediaSession.setActive(true);
+
+        metadataBuilder = new android.support.v4.media.MediaMetadataCompat.Builder();
     }
 
     private void initNoisyReceiver() {
@@ -311,5 +329,34 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                 AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         return result == AudioManager.AUDIOFOCUS_GAIN;
+    }
+
+    public void setMetadata() {
+
+        if(mediaSession == null) {
+            Log.d(TAG,"sMd !mP");
+            return;
+        }
+        if(metadataBuilder == null) {
+            Log.d(TAG,"sMd !mB");
+            return;
+        }
+        // Update metadata
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "album_title");
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, "track_title");
+        MediaMetadataCompat metadata = metadataBuilder.build();
+        mediaSession.setMetadata(metadata);
+    }
+
+    public void showMediaControls() {
+        Log.d(TAG,"sMCs");
+
+        LockScreenMediaControl.show(this);
+    }
+
+    public void hideMediaControls() {
+        Log.d(TAG,"hMCs");
+
+        LockScreenMediaControl.hide(this);
     }
 }

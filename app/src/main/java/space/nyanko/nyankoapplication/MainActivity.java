@@ -2,27 +2,27 @@ package space.nyanko.nyankoapplication;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.ComponentName;
 import android.content.Intent;
-//import android.content.ServiceConnection;
 import android.media.MediaPlayer;
-import android.support.v4.media.session.MediaButtonReceiver;
+import androidx.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +34,7 @@ import android.graphics.Paint;
 import java.io.File;
 import java.util.ArrayList;
 
+@SuppressLint("RestrictedApi")
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -198,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
         // every time we close and restart the app
         //Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
         //stopService(serviceIntent);
+
+
     }
 
     @Override
@@ -549,6 +552,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestAppPermissions() {
+        Log.d(TAG,"rAPs");
+
         if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.d(TAG,"SDK_INT < LOLLIPOP");
             return;
@@ -625,6 +630,8 @@ public class MainActivity extends AppCompatActivity {
             service.setCurrentlyPlayedPlaybackQueue(
                     mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
             );
+
+            service.showMediaControls();
         }
 
 //        View ptc = findViewById(R.id.playing_track_control);
@@ -685,6 +692,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initFloatingActionButton() {
+        Log.d(TAG, "iFAB");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
