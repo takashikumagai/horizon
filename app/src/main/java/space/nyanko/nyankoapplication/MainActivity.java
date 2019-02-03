@@ -199,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
         // every time we close and restart the app
         //Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
         //stopService(serviceIntent);
+
+
     }
 
     @Override
@@ -550,6 +552,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestAppPermissions() {
+        Log.d(TAG,"rAPs");
+
         if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.d(TAG,"SDK_INT < LOLLIPOP");
             return;
@@ -626,6 +630,8 @@ public class MainActivity extends AppCompatActivity {
             service.setCurrentlyPlayedPlaybackQueue(
                     mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
             );
+
+            service.showMediaControls();
         }
 
 //        View ptc = findViewById(R.id.playing_track_control);
@@ -686,6 +692,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initFloatingActionButton() {
+        Log.d(TAG, "iFAB");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

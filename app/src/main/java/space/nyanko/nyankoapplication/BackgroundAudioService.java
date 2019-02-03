@@ -224,6 +224,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         initMediaPlayer();
         initMediaSession();
         initNoisyReceiver();
+
+        if(mediaSession != null) {
+            // Init notification/lock screen controls
+            LockScreenMediaControl.createNotificationChannel(this);
+
+            LockScreenMediaControl.init(this, mediaSession);
+        }
     }
 
     @Override
@@ -244,6 +251,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     public void onTaskRemoved(Intent rootIntent) {
         Log.d(TAG,"oTR");
         super.onTaskRemoved(rootIntent);
+
+        hideMediaControls();
 
         // Stop the service
         // In the debug phase, it's convenient to have the service destroyed every time
@@ -337,5 +346,17 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, "track_title");
         MediaMetadataCompat metadata = metadataBuilder.build();
         mediaSession.setMetadata(metadata);
+    }
+
+    public void showMediaControls() {
+        Log.d(TAG,"sMCs");
+
+        LockScreenMediaControl.show(this);
+    }
+
+    public void hideMediaControls() {
+        Log.d(TAG,"hMCs");
+
+        LockScreenMediaControl.hide(this);
     }
 }
