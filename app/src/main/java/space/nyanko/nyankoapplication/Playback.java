@@ -70,6 +70,7 @@ public class Playback implements Serializable {
     }
 
     public void startCurrentlyPointedMediaInQueue() {
+        Log.d(TAG,"sCPMIQ");
 
         MediaPlayer mediaPlayer = getMediaPlayer();
         if(mediaPlayer == null) {
@@ -109,7 +110,11 @@ public class Playback implements Serializable {
         }
 
         // Repaint GUI as a currently played track has just been changed.
-        recyclerViewAdapter.notifyDataSetChanged();
+        if(recyclerViewAdapter != null) {
+            recyclerViewAdapter.notifyDataSetChanged();
+        } else {
+            Log.e(TAG, "!rVA");
+        }
     }
 
     public boolean playPrevTrack() {
