@@ -3,6 +3,7 @@ package space.nyanko.nyankoapplication;
 import android.os.Build;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.media.session.MediaSessionCompat;
 import androidx.core.content.ContextCompat;
 import android.app.PendingIntent;
@@ -15,6 +16,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+
+import java.lang.CharSequence;
 
 
 /**
@@ -33,6 +36,31 @@ class LockScreenMediaControl {
 
     private static Notification notification;
 
+    private static NotificationCompat.Action generateAction(Context context, String action, int icon, CharSequence title) {
+
+        Intent intent = new Intent(context.getApplicationContext(), BackgroundAudioService.class);
+        intent.setAction(action);
+
+        // As per the documentation, this 'retrieves a PendingIntent that will start a service'
+        // https://developer.android.com/reference/android/app/PendingIntent.html
+        // What this actually does is that it invokes onStartCommand() of the service.
+        // onStartCommand() is called not only when the service is created and started but also
+        // when a intent is sent like this.
+        int requestCode = 1;
+        int flags = 0;
+        PendingIntent pendingIntent
+                = PendingIntent.getService(
+                context.getApplicationContext(),
+                requestCode,
+                intent,
+                flags);
+
+        NotificationCompat.Action.Builder builder
+                = new NotificationCompat.Action.Builder(icon, title, pendingIntent);
+
+        return builder.build();
+    }
+
     /**
      * @brief Initializses the lock screen control without showing it on screen.
      *
@@ -42,33 +70,41 @@ class LockScreenMediaControl {
     public static void init(Context context, MediaSessionCompat mediaSession) {
         Log.d(TAG,"init");
 
-
-
-        PendingIntent prevPendingIntent = null;
-        PendingIntent pausePendingIntent = null;
-        PendingIntent nextPendingIntent = null;
-
         // Token to hand to the builder
         MediaSessionCompat.Token compatToken = mediaSession.getSessionToken();
-        // We also need to do this conversion
-        //MediaSession.Token sessionToken = (MediaSession.Token)compatToken.getToken();
 
-        notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
         // Show controls on lock screen even when user hides sensitive content.
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setSmallIcon(R.drawable.ic_file)
         // Add media control buttons that invoke intents in your media service
-        .addAction(R.drawable.ic_file, "Previous", prevPendingIntent) // #0
-        .addAction(R.drawable.ic_file, "Pause", pausePendingIntent)  // #1
-        .addAction(R.drawable.ic_file, "Next", nextPendingIntent)     // #2
         // Apply the media style template
         .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(1 /* #1: pause button */)
                 .setMediaSession(compatToken))
         .setContentTitle("Nyanko music")
-        .setContentText("Nyankolz")
+        .setContentText("Nyankolz");
         //.setLargeIcon(albumArtBitmap)
-        .build();
+
+        Log.d(TAG,"adding actions");
+
+        builder.addAction(generateAction(
+                context,
+                BackgroundAudioService.ACTION_PREV_TRACK,
+                R.drawable.ic_file,
+                "Prev"));
+        builder.addAction(generateAction(
+                context,
+                BackgroundAudioService.ACTION_PLAY_PAUSE,
+                R.drawable.ic_file,
+                "Play/Pause"));
+        builder.addAction(generateAction(
+                context,
+                BackgroundAudioService.ACTION_NEXT_TRACK,
+                R.drawable.ic_file,
+                "Next"));
+
+        notification = builder.build();
 
         if(notification == null) {
             Log.e(TAG,"init !n");

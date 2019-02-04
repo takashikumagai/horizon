@@ -30,6 +30,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
     private static final String TAG = "BackgroundAudioService";
 
+    public static final String ACTION_PLAY = "play";
+    public static final String ACTION_PLAY_PAUSE = "playPause";
+    public static final String ACTION_PREV_TRACK = "prevTrack";
+    public static final String ACTION_NEXT_TRACK = "nextTrack";
+    public static final String ACTION_STOP = "stop";
+
+
     private static BackgroundAudioService self;
 
     private MediaPlayer mediaPlayer;
@@ -236,7 +243,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG,"oSC: " + flags + ", " + startId);
-        MediaButtonReceiver.handleIntent(mediaSession, intent);
+        KeyEvent keyEvent = MediaButtonReceiver.handleIntent(mediaSession, intent);
+
+        if(keyEvent == null) {
+            Log.d(TAG,"!kE");
+            // custom actions we defined for the notification
+            handleIntent(intent);
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -346,6 +359,18 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, "track_title");
         MediaMetadataCompat metadata = metadataBuilder.build();
         mediaSession.setMetadata(metadata);
+    }
+
+    private void handleIntent(Intent intent) {
+        String action = intent.getAction();
+        if(action == ACTION_PLAY_PAUSE) {
+            // Play if track is paused, or pause if it is playing
+            Log.d(TAG,"a:p/p");
+        } else if(action == ACTION_PREV_TRACK) {
+            Log.d(TAG,"a:prev");
+        } else if(action == ACTION_NEXT_TRACK) {
+            Log.d(TAG,"a:next");
+        }
     }
 
     public void showMediaControls() {
