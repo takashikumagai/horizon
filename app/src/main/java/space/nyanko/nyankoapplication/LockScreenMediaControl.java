@@ -30,7 +30,7 @@ class LockScreenMediaControl {
 
     private static final String TAG = "LockScreenMediaControl";
 
-    private static final String CHANNEL_ID = "MyChannel";
+    private static final String CHANNEL_ID = "HorizonNotificationChannel";
 
     private static final int NOTIFICATION_ID = 12345;
 
@@ -103,6 +103,11 @@ class LockScreenMediaControl {
                 BackgroundAudioService.ACTION_NEXT_TRACK,
                 R.drawable.ic_file,
                 "Next"));
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Log.d(TAG,"sdk<codes.o");
+            builder.setVibrate(new long[]{0L});
+        }
 
         notification = builder.build();
 
@@ -178,11 +183,20 @@ class LockScreenMediaControl {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d(TAG,"sdk>=codes.o");
             CharSequence name = "channel-name";//getString(R.string.channel_name);
             String description = "my-channel";//getString(R.string.channel_description);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
+
+            // Disable vibration
+            // Note that we have to set the arg of enableVibration() to true in order to disable
+            // the vibration. See this SO post for more details:
+            // https://stackoverflow.com/questions/46402510/notification-vibrate-issue-for-android-8-0
+            channel.setVibrationPattern(new long[]{ 0 });
+            channel.enableVibration(true);
+
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
