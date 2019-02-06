@@ -277,4 +277,12 @@ public class Playback implements Serializable {
     public ArrayList<String> getMediaFilePathQueue() {
         return mediaFilePathQueue;
     }
+
+    public String getCurrentlyPlayedMediaName() {
+        if(0 <= pointedMediaIndex || pointedMediaIndex < mediaFilePathQueue.size()) {
+            return mediaFilePathQueue.get(pointedMediaIndex);
+        } else {
+            return null;
+        }
+    }
 }

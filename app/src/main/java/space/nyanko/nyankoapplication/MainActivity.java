@@ -216,6 +216,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG,"oSIS");
     }
 
+    /**
+     *
+     *
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // Always call the superclass so it can restore the view hierarchy
@@ -631,6 +637,7 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
             );
 
+            service.updateMediaControls();
             service.showMediaControls();
         }
 

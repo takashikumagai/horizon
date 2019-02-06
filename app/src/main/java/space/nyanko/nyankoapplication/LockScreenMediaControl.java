@@ -67,7 +67,10 @@ class LockScreenMediaControl {
      * @param context
      * @param mediaSession
      */
-    public static void init(Context context, MediaSessionCompat mediaSession) {
+    public static void init(
+            Context context,
+            MediaSessionCompat mediaSession,
+            String contentTitle) {
         Log.d(TAG,"init");
 
         // Token to hand to the builder
@@ -82,7 +85,7 @@ class LockScreenMediaControl {
         .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(1 /* #1: pause button */)
                 .setMediaSession(compatToken))
-        .setContentTitle("Nyanko music")
+        .setContentTitle(contentTitle)
         .setContentText("Nyankolz");
         //.setLargeIcon(albumArtBitmap)
 
@@ -202,6 +205,10 @@ class LockScreenMediaControl {
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    public static Notification getNotification() {
+        return notification;
     }
 }
 

@@ -22,6 +22,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.MediaMetadataCompat.Builder;
 import android.view.KeyEvent;
 import android.util.Log;
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
@@ -235,8 +236,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         if(mediaSession != null) {
             // Init notification/lock screen controls
             LockScreenMediaControl.createNotificationChannel(this);
-
-            LockScreenMediaControl.init(this, mediaSession);
         }
     }
 
@@ -361,6 +360,21 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         mediaSession.setMetadata(metadata);
     }
 
+    private String getMediaTitle(String mediaFilePath) {
+        if(mediaFilePath == null) {
+            return "";
+        }
+
+        File f = new File(mediaFilePath);
+        String title = HorizonUtils.getMediaFileTitle(f);
+        if(title != null && !title.equals("")) {
+            return title;
+        } else {
+            return f.getName();
+        }
+
+    }
+
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
         if(action == ACTION_PLAY_PAUSE) {
@@ -378,12 +392,24 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
             Log.d(TAG,"a:prev");
             if(currentlyPlayed != null) {
                 boolean result = currentlyPlayed.playPrevTrack();
+                updateMediaControls();
+                showMediaControls();
             }
         } else if(action == ACTION_NEXT_TRACK) {
             Log.d(TAG,"a:next");
             if(currentlyPlayed != null) {
                 boolean result = currentlyPlayed.playNextTrack();
+                updateMediaControls();
+                showMediaControls();
             }
+        }
+    }
+
+    public void updateMediaControls() {
+        if(currentlyPlayed != null) {
+            String mediaName = currentlyPlayed.getCurrentlyPlayedMediaName();
+            String title = getMediaTitle(mediaName);
+            LockScreenMediaControl.init(this, mediaSession, title);
         }
     }
 
