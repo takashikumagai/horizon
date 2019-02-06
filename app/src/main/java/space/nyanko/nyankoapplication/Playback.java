@@ -256,6 +256,24 @@ public class Playback implements Serializable {
         playbackPosition = mediaPlayer.getCurrentPosition();
     }
 
+    public void pause() {
+        if(mediaPlayer == null) {
+            return;
+        }
+
+        mediaPlayer.pause();
+        playbackPosition = mediaPlayer.getCurrentPosition();
+    }
+
+    public void resume() {
+        if(mediaPlayer == null) {
+            return;
+        }
+
+        mediaPlayer.seekTo(playbackPosition);
+        mediaPlayer.start();
+    }
+
     public ArrayList<String> getMediaFilePathQueue() {
         return mediaFilePathQueue;
     }

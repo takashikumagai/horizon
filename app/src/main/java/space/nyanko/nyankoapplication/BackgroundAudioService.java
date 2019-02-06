@@ -364,12 +364,26 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
         if(action == ACTION_PLAY_PAUSE) {
+            if(mediaPlayer == null || currentlyPlayed == null) {
+                return;
+            }
+            if(mediaPlayer.isPlaying()) {
+                currentlyPlayed.pause();
+            } else {
+                currentlyPlayed.resume();
+            }
             // Play if track is paused, or pause if it is playing
             Log.d(TAG,"a:p/p");
         } else if(action == ACTION_PREV_TRACK) {
             Log.d(TAG,"a:prev");
+            if(currentlyPlayed != null) {
+                boolean result = currentlyPlayed.playPrevTrack();
+            }
         } else if(action == ACTION_NEXT_TRACK) {
             Log.d(TAG,"a:next");
+            if(currentlyPlayed != null) {
+                boolean result = currentlyPlayed.playNextTrack();
+            }
         }
     }
 
