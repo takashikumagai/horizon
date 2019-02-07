@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * This is called AFTER onCreate() to restore things
      *
      *
      * @param savedInstanceState
