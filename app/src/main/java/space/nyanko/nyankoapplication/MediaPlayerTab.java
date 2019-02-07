@@ -50,4 +50,10 @@ public class MediaPlayerTab implements Serializable {
     public Playback getPlaybackQueue() {
         return playbackQueue;
     }
+
+    public int getViewMode() { return viewMode; }
+
+    public void setViewMode(int mode) {
+        viewMode = mode;
+    }
 }

@@ -250,14 +250,29 @@ public class MainActivity extends AppCompatActivity {
             ));
         }
 
-        if(currentPlayerIndex < mediaPlayerTabs.size()) {
+        if(0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size()) {
             // Set the FS navigator of the currently selected tab
             recyclerViewAdapter.setCurrentFileSystemNavigator(
                     mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
             );
+
+            // Restore the vie mode
+            int viewMode = mediaPlayerTabs.get(currentPlayerIndex).getViewMode();
+            recyclerViewAdapter.setViewMode(viewMode);
+
+            // Show the controls suited for each view mode
+            if(viewMode == 0) {
+                switchToFileSystemView();
+            } else if(viewMode == 1){
+                switchToPlaybackQueueView();
+            } else {
+                Log.e(TAG,"!vM: " + viewMode);
+            }
         }
 
-        //recyclerViewAdapter.notifyDataSetChanged();
+        recyclerViewAdapter.notifyDataSetChanged();
+
+        updateFloatingActionButtonVisibility();
     }
 
     @Override
@@ -462,6 +477,8 @@ public class MainActivity extends AppCompatActivity {
                 super.onBackPressed();
             }
         } else if(viewMode == 1) {
+            // User pressed the back button while the app is in the play queue view mode.
+            // -> Go back to the file system view.
             switchToFileSystemView();
         } else {
             Log.e(TAG,"oBP !!vM");
@@ -652,11 +669,18 @@ public class MainActivity extends AppCompatActivity {
         hidePlayingTrackControl();
         showPlaybackQueueControl();
 
-
         recyclerViewAdapter.setViewMode(1);
 
         recyclerViewAdapter.notifyDataSetChanged();
 
+        if(currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+            Log.d(TAG,"sTFSV !!cPQI");
+        } else {
+            // Save the view mode to the tab instance.
+            // We'll use this info to save the view mode on per-tab basis,
+            // and restore the mode for each tab every time the user swtiches tabs.
+            mediaPlayerTabs.get(currentPlayerIndex).setViewMode(1);
+        }
 //        MediaPlayerTab mediaPlayerTab = getCurrentMediaPlayerTab();
 //        if(mediaPlayerTab != null) {
 //            mediaPlayerTab.setMode(1);
@@ -703,6 +727,14 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * When FAB is clicked, the app
+             * - Collects media files from the current directory
+             * - Puts them in the queue
+             * - Starts playing them
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "fab.oC");
@@ -715,7 +747,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (mediaPlayerTabs.size() <= currentPlayerIndex) {
-                    Log.w(TAG, "fSN.sz<=cPI");
+                    Log.w(TAG, "mPTs.sz<=cPI");
                     return;
                 }
 
@@ -729,11 +761,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if (mediaFiles.size() == 0) {
                     Log.w(TAG, "0!mFs.sz");
-                    return;
-                }
-
-                if (mediaPlayerTabs.size() <= currentPlayerIndex) {
-                    Log.w(TAG, "mPTs.sz<=cPI");
                     return;
                 }
 
@@ -751,7 +778,8 @@ public class MainActivity extends AppCompatActivity {
                 switchToPlaybackQueueView();
 
                 // Update background colors of queued tracks
-                recyclerViewAdapter.notifyDataSetChanged();
+                // This is done in switchToPlaybackQueueView() so commented out.
+                //recyclerViewAdapter.notifyDataSetChanged();
 
                 //if( mediaPlayer != null && mediaPlayer.isPlaying() ) {
                 //    mediaPlayer.stop();
