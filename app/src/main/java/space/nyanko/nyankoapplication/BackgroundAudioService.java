@@ -27,6 +27,14 @@ import java.util.List;
 import java.util.Set;
 
 
+/**
+ * @brief This class manages MediaSession and MediaPlayer, plus a few more
+ *        core componets of the media player app.
+ *
+ *
+ *
+ *
+ */
 public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
     private static final String TAG = "BackgroundAudioService";
@@ -153,6 +161,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
             switch( focusChange ) {
                 case AudioManager.AUDIOFOCUS_LOSS: {
+                    // a loss of audio focus of unknown duration
                     Log.d(TAG,"oAFC AL");
 
                     if( mediaPlayer.isPlaying() ) {
@@ -175,11 +184,16 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                 case AudioManager.AUDIOFOCUS_GAIN: {
                     Log.d(TAG,"oAFC AG");
                     if( mediaPlayer != null ) {
-                        if( !mediaPlayer.isPlaying() ) {
-                            mediaPlayer.start();
-                        }
-                        mediaPlayer.setVolume(1.0f, 1.0f);
+//                        if( !mediaPlayer.isPlaying() ) {
+//                            mediaPlayer.start();
+//                        }
+//                        mediaPlayer.setVolume(1.0f, 1.0f);
                     }
+                    break;
+                }
+                case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT: {
+                    Log.d(TAG,"oAFC AGT");
+                    // Not sure what to do with this one...
                     break;
                 }
             }
@@ -255,6 +269,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
     @Override
     public void onDestroy() {
         Log.d(TAG,"oD");
+
+        unregisterReceiver(noisyReceiver);
+
         self = null;
         super.onDestroy();
     }
@@ -289,6 +306,12 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                 }
 
                 currentlyPlayed.onCompletion(mp);
+
+                // Since the call above usually starts the new track,
+                // we need to update the informaiton (title, album, etc.)
+                // on the notification
+                updateMediaControls();
+                showMediaControls();
             }
         });
 
