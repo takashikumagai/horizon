@@ -92,7 +92,14 @@ public class FileSystemNavigator implements Serializable {
             return -1;
         }
 
-        currentNavigator = navigator.moveToParent();
+        AbstractDirectoryNavigator parent = navigator.moveToParent();
+        if(parent == null) {
+            // Pointing to the root
+            // Returning without setting null to currentNavigator
+            return -1;
+        }
+
+        currentNavigator = parent;
 
         return 0;
     }

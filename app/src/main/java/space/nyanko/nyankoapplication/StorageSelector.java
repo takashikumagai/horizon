@@ -101,8 +101,11 @@ public class StorageSelector extends AbstractDirectoryNavigator {
     public AbstractDirectoryNavigator moveToParent() {
 
         if(childDirectoryNavigator == null) {
-            // device storage is not open yet; storage selector will remain in charge.
-            return this;
+            Log.d(TAG, "!cDN");
+            // device storage is not open yet;
+            // tell the caller that the curosr is pointing to the root
+            // of the navigator system
+            return null;
         } else {
 
             AbstractDirectoryNavigator ret = childDirectoryNavigator.moveToParent();
@@ -110,6 +113,7 @@ public class StorageSelector extends AbstractDirectoryNavigator {
                 return ret;
             } else {
                 // Storage selector will be the current navigator at FileSystemNavigator
+                childDirectoryNavigator = null;
                 return this;
             }
         }

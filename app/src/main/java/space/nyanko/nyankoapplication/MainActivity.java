@@ -159,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
             // swiping it from the task list
             Log.d(TAG,"oC starting service");
             Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
+
+            // Note that there is always only one instance of the service;
+            // multiple calls of startService does not result in multiple instance
+            // of the service.
             startService(serviceIntent);
         }
 
@@ -456,6 +460,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBackPressed() {
+        Log.d(TAG,"oBP");
 
         if(recyclerViewAdapter == null) {
             Log.w(TAG,"rVA");
@@ -467,15 +472,21 @@ public class MainActivity extends AppCompatActivity {
             FileSystemNavigator navigator = getCurrentFileSystemNavigator();
             int ret = navigator.moveToParent();
 
-            // Show/hide FAB depending on whether the directory contains
-            // one or more media files.
-            updateFloatingActionButtonVisibility();
+            if(ret == 0) {
+                // Moved to the parent directory/point
 
-            recyclerViewAdapter.notifyDataSetChanged();
+                // Show/hide FAB depending on whether the directory contains
+                // one or more media files.
+                updateFloatingActionButtonVisibility();
 
-            setSelectedTabLabel(navigator.getCurrentDirectoryName());
+                recyclerViewAdapter.notifyDataSetChanged();
 
-            if (ret != 0) {
+                setSelectedTabLabel(navigator.getCurrentDirectoryName());
+            } else {
+                // We have been already at the root of the tree so
+                // moving up to a parent point never happened
+                // -> Hand over the control to the super class.
+                Log.d(TAG,"s.oBP");
                 super.onBackPressed();
             }
         } else if(viewMode == 1) {
