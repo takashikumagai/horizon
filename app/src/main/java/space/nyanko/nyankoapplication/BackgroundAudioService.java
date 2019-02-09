@@ -268,7 +268,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG,"oD");
+        Log.d(TAG,"onDestroy");
 
         unregisterReceiver(noisyReceiver);
 

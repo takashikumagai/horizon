@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             // Start the main service of the app
             // This service survives even after this activity is destroyed, e.g. by user
             // swiping it from the task list
+            Log.d(TAG,"oC starting service");
             Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
             startService(serviceIntent);
         }
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG,"oD");
+        Log.d(TAG,"oDestroy");
 
         // For now we stop the service so that we can test their behavior from the start
         // every time we close and restart the app
@@ -309,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"R.id.close_tab");
             TabLayout tabLayout = findViewById(R.id.tabLayout);
             int pos = tabLayout.getSelectedTabPosition();
+            Log.d(TAG,"tabpos: " + pos);
             if(pos < 0) {
                 Log.d(TAG,"R.id.ct pos<0");
                 return false;

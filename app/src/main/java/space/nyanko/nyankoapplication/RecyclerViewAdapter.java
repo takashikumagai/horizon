@@ -60,7 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d(TAG,"onCVH");
+        Log.v(TAG,"onCVH");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
@@ -80,7 +80,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public void setFileOrDirectoryToHolder(@NonNull ViewHolder holder, final int position) {
-        Log.d(TAG,"sFODTH");
+        Log.v(TAG,"sFODTH");
         //FileSystemNavigator currentFileSystemNavigator = null;
 
         final int pos = holder.getAdapterPosition();
@@ -117,7 +117,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.fileName.setText(entry.getName());
 
             if(holder.fileTypeIcon != null) {
-                Log.d(TAG,"setting the round icon.");
+                Log.v(TAG,"setting the round icon.");
                 holder.fileTypeIcon.setImageResource(R.drawable.ic_file);
             }
         } else {
@@ -167,7 +167,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 // Do nothing; don't display it unless it's a media file.
             }
             if(holder.fileTypeIcon != null) {
-                Log.d(TAG,"setting the square icon.");
+                Log.v(TAG,"setting the square icon.");
                 holder.fileTypeIcon.setImageResource(R.drawable.ic_file);
             }
         }
