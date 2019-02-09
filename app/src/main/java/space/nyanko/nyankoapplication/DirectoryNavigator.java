@@ -133,23 +133,26 @@ public class DirectoryNavigator extends AbstractDirectoryNavigator {
     public AbstractDirectoryNavigator moveToParent() {
 
         if(currentDirectory == null) {
-            Log.d(TAG,"mTP: !cD");
+            Log.w(TAG,"mTP: !cD");
             return null; // Something is wrong; return to the storage seletor
         }
 
         if(currentDirectory.getPath().equals(baseDeviceDirectory)) {
-            return null; // Return to the storage selector (no error)
+            // Currently at the root and can't go up the tree any more
+            // -> Return null to indicate that control has be handed back
+            // to the storage selector (no error)
+            return null;
         }
 
         String p = currentDirectory.getParent();
         if(p == null) {
-            Log.d(TAG,"!getParent");
+            Log.w(TAG,"!getParent");
             return null; // Something is wrong; return to the storage selector
         }
 
         File to = new File(p);
         if(to == null) {
-            Log.d(TAG,"!to");
+            Log.w(TAG,"!to");
             return null; // Something is wrong; return to the storage selector
         }
 
