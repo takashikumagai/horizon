@@ -311,52 +311,9 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"R.id.action_settings");
             return true;
         } else if(id == R.id.close_tab) {
-            Log.d(TAG,"R.id.close_tab");
-            TabLayout tabLayout = findViewById(R.id.tabLayout);
-            int pos = tabLayout.getSelectedTabPosition();
-            Log.d(TAG,"tabpos: " + pos);
-            if(pos < 0) {
-                Log.d(TAG,"R.id.ct pos<0");
-                return false;
-            }
-            TabLayout.Tab tab = tabLayout.getTabAt(pos);
-            if(tab==null) {
-                Log.d(TAG,"R.id.ct !tab");
-                return false;
-            }
 
-            if(pos < mediaPlayerTabs.size()) {
-                mediaPlayerTabs.remove(pos);
-            } else {
-                Log.w(TAG,"!!!fsn.size");
-            }
+            return closeTab();
 
-            Log.d(TAG,"removing tab");
-            tabLayout.removeTab(tab);
-            // If there are any tab(s) left, onTabSelected has already been invoked
-            Log.d(TAG,"tab removed");
-
-            if(currentPlayerIndex != tabLayout.getSelectedTabPosition()) {
-                Log.w(TAG,"urrentPlayerIndex != tabLayout.getSelectedTabPosition()");
-                currentPlayerIndex = tabLayout.getSelectedTabPosition();
-            }
-
-            if(currentPlayerIndex < mediaPlayerTabs.size()) {
-                Playback.setCurrentPlayer(
-                        mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue());
-            } else {
-                Log.w(TAG,"mPTs.size<=cPI");
-            }
-
-            if(tabLayout.getTabCount() == 0) {
-                Log.d(TAG,"All tabs removed");
-
-                // Notify recycler view adapter because otherwise the file list will remain
-                // as no new tab is selected and as such onTabSelected() is not called.
-                recyclerViewAdapter.notifyDataSetChanged();
-            }
-
-            return true;
         } else if(id == R.id.new_tab) {
             Log.d(TAG,"R.id.new_tab");
             TabLayout tabLayout = findViewById(R.id.tabLayout);
@@ -392,6 +349,55 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean closeTab() {
+        Log.d(TAG,"R.id.close_tab");
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        int pos = tabLayout.getSelectedTabPosition();
+        Log.d(TAG,"tabpos: " + pos);
+        if(pos < 0) {
+            Log.d(TAG,"R.id.ct pos<0");
+            return false;
+        }
+        TabLayout.Tab tab = tabLayout.getTabAt(pos);
+        if(tab==null) {
+            Log.d(TAG,"R.id.ct !tab");
+            return false;
+        }
+
+        if(pos < mediaPlayerTabs.size()) {
+            mediaPlayerTabs.remove(pos);
+        } else {
+            Log.w(TAG,"!!!fsn.size");
+        }
+
+        Log.d(TAG,"removing tab");
+        tabLayout.removeTab(tab);
+        // If there are any tab(s) left, onTabSelected has already been invoked
+        Log.d(TAG,"tab removed");
+
+        if(currentPlayerIndex != tabLayout.getSelectedTabPosition()) {
+            Log.w(TAG,"urrentPlayerIndex != tabLayout.getSelectedTabPosition()");
+            currentPlayerIndex = tabLayout.getSelectedTabPosition();
+        }
+
+        if(currentPlayerIndex < mediaPlayerTabs.size()) {
+            Playback.setCurrentPlayer(
+                    mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue());
+        } else {
+            Log.w(TAG,"mPTs.size<=cPI");
+        }
+
+        if(tabLayout.getTabCount() == 0) {
+            Log.d(TAG,"All tabs removed");
+
+            // Notify recycler view adapter because otherwise the file list will remain
+            // as no new tab is selected and as such onTabSelected() is not called.
+            recyclerViewAdapter.notifyDataSetChanged();
+        }
+
+        return true;
     }
 
     private void initRecyclerView() {
