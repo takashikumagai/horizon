@@ -2,6 +2,7 @@ package space.nyanko.nyankoapplication;
 
 import android.util.Log;
 import android.media.MediaPlayer;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.Serializable;
@@ -48,7 +49,10 @@ public class Playback implements Serializable {
      */
     public ArrayList<String> mediaFilePathQueue = new ArrayList<String>();
 
+    // Views (not serialized)
+    // TODO there has to be a better way to update view from outside the activity
     private transient RecyclerViewAdapter recyclerViewAdapter;
+    private transient TextView playingTrackName;
 
 //    private int tabViewMode = 0;
 
@@ -121,6 +125,11 @@ public class Playback implements Serializable {
             recyclerViewAdapter.notifyDataSetChanged();
         } else {
             Log.e(TAG, "!rVA");
+        }
+
+        if(playingTrackName != null) {
+            File f = new File(mediaFilepath);
+            playingTrackName.setText(f.getName());
         }
     }
 
@@ -225,20 +234,15 @@ public class Playback implements Serializable {
 
     public void onCompletion(MediaPlayer mp) {
         Log.d(TAG,"oC pMI: " + pointedMediaIndex);
-
-        if(currentPlayer==null) {
-            Log.d(TAG,"!cP");
-            return;
-        }
-
-        if(pointedMediaIndex < mediaFilePathQueue.size() - 1) {
-            pointedMediaIndex += 1;
-            startCurrentlyPointedMediaInQueue();
-        }
+        playNextTrack();
     }
 
     public void setRecyclerViewAdapter(RecyclerViewAdapter adapter) {
         recyclerViewAdapter = adapter;
+    }
+
+    public void setPlayingTrackName(TextView view) {
+        playingTrackName = view;
     }
 
     public static void setCurrentPlayer(Playback currentPlayer) {

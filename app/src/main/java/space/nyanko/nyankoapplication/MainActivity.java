@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         hidePlaybackQueueControl();
         hidePlayingTrackControl();
 
-        View playingTrackName = findViewById(R.id.playing_track_name);
+        TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
         playingTrackName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,7 +142,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(savedInstanceState == null) {
             for(int i=0; i<numInitialTabs; i++) {
-                mediaPlayerTabs.get(i).getPlaybackQueue().setRecyclerViewAdapter(recyclerViewAdapter);
+                Playback playbackTracker = mediaPlayerTabs.get(i).getPlaybackQueue();
+                playbackTracker.setRecyclerViewAdapter(recyclerViewAdapter);
+                playbackTracker.setPlayingTrackName(playingTrackName);
             }
             currentPlayerIndex = 0;
             Playback.setCurrentPlayer(
@@ -242,11 +244,14 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!! recyclerViewAdapter !!!!!!!!!!!!!!!!!!!!!!");
         }
 
+        TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
+
         Log.d(TAG,"oRIS mPTs.sz: " + mediaPlayerTabs.size());
         for(MediaPlayerTab mptab: mediaPlayerTabs) {
 
             // recyclerViewAdapter has already been re-created in onCreate()
             mptab.getPlaybackQueue().setRecyclerViewAdapter(recyclerViewAdapter);
+            mptab.getPlaybackQueue().setPlayingTrackName(playingTrackName);
 
             //mptab.getName();
             TabLayout tabLayout = findViewById(R.id.tabLayout);
@@ -344,6 +349,10 @@ public class MainActivity extends AppCompatActivity {
             mediaPlayerTabs.add( new MediaPlayerTab() );
             mediaPlayerTabs.get(mediaPlayerTabs.size()-1).getPlaybackQueue()
                     .setRecyclerViewAdapter(recyclerViewAdapter);
+
+            TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
+            mediaPlayerTabs.get(mediaPlayerTabs.size()-1).getPlaybackQueue()
+                    .setPlayingTrackName(playingTrackName);
 
             return true;
         }
