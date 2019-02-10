@@ -377,24 +377,35 @@ public class MainActivity extends AppCompatActivity {
         // If there are any tab(s) left, onTabSelected has already been invoked
         Log.d(TAG,"tab removed");
 
-        if(currentPlayerIndex != tabLayout.getSelectedTabPosition()) {
-            Log.w(TAG,"urrentPlayerIndex != tabLayout.getSelectedTabPosition()");
-            currentPlayerIndex = tabLayout.getSelectedTabPosition();
+        if(tabLayout.getTabCount() == 0) {
+            Log.d(TAG,"All tabs removed");
+            currentPlayerIndex = -1;
+            Playback.setCurrentPlayer(null);
+
+            recyclerViewAdapter.setCurrentFileSystemNavigator(null);
+            // Notify recycler view adapter because otherwise the file list will remain
+            // as no new tab is selected and as such onTabSelected() is not called.
+            recyclerViewAdapter.notifyDataSetChanged();
+
+            return true;
         }
 
-        if(currentPlayerIndex < mediaPlayerTabs.size()) {
+        int newSelectedTabPosition = tabLayout.getSelectedTabPosition();
+
+        if(newSelectedTabPosition < 0) {
+            Log.d(TAG,"nSTP<0");
+            // There are one or more tabs left but none is selected
+        }
+        else if(currentPlayerIndex != newSelectedTabPosition) {
+            Log.w(TAG,"urrentPlayerIndex != tabLayout.getSelectedTabPosition()");
+            currentPlayerIndex = newSelectedTabPosition;
+        }
+
+        if(0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size()) {
             Playback.setCurrentPlayer(
                     mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue());
         } else {
             Log.w(TAG,"mPTs.size<=cPI");
-        }
-
-        if(tabLayout.getTabCount() == 0) {
-            Log.d(TAG,"All tabs removed");
-
-            // Notify recycler view adapter because otherwise the file list will remain
-            // as no new tab is selected and as such onTabSelected() is not called.
-            recyclerViewAdapter.notifyDataSetChanged();
         }
 
         return true;
@@ -476,7 +487,16 @@ public class MainActivity extends AppCompatActivity {
         int viewMode = recyclerViewAdapter.getViewMode();
         if(viewMode == 0) {
             FileSystemNavigator navigator = getCurrentFileSystemNavigator();
-            int ret = navigator.moveToParent();
+            int ret = 0;
+            if(navigator != null) {
+                // Try moving to the parent point
+                // ret = 0: successfully moved to the parent point
+                // ret = -1: was already at the root point
+                ret = navigator.moveToParent();
+            } else {
+                // This happens when there are no tabs
+                ret = -1;
+            }
 
             if(ret == 0) {
                 // Moved to the parent directory/point
