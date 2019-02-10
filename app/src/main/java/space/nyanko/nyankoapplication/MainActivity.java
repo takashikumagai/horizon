@@ -448,6 +448,7 @@ public class MainActivity extends AppCompatActivity {
 
                 recyclerViewAdapter.setCurrentFileSystemNavigator(
                         mediaPlayerTabs.get(pos).getFileSystemNavigator());
+                recyclerViewAdapter.setViewMode(mediaPlayerTabs.get(pos).getViewMode());
                 recyclerViewAdapter.notifyDataSetChanged();
 
                 Playback.setCurrentPlayer(
@@ -703,6 +704,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void switchToPlaybackQueueView() {
 
+        // Save the view mode
+        mediaPlayerTabs.get(currentPlayerIndex).setViewMode(1);
+
         // Hide the playing track control and show the play queue
         // media control.
         hidePlayingTrackControl();
@@ -730,13 +734,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void switchToFileSystemView() {
 
-        if(currentlyPlayedQueueIndex < 0 || mediaPlayerTabs.size() <= currentlyPlayedQueueIndex) {
-            Log.d(TAG,"sTFSV !!cPQI");
+        if(currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+            Log.d(TAG,"sTFSV !!cPI");
             return;
         }
 
+        // Save the view mode
+        mediaPlayerTabs.get(currentPlayerIndex).setViewMode(0);
+
         Playback playbackQueue
-                = mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue();
+                = mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue();
 
         if(0 < playbackQueue.getMediaFilePathQueue().size()) {
             showPlayingTrackControl();
