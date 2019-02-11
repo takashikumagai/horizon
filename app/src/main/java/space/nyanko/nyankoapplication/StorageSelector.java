@@ -13,10 +13,11 @@ public class StorageSelector extends AbstractDirectoryNavigator {
 
     private static final String TAG = "StorageSelector";
 
-    ArrayList<File> deviceStorageDirectories = new ArrayList<File>();
-    ArrayList<String> names = new ArrayList<String>();
+    private ArrayList<File> deviceStorageDirectories = new ArrayList<File>();
 
-    AbstractDirectoryNavigator childDirectoryNavigator;
+    //private ArrayList<String> names = new ArrayList<String>();
+
+    private AbstractDirectoryNavigator childDirectoryNavigator;
 
     StorageSelector() {
         // This should be unneessary as StorageHelper's getStorages() contains the primary storage.
