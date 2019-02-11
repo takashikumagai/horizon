@@ -417,6 +417,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                 boolean result = currentlyPlayed.playPrevTrack();
                 updateMediaControls();
                 showMediaControls();
+            } else {
+                Log.d(TAG,"a:prev cP!")
             }
         } else if(action == ACTION_NEXT_TRACK) {
             Log.d(TAG,"a:next");
@@ -424,6 +426,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
                 boolean result = currentlyPlayed.playNextTrack();
                 updateMediaControls();
                 showMediaControls();
+            } else {
+                Log.d(TAG,"a:next cP!")
             }
         }
     }
