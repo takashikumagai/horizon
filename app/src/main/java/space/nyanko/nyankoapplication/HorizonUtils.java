@@ -81,7 +81,7 @@ public class HorizonUtils {
      * or null if arg is invalid
      */
     public static HashMap<Integer,String> getMediaFileMetaTags(File f, int[] tags) {
-        Log.d(TAG,"gMFMTs");
+        Log.v(TAG,"gMFMTs");
 
         HashMap<Integer,String> tagMaps = new HashMap<Integer,String>();
 
