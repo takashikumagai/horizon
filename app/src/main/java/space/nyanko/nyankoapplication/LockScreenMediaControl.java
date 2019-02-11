@@ -191,7 +191,7 @@ class LockScreenMediaControl {
             String description = "my-channel";//getString(R.string.channel_description);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDeqscription(description);
+            channel.setDescription(description);
 
             // Disable vibration
             // Note that we have to set the arg of enableVibration() to true in order to disable
