@@ -73,11 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static EmptyClass emptyClass;
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
-
     public MainActivity() {
         super();
         Log.d(TAG,"ctor");
@@ -105,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 switchToPlaybackQueueView();
             }
         });
-        // Example of a call to a native method
-        //TextView tv = (TextView) findViewById(R.id.sample_text);
-        //tv.setText(stringFromJNI());
 
         // Some C/C++ functions access filesystem so request the user file r/w permissions
         requestAppPermissions();
@@ -994,13 +986,4 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawText(text, 0, baseline, paint);
         return image;
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
-    //public native String listDir();
-    //public native String moveToParentDirectory();
-    //public native String getCurrentDirectoryEntries();
 }
