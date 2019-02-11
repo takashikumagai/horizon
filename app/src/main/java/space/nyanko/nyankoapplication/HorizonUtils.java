@@ -13,7 +13,7 @@ import android.media.MediaMetadataRetriever;
 
 public class HorizonUtils {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "HorizonUtils";
 
     public static String getExtension(String fileName) {
         int i = fileName.lastIndexOf('.');
@@ -81,7 +81,7 @@ public class HorizonUtils {
      * or null if arg is invalid
      */
     public static HashMap<Integer,String> getMediaFileMetaTags(File f, int[] tags) {
-        Log.d(TAG,"gMFT");
+        Log.d(TAG,"gMFMTs");
 
         HashMap<Integer,String> tagMaps = new HashMap<Integer,String>();
 
