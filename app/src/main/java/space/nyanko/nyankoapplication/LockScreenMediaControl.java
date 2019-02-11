@@ -32,7 +32,7 @@ class LockScreenMediaControl {
 
     private static final String CHANNEL_ID = "HorizonNotificationChannel";
 
-    private static final int NOTIFICATION_ID = 12345;
+    public static final int NOTIFICATION_ID = 12345;
 
     private static Notification notification;
 
@@ -191,7 +191,7 @@ class LockScreenMediaControl {
             String description = "my-channel";//getString(R.string.channel_description);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
+            channel.setDeqscription(description);
 
             // Disable vibration
             // Note that we have to set the arg of enableVibration() to true in order to disable

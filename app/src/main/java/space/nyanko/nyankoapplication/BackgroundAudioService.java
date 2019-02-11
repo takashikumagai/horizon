@@ -251,6 +251,16 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
             // Init notification/lock screen controls
             LockScreenMediaControl.createNotificationChannel(this);
         }
+
+        // Make this a foreground service
+
+        // We need a notification so just make an empty one for now.
+        LockScreenMediaControl.init(this, mediaSession, "");
+
+        startForeground(
+                LockScreenMediaControl.NOTIFICATION_ID,
+                LockScreenMediaControl.getNotification()
+        );
     }
 
     @Override
@@ -281,13 +291,14 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
         Log.d(TAG,"oTR");
         super.onTaskRemoved(rootIntent);
 
-        hideMediaControls();
+        // Do NOT hide the media controls (notification)
+        //hideMediaControls();
 
         // Stop the service
         // In the debug phase, it's convenient to have the service destroyed every time
         // so that we can get a fresh start every time we run the app.
         // Whether to provide this as an option for the production is a matter of debate.
-        stopSelf();
+        //stopSelf();
     }
 
     public void initMediaPlayer() {

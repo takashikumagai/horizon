@@ -156,16 +156,13 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: do this only once at startup
         if(savedInstanceState == null) {
-            // Start the main service of the app
-            // This service survives even after this activity is destroyed, e.g. by user
-            // swiping it from the task list
-            Log.d(TAG,"oC starting service");
-            Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
-
-            // Note that there is always only one instance of the service;
-            // multiple calls of startService does not result in multiple instance
-            // of the service.
-            startService(serviceIntent);
+            if(BackgroundAudioService.getInstance() == null) {
+                // Start a new service, or restart it.
+                startAudioService();
+            } else {
+                // Could this be possible?
+                Log.d(TAG,"oC service != null");
+            }
         }
 
 //        serviceConnection = new ServiceConnection();
@@ -358,6 +355,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startAudioService() {
+
+        // Start the main service of the app
+        // This service survives even after this activity is destroyed, e.g. by user
+        // swiping it from the task list
+        Log.d(TAG,"sAS starting service");
+        Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
+
+        // Note that there is always only one instance of the service;
+        // multiple calls of startService does not result in multiple instance
+        // of the service.
+        startService(serviceIntent);
     }
 
     private boolean closeTab() {
@@ -661,7 +672,29 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onMediaStartRequestedOnScreen() {
 
-        boolean granted = BackgroundAudioService.getInstance().retrievedAudioFocus();
+        BackgroundAudioService service = BackgroundAudioService.getInstance();
+        if(service == null) {
+            Log.e(TAG,"oMSROS !service");
+            startAudioService();
+            service = BackgroundAudioService.getInstance();
+            if(service == null) {
+                Log.e(TAG,"oMSROS Failed to restart service");
+                return false;
+            }
+
+            // Since we created a service, we have to set the reference to currently played queue.
+            // Since this function is for play request made on screen, we assume that
+            // currently selected tab == playing tab
+            if( 0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size() ) {
+
+                service.setCurrentlyPlayedPlaybackQueue(
+                        mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+                );
+            } else {
+                Log.d(TAG,"oMSROS !cPQI");
+            }
+        }
+        boolean granted = service.retrievedAudioFocus();
         if(!granted) {
             return false;
         }
