@@ -1,3 +1,4 @@
+
 package space.nyanko.nyankoapplication;
 
 import android.Manifest;
@@ -5,7 +6,9 @@ import android.app.PendingIntent;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import androidx.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -32,6 +35,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 @SuppressLint("RestrictedApi")
@@ -64,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     //private ServiceConnection serviceConnection = null;
 
     private static int tabIdCounter = 1000;
+
+    private static final String APPLICATION_STATE_FILE_NAME = "appstate";
 
     public class EmptyClass {
         EmptyClass() {
@@ -110,7 +119,13 @@ public class MainActivity extends AppCompatActivity {
 
         int numInitialTabs = 1;
 
-        if(savedInstanceState == null) {
+        // TODO: do this the first time the user launches the app
+        if(false) {
+
+            // Add an initial tab.
+            // We do this when the user launches the app for the very first time,
+            // or the appstate file was deleted for some reason, e.g. user deleting
+            // it on purpose.
             for(int i=0; i<numInitialTabs; i++) {
                 mediaPlayerTabs.add( new MediaPlayerTab() );
             }
@@ -130,19 +145,56 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        setTabListeners();
-
         if(savedInstanceState == null) {
-            for(int i=0; i<numInitialTabs; i++) {
+
+            // saved state == null: there are a couple of possibilities,
+            // but the states will not be restored via bundle instance and
+            // we are on our own to restore the app state.
+            File f = new File(getFilesDir(), APPLICATION_STATE_FILE_NAME);
+            if(f.exists()) {
+                // De-serialize the app state from file
+                restoreStateFromFile();
+            }
+            Log.d(TAG,"restored: " + currentPlayerIndex);
+            Log.d(TAG,"mptabs: " + mediaPlayerTabs.size());
+
+            // Assuming the all tab are now restored, we set the recycler view
+            // references to playback instances.
+            for(int i=0; i<mediaPlayerTabs.size(); i++) {
                 Playback playbackTracker = mediaPlayerTabs.get(i).getPlaybackQueue();
                 playbackTracker.setRecyclerViewAdapter(recyclerViewAdapter);
                 playbackTracker.setPlayingTrackName(playingTrackName);
             }
-            currentPlayerIndex = 0;
-            Playback.setCurrentPlayer(
-                    mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
-            );
+
+            // Add tablayout tabs
+            for(MediaPlayerTab mptab: mediaPlayerTabs) {
+                TabLayout.Tab newTab = tabLayout.newTab();
+                newTab.setText(mptab.getFileSystemNavigator().getCurrentDirectoryName());
+                Log.d(TAG,"adding tab. index: " + currentPlayerIndex);
+                tabLayout.addTab(newTab);
+            }
+
+            if(0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size()) {
+                Playback.setCurrentPlayer(
+                        mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+                );
+                recyclerViewAdapter.setCurrentFileSystemNavigator(
+                        mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
+                );
+
+                Log.d(TAG,"Selecting a tab: " + currentPlayerIndex);
+                // Select the tab that had been selected before the app was destroyed
+                TabLayout.Tab tab = tabLayout.getTabAt(currentPlayerIndex);
+                tab.select();
+            } else {
+                Log.w(TAG, "oC !cPI: " + currentPlayerIndex);
+            }
         }
+
+        // Call this after tabLayout.addTab() in the block above in order to avoid
+        // the invocation of onTabSelected() as the first tab added via tabLayout.addTab()
+        // becomes the selected tab and it invokes tab listener's onTabSelected callback.
+        setTabListeners();
 
         initPlayQueueMediaControlButtons();
 
@@ -191,6 +243,15 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG,"oDestroy");
 
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        int stateSaved = sharedPref.getInt("state_saved_to_bundle", 0);
+        if(stateSaved == 0) {
+            saveStateToFile();
+        }
+
+        // Reset the flag
+        setStateSavedToBundle(0);
+
         // For now we stop the service so that we can test their behavior from the start
         // every time we close and restart the app
         //Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
@@ -208,6 +269,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Save the view hierarchy
         super.onSaveInstanceState(savedInstanceState);
+
+        setStateSavedToBundle(1);
 
         Log.d(TAG,"oSIS");
     }
@@ -269,7 +332,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        recyclerViewAdapter.notifyDataSetChanged();
+        // Reset the flag
+        // This is needed when onSaveInstanceState is called but onDestroy is not.
+        setStateSavedToBundle(0);
 
         updateFloatingActionButtonVisibility();
     }
@@ -277,13 +342,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG,"oP");
+        Log.d(TAG,"onPause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG,"oR");
+        Log.d(TAG,"onResume");
+
+        // Clear the flag
+        setStateSavedToBundle(0);
+
+        // Update the view (list of files and directories)
+        // Do this both when onRIS is called and is not
+        recyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -361,6 +433,48 @@ public class MainActivity extends AppCompatActivity {
         // multiple calls of startService does not result in multiple instance
         // of the service.
         startService(serviceIntent);
+    }
+
+    private void saveStateToFile() {
+        Log.d(TAG,"saveStateToFile");
+        File file = new File(getFilesDir(), APPLICATION_STATE_FILE_NAME);
+        try {
+            FileOutputStream f = new FileOutputStream(file.getPath());
+            ObjectOutputStream stream = new ObjectOutputStream(f);
+
+            stream.writeInt(currentlyPlayedQueueIndex);
+            stream.writeInt(currentPlayerIndex);
+            stream.writeObject(mediaPlayerTabs);
+
+            stream.close();
+        } catch (Exception e) {
+            Log.e(TAG,e.toString());
+        }
+    }
+
+    private void setStateSavedToBundle(int val) {
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("state_saved_to_bundle",val);
+    }
+
+    private void restoreStateFromFile() {
+        Log.d(TAG,"restoreStateFromFile");
+        File file = new File(getFilesDir(), APPLICATION_STATE_FILE_NAME);
+        try {
+            FileInputStream f = new FileInputStream(file.getPath());
+            ObjectInputStream stream = new ObjectInputStream(f);
+
+            currentlyPlayedQueueIndex = stream.readInt();
+            currentPlayerIndex = stream.readInt();
+            mediaPlayerTabs = (ArrayList<MediaPlayerTab>)stream.readObject();
+            Log.d(TAG,
+                    String.format("cPQI %d, cPI %d",currentlyPlayedQueueIndex,currentPlayerIndex));
+            stream.close();
+        } catch (Exception e) {
+            Log.e(TAG,e.toString());
+        }
     }
 
     private boolean closeTab() {
