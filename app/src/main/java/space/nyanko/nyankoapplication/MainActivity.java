@@ -117,51 +117,42 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         Log.d(TAG,"num tablayout tabs: " + tabLayout.getTabCount());
 
-        int numInitialTabs = 1;
-
-        // TODO: do this the first time the user launches the app
-        if(false) {
-
-            // Add an initial tab.
-            // We do this when the user launches the app for the very first time,
-            // or the appstate file was deleted for some reason, e.g. user deleting
-            // it on purpose.
-            for(int i=0; i<numInitialTabs; i++) {
-                mediaPlayerTabs.add( new MediaPlayerTab() );
-            }
-
-            tabLayout.addTab(tabLayout.newTab().setText(
-                    mediaPlayerTabs.get(0).getFileSystemNavigator().getCurrentDirectoryName()
-            ));
-        }
-
         initRecyclerView();
 
         if(savedInstanceState == null) {
-            if(0 < mediaPlayerTabs.size()) {
-                recyclerViewAdapter.setCurrentFileSystemNavigator(
-                        mediaPlayerTabs.get(0).getFileSystemNavigator()
-                );
-            }
-        }
-
-        if(savedInstanceState == null) {
+            Log.d(TAG,"!sIS");
 
             // saved state == null: there are a couple of possibilities,
             // but the states will not be restored via bundle instance and
             // we are on our own to restore the app state.
             File f = new File(getFilesDir(), APPLICATION_STATE_FILE_NAME);
             if(f.exists()) {
+                Log.d(TAG,"oC apf");
                 // De-serialize the app state from file
                 restoreStateFromFile();
+            } else {
+                Log.d(TAG,"oC !apf " + mediaPlayerTabs.size()); // a sanity check; should be 0
+                // There is no saved state file either;
+                // Add an initial tab.
+                int numInitialTabs = 1;
+
+                // We do this when the user launches the app for the very first time,
+                // or the appstate file was deleted for some reason, e.g. user deleting
+                // it on purpose.
+                mediaPlayerTabs.clear();
+                for(int i=0; i<numInitialTabs; i++) {
+                    mediaPlayerTabs.add( new MediaPlayerTab() );
+                }
+
+                currentPlayerIndex = 0;
             }
             Log.d(TAG,"restored: " + currentPlayerIndex);
             Log.d(TAG,"mptabs: " + mediaPlayerTabs.size());
 
-            // Assuming the all tab are now restored, we set the recycler view
+            // Assuming all tab are now restored, we set the recycler view
             // references to playback instances.
-            for(int i=0; i<mediaPlayerTabs.size(); i++) {
-                Playback playbackTracker = mediaPlayerTabs.get(i).getPlaybackQueue();
+            for(MediaPlayerTab mptab: mediaPlayerTabs) {
+                Playback playbackTracker = mptab.getPlaybackQueue();
                 playbackTracker.setRecyclerViewAdapter(recyclerViewAdapter);
                 playbackTracker.setPlayingTrackName(playingTrackName);
             }
