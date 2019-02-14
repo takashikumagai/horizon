@@ -2,6 +2,13 @@
 
 ./gradlew clean
 
-./gradlew build
+./gradlew build; gradle_return_code=$?
 
-./copy_apks_to_my_device.sh
+# echo Gradle exit code: $gradle_return_code
+
+if [ $gradle_return_code -eq 0 ]
+then
+  ./copy_apks_to_my_device.sh
+else
+  echo Build error(s). Check the error message.
+fi
