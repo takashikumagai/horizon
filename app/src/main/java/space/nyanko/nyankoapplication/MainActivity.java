@@ -74,14 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String APPLICATION_STATE_FILE_NAME = "appstate";
 
-    public class EmptyClass {
-        EmptyClass() {
-            Log.d(TAG,"ctor of EmptyClass");
-        }
-    }
-
-    private static EmptyClass emptyClass;
-
     public MainActivity() {
         super();
         Log.d(TAG,"ctor");
@@ -207,26 +199,6 @@ public class MainActivity extends AppCompatActivity {
 //            ;
 //        }
         //serviceConnection
-
-        View v = findViewById(R.id.new_tab);
-        if(v == null) {
-            Log.d(TAG,"!v");
-        }
-
-        final Button newTabButton = (Button)v;
-        if(newTabButton == null) {
-            Log.d(TAG,"!newTabButton");
-        }
-
-        //newTabButton.setOnClickListener(new View.OnClickListener() {
-        //    public void onClick(View v) {
-        //        Log.d(TAG,"newTabButton.onClick");
-        //    }
-        //});
-
-        if(emptyClass == null) {
-            emptyClass = new EmptyClass();
-        }
     }
 
     @Override
