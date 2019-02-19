@@ -462,4 +462,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
         LockScreenMediaControl.hide(this);
     }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
 }

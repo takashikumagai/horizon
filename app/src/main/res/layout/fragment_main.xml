@@ -51,13 +51,21 @@
         <!--
         This shows the song title/filename currently at the bottom
         -->
+        <LinearLayout
+        <SeekBar
+            android:id="@+id/playing_track_seek_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
         <TextView
             android:id="@+id/playing_track_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/playing_track_play_pause_button"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/playing_track_seek_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             android:padding="1dp"
             android:layout_marginLeft="3dp"
@@ -71,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             app:layout_constraintStart_toEndOf="@id/playing_track_name"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/playing_track_seek_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="||"
         />

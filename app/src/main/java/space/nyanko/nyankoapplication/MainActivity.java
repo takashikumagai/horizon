@@ -14,6 +14,7 @@ import androidx.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import com.google.android.material.tabs.TabLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.SeekBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<MediaPlayerTab> mediaPlayerTabs = new ArrayList<MediaPlayerTab>();
 
     private RecyclerViewAdapter recyclerViewAdapter = null;
+
+    private Handler handler = new Handler();
 
     //private ServiceConnection serviceConnection = null;
 
@@ -199,6 +203,46 @@ public class MainActivity extends AppCompatActivity {
 //            ;
 //        }
         //serviceConnection
+
+        SeekBar s = (SeekBar)findViewById(R.id.playing_track_seek_bar);
+        s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.d(TAG,"sb.oPC: " + seekBar.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG,"sb.onStartTT: " + seekBar.getProgress());
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG,"sb.onStopTT: " + seekBar.getProgress());
+            }
+        });
+
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                BackgroundAudioService service = BackgroundAudioService.getInstance();
+                if(service == null) {
+                    Log.d(TAG, "rout !service");
+                } else {
+                    MediaPlayer mediaPlayer = service.getMediaPlayer();
+                    if(mediaPlayer == null) {
+                        Log.d(TAG, "rout !mP");
+                    } else {
+                        int pos = mediaPlayer.getCurrentPosition();
+                        Log.d(TAG, "rout pos: "+pos);
+                    }
+                }
+
+                // Add this runnable to the message queue
+                handler.postDelayed(this,5000);
+            }
+        });
     }
 
     @Override
