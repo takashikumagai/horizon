@@ -111,4 +111,18 @@ public class HorizonUtils {
                 TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
     }
+
+    public static String millisecondsToHhmmssOrMmss(long milliseconds) {
+        long h = TimeUnit.MILLISECONDS.toHours(milliseconds);
+        long min = TimeUnit.MILLISECONDS.toMinutes(milliseconds)
+                - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds));
+        long s = TimeUnit.MILLISECONDS.toSeconds(milliseconds)
+                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds));
+
+        if(0 < h) {
+            return String.format("%02d:%02d:%02d",h,min,s);
+        } else {
+            return String.format("%02d:%02d",min,s);
+        }
+    }
 }

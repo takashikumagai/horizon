@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerViewAdapter recyclerViewAdapter = null;
 
+    public SeekBar folderViewSeekBar;
+    private boolean isTrackingSeekBar;
+
     private Handler handler = new Handler();
 
     //private ServiceConnection serviceConnection = null;
@@ -204,8 +207,8 @@ public class MainActivity extends AppCompatActivity {
 //        }
         //serviceConnection
 
-        SeekBar s = (SeekBar)findViewById(R.id.playing_track_seek_bar);
-        s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        folderViewSeekBar = (SeekBar)findViewById(R.id.playing_track_seek_bar);
+        folderViewSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Log.d(TAG,"sb.oPC: " + seekBar.getProgress());
@@ -214,11 +217,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 Log.d(TAG,"sb.onStartTT: " + seekBar.getProgress());
+                isTrackingSeekBar = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.d(TAG,"sb.onStopTT: " + seekBar.getProgress());
+                BackgroundAudioService service = BackgroundAudioService.getInstance();
+                if(service != null) {
+                    MediaPlayer mediaPlayer = service.getMediaPlayer();
+                    if(mediaPlayer != null) {
+                        mediaPlayer.seekTo(seekBar.getProgress());
+                    }
+                }
+
+                isTrackingSeekBar = false;
             }
         });
 
@@ -236,11 +249,28 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         int pos = mediaPlayer.getCurrentPosition();
                         Log.d(TAG, "rout pos: "+pos);
+                        TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
+                        String track = playingTrackName.getText().toString()    ;
+                        if(track == null) {
+                            return;
+                        }
+                        int bar = track.indexOf("|");
+                        if(0 < bar && bar < track.length()) {
+                            // Extract the substring after the bar
+                            track = track.substring(bar+1);
+                        }
+
+                        String time = HorizonUtils.millisecondsToHhmmssOrMmss(pos);
+                        playingTrackName.setText(time + "|" + track);
+
+                        if(folderViewSeekBar != null) {
+                            folderViewSeekBar.setProgress(pos);
+                        }
                     }
                 }
 
                 // Add this runnable to the message queue
-                handler.postDelayed(this,5000);
+                handler.postDelayed(this,3000);
             }
         });
     }
@@ -851,7 +881,16 @@ public class MainActivity extends AppCompatActivity {
 
             service.updateMediaControls();
             service.showMediaControls();
+
+            MediaPlayer mediaPlayer = service.getMediaPlayer();
+            if(mediaPlayer == null) {
+                return;
+            }
+
+            folderViewSeekBar.setMax(mediaPlayer.getDuration());
+            folderViewSeekBar.setProgress(mediaPlayer.getCurrentPosition());
         }
+
 
 //        View ptc = findViewById(R.id.playing_track_control);
 //        ptc.setVisibility(View.VISIBLE);
