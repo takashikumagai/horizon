@@ -34,11 +34,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
+    <SeekBar
+        android:id="@+id/playing_track_seek_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintBottom_toTopOf="@id/playing_track_control"
+        />
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/playing_track_control"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:layout_constraintTop_toBottomOf="@id/playing_track_seek_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,14 +60,6 @@
         <!--
         This shows the song title/filename currently at the bottom
         -->
-        <LinearLayout
-        <SeekBar
-            android:id="@+id/playing_track_seek_bar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
         <TextView
             android:id="@+id/playing_track_name"
             android:layout_width="wrap_content"
