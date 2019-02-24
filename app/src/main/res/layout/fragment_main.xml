@@ -109,7 +109,7 @@
                     android:layout_marginLeft="3dp"
                     android:background="#F9F"
                     android:padding="1dp"
-                    android:text="default_text"
+                    android:text="--:-- / --:--"
                     android:textColor="#111"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -147,8 +147,8 @@
 
         <Button
             android:id="@+id/prev_track"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_height="52dp"
             android:text="|◀" />
         <!--Button
             android:layout_width="wrap_content"
@@ -157,14 +157,14 @@
         /-->
         <Button
             android:id="@+id/play_pause_button"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_height="52dp"
             android:text="▶" />
 
         <Button
             android:id="@+id/next_track"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_height="52dp"
             android:text="▶|" />
 
     </LinearLayout>

@@ -445,7 +445,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat {
 
     public void updateMediaControls() {
         if(currentlyPlayed != null) {
-            String mediaName = currentlyPlayed.getCurrentlyPlayedMediaName();
+            String mediaName = currentlyPlayed.getCurrentlyPlayedMediaPath();
             String title = getMediaTitle(mediaName);
             LockScreenMediaControl.init(this, mediaSession, title);
         }

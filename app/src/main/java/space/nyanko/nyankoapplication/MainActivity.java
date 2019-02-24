@@ -74,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
     public SeekBar folderViewSeekBar;
     private boolean isTrackingSeekBar;
 
+    private TextView playingTrackName;
+
+
     private Handler handler = new Handler();
 
     //private ServiceConnection serviceConnection = null;
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         hidePlaybackQueueControl();
         hidePlayingTrackControl();
 
-        TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
+        playingTrackName = (TextView)findViewById(R.id.playing_track_name);
         playingTrackName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,35 +246,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                BackgroundAudioService service = BackgroundAudioService.getInstance();
-                if(service == null) {
-                    Log.d(TAG, "rout !service");
-                } else {
-                    MediaPlayer mediaPlayer = service.getMediaPlayer();
-                    if(mediaPlayer == null) {
-                        Log.d(TAG, "rout !mP");
-                    } else {
-                        int pos = mediaPlayer.getCurrentPosition();
-                        Log.d(TAG, "rout pos: "+pos);
-                        TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
-                        String track = playingTrackName.getText().toString()    ;
-                        if(track == null) {
-                            return;
-                        }
-                        int bar = track.indexOf("|");
-                        if(0 < bar && bar < track.length()) {
-                            // Extract the substring after the bar
-                            track = track.substring(bar+1);
-                        }
-
-                        String time = HorizonUtils.millisecondsToHhmmssOrMmss(pos);
-                        playingTrackName.setText(time + "|" + track);
-
-                        if(folderViewSeekBar != null) {
-                            folderViewSeekBar.setProgress(pos);
-                        }
-                    }
+                MediaPlayer mediaPlayer = getMediaPlayer();
+                if(mediaPlayer == null) {
+                    Log.d(TAG, "rout !mP");
+                    return;
                 }
+
+                updateSeekbarProgressAndTime(mediaPlayer);
 
                 // Add this runnable to the message queue
                 handler.postDelayed(this,3000);
@@ -337,8 +318,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!! recyclerViewAdapter !!!!!!!!!!!!!!!!!!!!!!");
         }
 
-        TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
-
         Log.d(TAG,"oRIS mPTs.sz: " + mediaPlayerTabs.size());
         for(MediaPlayerTab mptab: mediaPlayerTabs) {
 
@@ -378,6 +357,9 @@ public class MainActivity extends AppCompatActivity {
         setStateSavedToBundle(0);
 
         updateFloatingActionButtonVisibility();
+
+        updatePlayingTrackControlPanel(getMediaPlayer());
+        updateSeekbarProgressAndTime(getMediaPlayer());
     }
 
     @Override
@@ -452,7 +434,6 @@ public class MainActivity extends AppCompatActivity {
             mediaPlayerTabs.get(mediaPlayerTabs.size()-1).getPlaybackQueue()
                     .setRecyclerViewAdapter(recyclerViewAdapter);
 
-            TextView playingTrackName = (TextView)findViewById(R.id.playing_track_name);
             mediaPlayerTabs.get(mediaPlayerTabs.size()-1).getPlaybackQueue()
                     .setPlayingTrackName(playingTrackName);
 
@@ -813,10 +794,6 @@ public class MainActivity extends AppCompatActivity {
         return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
-    //public MediaPlayer getMediaPlayer() {
-    //    return mediaPlayer;
-    //}
-
     public boolean onMediaStartRequestedOnScreen() {
 
         BackgroundAudioService service = BackgroundAudioService.getInstance();
@@ -886,18 +863,81 @@ public class MainActivity extends AppCompatActivity {
             service.updateMediaControls();
             service.showMediaControls();
 
-            MediaPlayer mediaPlayer = service.getMediaPlayer();
-            if(mediaPlayer == null) {
-                return;
-            }
-
-            folderViewSeekBar.setMax(mediaPlayer.getDuration());
-            folderViewSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+            updatePlayingTrackControlPanel(getMediaPlayer());
         }
 
 
 //        View ptc = findViewById(R.id.playing_track_control);
 //        ptc.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * @brief Called every second or two to update the seek bar and time display
+     *
+     *
+     *
+     * @param mediaPlayer
+     */
+    public void updateSeekbarProgressAndTime(MediaPlayer mediaPlayer) {
+
+        int pos = mediaPlayer.getCurrentPosition();
+
+        if(folderViewSeekBar != null) {
+            folderViewSeekBar.setProgress(pos);
+        }
+
+        String time = HorizonUtils.millisecondsToHhmmssOrMmss(pos);
+
+        // Update the current position, i.e. the 'AA:AA' part in 'AA:AA / BB:BB'
+        if(folderViewPlayingTrackTime != null) {
+            String text = folderViewPlayingTrackTime.getText().toString();
+            int separator = text.indexOf(" / ");
+            if(0 <= separator) {
+                folderViewPlayingTrackTime.setText(time + text.substring(separator));
+            }
+        }
+    }
+
+    /**
+     * @brief Find better name than 'playing track control panel'
+     *
+     *
+     */
+    public void updatePlayingTrackControlPanel(MediaPlayer mediaPlayer) {
+        Log.d(TAG,"uPTCP");
+
+        int duration = mediaPlayer.getDuration();
+        if(folderViewSeekBar != null) {
+            folderViewSeekBar.setMax(duration);
+        }
+
+        String time = HorizonUtils.millisecondsToHhmmssOrMmss(duration);
+
+        // Update the duration, i.e. the 'BB:BB' part in 'AA:AA / BB:BB'
+        if(folderViewPlayingTrackTime != null) {
+            String text = folderViewPlayingTrackTime.getText().toString();
+            int separator = text.indexOf(" / ");
+            if(0 <= separator) {
+                folderViewPlayingTrackTime.setText(text.substring(0,separator+3) + time);
+            }
+        }
+
+        String name;
+        if(0 <= currentlyPlayedQueueIndex && currentlyPlayedQueueIndex < mediaPlayerTabs.size()) {
+            Playback currentlyPlayed
+                    = mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue();
+            if(currentlyPlayed != null) {
+                name = currentlyPlayed.getCurrentlyPlayedMediaName();
+
+                if(playingTrackName != null && name != null) {
+                    playingTrackName.setText(name);
+                } else {
+                    Log.w(TAG,"uPTCP !pTN");
+                }
+            } else {
+                Log.w(TAG,"uPTCP !cP");
+            }
+        }
     }
 
     public void switchToPlaybackQueueView() {
@@ -1133,6 +1173,16 @@ public class MainActivity extends AppCompatActivity {
         // Show the playing track info and control (pause/resume)
         View ptc = findViewById(R.id.playing_track_control);
         ptc.setVisibility(View.GONE);
+    }
+
+    private MediaPlayer getMediaPlayer() {
+        BackgroundAudioService service = BackgroundAudioService.getInstance();
+        if(service == null) {
+            Log.d(TAG, "gMP !service");
+            return null;
+        }
+
+        return service.getMediaPlayer();
     }
 
     //method to convert your text to image
