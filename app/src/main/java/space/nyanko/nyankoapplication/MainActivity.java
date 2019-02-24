@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerViewAdapter recyclerViewAdapter = null;
 
+    public TextView folderViewPlayingTrackTime;
     public SeekBar folderViewSeekBar;
     private boolean isTrackingSeekBar;
 
@@ -206,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
 //            ;
 //        }
         //serviceConnection
+
+        folderViewPlayingTrackTime
+                = (TextView)findViewById(R.id.playing_track_time);
 
         folderViewSeekBar = (SeekBar)findViewById(R.id.playing_track_seek_bar);
         folderViewSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
