@@ -28,7 +28,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.graphics.Bitmap;
@@ -47,6 +49,26 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+
+    public class MyFabBehavior extends FloatingActionButton.Behavior {
+
+        @Override
+        public boolean onDependentViewChanged(CoordinatorLayout parent,
+                                              FloatingActionButton child,
+                                              View dependency) {
+            Log.d(TAG,"fab_behavior oDVC");
+            return super.onDependentViewChanged(parent,child,dependency);
+        }
+
+        @Override
+        public boolean onLayoutChild(CoordinatorLayout parent,
+                                     FloatingActionButton child,
+                                     int layoutDirection) {
+            Log.d(TAG,"fab_behavior oLC");
+            return super.onLayoutChild(parent,child,layoutDirection);
+        }
+
+    }
 
     /**
      * @brief Index to the tab where a track is playing
@@ -731,6 +753,8 @@ public class MainActivity extends AppCompatActivity {
         if(navigator.isAtLeastOneMediaFilePresent()) {
             Log.d(TAG, "fab visible");
             fab.setVisibility(View.VISIBLE);
+
+            fab.requestLayout();
         } else {
             Log.d(TAG, "fab gone");
             fab.setVisibility(View.GONE);
@@ -1072,6 +1096,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         fab.setImageBitmap(textAsBitmap("▶", 40, Color.WHITE));
+
+        ViewGroup.LayoutParams params = fab.getLayoutParams();
+        Log.v(TAG,"fab layout params: " + params.getClass());
+        CoordinatorLayout.LayoutParams coordinatorLayoutParams
+                = (CoordinatorLayout.LayoutParams)params;
+
+        coordinatorLayoutParams.setBehavior(new MyFabBehavior());
+        if(fab.isInLayout()) {
+            Log.w(TAG,"IS IN LAYOUT");
+        } else {
+            fab.requestLayout();
+        }
 
         fab.setVisibility(View.GONE);
     }
