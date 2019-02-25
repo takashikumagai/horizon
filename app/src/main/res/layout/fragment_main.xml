@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/lightblue"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/playback_control"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recycler_view">
@@ -133,7 +133,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/playback_control"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/orange"
         android:gravity="center"
@@ -143,7 +143,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler_view">
+        app:layout_constraintTop_toBottomOf="@id/playing_track_control">
 
         <Button
             android:id="@+id/prev_track"
