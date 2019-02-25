@@ -374,8 +374,7 @@ object StorageHelper {
             USB
         }
 
-        @Override
-        fun hashCode(): Int {
+        override fun hashCode(): Int {
             val prime = 31
             var result = 1
             result = prime * result + if (file == null) 0 else file!!.hashCode()
@@ -388,8 +387,7 @@ object StorageHelper {
          *
          * @see Object.equals
          */
-        @Override
-        fun equals(obj: Object?): Boolean {
+        override fun equals(obj: Object?): Boolean {
             if (obj === this) {
                 return true
             }
@@ -405,8 +403,7 @@ object StorageHelper {
             } else file!!.equals(other!!.file)
         }
 
-        @Override
-        fun toString(): String {
+        override fun toString(): String {
             return (file!!.getAbsolutePath() + (if (isReadOnly) " ro " else " rw ") + type + (if (isRemovable) " R " else "")
                     + (if (isEmulated) " E " else "") + fileSystem)
         }

@@ -11,21 +11,17 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
     private var currentDirectory: File? = null
 
-    @get:Override
-    var currentDirectoryEntries: ArrayList<File>? = ArrayList()
-        private set
+    override var currentDirectoryEntries: ArrayList<File>? = ArrayList()
 
     val isValid: Boolean
         get() = currentDirectory != null
 
-    val currentDirectoryName: String
-        @Override
+    override val currentDirectoryName: String
         get() = currentDirectory!!.getName()
 
-    val isAtLeastOneMediaFilePresent: Boolean
-        @Override
+    override val isAtLeastOneMediaFilePresent: Boolean
         get() {
-            Log.d(TAG, "iALOMFP: " + currentDirectoryEntries!!.size())
+            Log.d(TAG, "iALOMFP: " + currentDirectoryEntries!!.size)
             for (entry in currentDirectoryEntries!!) {
                 if (HorizonUtils.isMediaFile(entry.getName())) {
                     return true
@@ -41,7 +37,6 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
         if (currentDirectory == null) {
             Log.d(TAG, "ctor: cD!")
-            return
         }
 
         updateCurrentDirectoryEntries()
@@ -104,8 +99,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
     //        return 0;
     //    }
 
-    @Override
-    fun moveToChild(pos: Int): AbstractDirectoryNavigator? {
+    override fun moveToChild(pos: Int): AbstractDirectoryNavigator? {
 
         if (currentDirectory == null) {
             Log.d(TAG, "!cD")
@@ -117,7 +111,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
             return null
         }
 
-        if (pos < 0 || currentDirectoryEntries!!.size() <= pos) {
+        if (pos < 0 || currentDirectoryEntries!!.size <= pos) {
             Log.d(TAG, "invalid pos")
             return null
         }
@@ -131,8 +125,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
     }
 
 
-    @Override
-    fun moveToParent(): AbstractDirectoryNavigator? {
+    override fun moveToParent(): AbstractDirectoryNavigator? {
 
         if (currentDirectory == null) {
             Log.w(TAG, "mTP: !cD")

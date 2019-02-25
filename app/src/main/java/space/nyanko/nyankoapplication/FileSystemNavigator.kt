@@ -16,14 +16,14 @@ class FileSystemNavigator : Serializable {
 
     internal val currentDirectoryName: String
         get() = if (currentNavigator != null) {
-            currentNavigator!!.getCurrentDirectoryName()
+            currentNavigator!!.currentDirectoryName
         } else {
             ""
         }
 
     internal val currentDirectoryEntries: ArrayList<File>?
         get() = if (currentNavigator != null) {
-            currentNavigator!!.getCurrentDirectoryEntries()
+            currentNavigator!!.currentDirectoryEntries
         } else {
             null
         }
@@ -32,7 +32,7 @@ class FileSystemNavigator : Serializable {
         get() {
 
             if (currentNavigator != null) {
-                val entries = currentNavigator!!.getCurrentDirectoryEntries()
+                val entries = currentNavigator!!.currentDirectoryEntries
                 if (entries != null) {
                     return entries!!.size()
                 }

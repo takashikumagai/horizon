@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     private val currentFileSystemNavigator: FileSystemNavigator?
         get() {
 
-            if (currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+            if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
                 Log.w(TAG, "invalid cFSNI")
                 return null
             }
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
             val tabLayout = findViewById(R.id.tabLayout) ?: return null
             val pos = tabLayout!!.getSelectedTabPosition()
-            if (pos < 0 || mediaPlayerTabs.size() <= pos) {
+            if (pos < 0 || mediaPlayerTabs.size <= pos) {
                 Log.d(TAG, "pos<0")
                 return null
             } else {
@@ -126,16 +126,14 @@ class MainActivity : AppCompatActivity() {
 
     inner class MyFabBehavior : FloatingActionButton.Behavior() {
 
-        @Override
-        fun onDependentViewChanged(parent: CoordinatorLayout,
+        override fun onDependentViewChanged(parent: CoordinatorLayout,
                                    child: FloatingActionButton,
                                    dependency: View): Boolean {
             Log.d(TAG, "fab_behavior oDVC")
             return super.onDependentViewChanged(parent, child, dependency)
         }
 
-        @Override
-        fun onLayoutChild(parent: CoordinatorLayout,
+        override fun onLayoutChild(parent: CoordinatorLayout,
                           child: FloatingActionButton,
                           layoutDirection: Int): Boolean {
             Log.d(TAG, "fab_behavior oLC")
@@ -148,8 +146,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "ctor")
     }
 
-    @Override
-    protected fun onCreate(savedInstanceState: Bundle?) {
+    override protected fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "s.oC")
         super.onCreate(savedInstanceState)
         Log.d(TAG, "oC")
@@ -164,8 +161,7 @@ class MainActivity : AppCompatActivity() {
 
         playingTrackName = findViewById(R.id.playing_track_name) as TextView
         playingTrackName!!.setOnClickListener(object : View.OnClickListener() {
-            @Override
-            fun onClick(view: View) {
+            override fun onClick(view: View) {
                 Log.d(TAG, "oC")
                 switchToPlaybackQueueView()
             }
@@ -174,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         // Some C/C++ functions access filesystem so request the user file r/w permissions
         requestAppPermissions()
 
-        Log.d(TAG, "num mptabs: " + mediaPlayerTabs.size())
+        Log.d(TAG, "num mptabs: " + mediaPlayerTabs.size)
         val tabLayout = findViewById(R.id.tabLayout)
         Log.d(TAG, "num tablayout tabs: " + tabLayout.getTabCount())
 
@@ -192,7 +188,7 @@ class MainActivity : AppCompatActivity() {
                 // De-serialize the app state from file
                 restoreStateFromFile()
             } else {
-                Log.d(TAG, "oC !apf " + mediaPlayerTabs.size()) // a sanity check; should be 0
+                Log.d(TAG, "oC !apf " + mediaPlayerTabs.size) // a sanity check; should be 0
                 // There is no saved state file either;
                 // Add an initial tab.
                 val numInitialTabs = 1
@@ -208,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                 currentPlayerIndex = 0
             }
             Log.d(TAG, "restored: $currentPlayerIndex")
-            Log.d(TAG, "mptabs: " + mediaPlayerTabs.size())
+            Log.d(TAG, "mptabs: " + mediaPlayerTabs.size)
 
             // Assuming all tab are now restored, we set the recycler view
             // references to playback instances.
@@ -226,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                 tabLayout.addTab(newTab)
             }
 
-            if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size()) {
+            if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
                 Playback.setCurrentPlayer(
                         mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
                 )
@@ -273,19 +269,16 @@ class MainActivity : AppCompatActivity() {
 
         folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
         folderViewSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener() {
-            @Override
-            fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 Log.d(TAG, "sb.oPC: " + seekBar.getProgress())
             }
 
-            @Override
-            fun onStartTrackingTouch(seekBar: SeekBar) {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
                 Log.d(TAG, "sb.onStartTT: " + seekBar.getProgress())
                 isTrackingSeekBar = true
             }
 
-            @Override
-            fun onStopTrackingTouch(seekBar: SeekBar) {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
                 Log.d(TAG, "sb.onStopTT: " + seekBar.getProgress())
                 val service = BackgroundAudioService.getInstance()
                 if (service != null) {
@@ -301,8 +294,7 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread(object : Runnable() {
 
-            @Override
-            fun run() {
+            override fun run() {
                 val mediaPlayer = mediaPlayer
                 if (mediaPlayer == null) {
                     Log.d(TAG, "rout !mP")
@@ -317,8 +309,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    @Override
-    fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "oDestroy")
 
@@ -339,8 +330,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    @Override
-    protected fun onSaveInstanceState(savedInstanceState: Bundle) {
+    override protected fun onSaveInstanceState(savedInstanceState: Bundle) {
 
         savedInstanceState.putSerializable("mediaPlayerTabs", mediaPlayerTabs)
         savedInstanceState.putInt("currentPlayerIndex", currentPlayerIndex)
@@ -360,8 +350,7 @@ class MainActivity : AppCompatActivity() {
      *
      * @param savedInstanceState
      */
-    @Override
-    fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState)
 
@@ -375,7 +364,7 @@ class MainActivity : AppCompatActivity() {
             Log.e(TAG, "!!!!!!!!!!!!!!!!!!!!!! recyclerViewAdapter !!!!!!!!!!!!!!!!!!!!!!")
         }
 
-        Log.d(TAG, "oRIS mPTs.sz: " + mediaPlayerTabs.size())
+        Log.d(TAG, "oRIS mPTs.sz: " + mediaPlayerTabs.size)
         for (mptab in mediaPlayerTabs) {
 
             // recyclerViewAdapter has already been re-created in onCreate()
@@ -389,7 +378,7 @@ class MainActivity : AppCompatActivity() {
             ))
         }
 
-        if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size()) {
+        if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
             // Set the FS navigator of the currently selected tab
             recyclerViewAdapter!!.setCurrentFileSystemNavigator(
                     mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
@@ -419,14 +408,12 @@ class MainActivity : AppCompatActivity() {
         updateSeekbarProgressAndTime(mediaPlayer)
     }
 
-    @Override
-    fun onPause() {
+    override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause")
     }
 
-    @Override
-    fun onResume() {
+    override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
 
@@ -438,15 +425,13 @@ class MainActivity : AppCompatActivity() {
         recyclerViewAdapter!!.notifyDataSetChanged()
     }
 
-    @Override
-    fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu)
         return true
     }
 
-    @Override
-    fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -488,10 +473,10 @@ class MainActivity : AppCompatActivity() {
             // Add an FS navigator and a player
 
             mediaPlayerTabs.add(MediaPlayerTab())
-            mediaPlayerTabs.get(mediaPlayerTabs.size() - 1).getPlaybackQueue()
+            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).getPlaybackQueue()
                     .setRecyclerViewAdapter(recyclerViewAdapter)
 
-            mediaPlayerTabs.get(mediaPlayerTabs.size() - 1).getPlaybackQueue()
+            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).getPlaybackQueue()
                     .setPlayingTrackName(playingTrackName)
 
             return true
@@ -573,7 +558,7 @@ class MainActivity : AppCompatActivity() {
             return false
         }
 
-        if (pos < mediaPlayerTabs.size()) {
+        if (pos < mediaPlayerTabs.size) {
             mediaPlayerTabs.remove(pos)
         } else {
             Log.w(TAG, "!!!fsn.size")
@@ -607,7 +592,7 @@ class MainActivity : AppCompatActivity() {
             currentPlayerIndex = newSelectedTabPosition
         }
 
-        if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size()) {
+        if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
             Playback.setCurrentPlayer(
                     mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue())
         } else {
@@ -629,12 +614,11 @@ class MainActivity : AppCompatActivity() {
     private fun setTabListeners() {
         val tabLayout = findViewById(R.id.tabLayout)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener() {
-            @Override
-            fun onTabSelected(tab: TabLayout.Tab) {
+            override fun onTabSelected(tab: TabLayout.Tab) {
                 val pos = tab.getPosition()
                 Log.d(TAG, "onTabSelected called: " + tab.getText() + " (pos: " + pos + ")")
 
-                if (pos < 0 || mediaPlayerTabs.size() <= pos) {
+                if (pos < 0 || mediaPlayerTabs.size <= pos) {
                     Log.w(TAG, "oTS: invalid tab pos")
                     return
                 }
@@ -652,15 +636,13 @@ class MainActivity : AppCompatActivity() {
                 //              switchTab(pos);
             }
 
-            @Override
-            fun onTabUnselected(tab: TabLayout.Tab) {
+            override fun onTabUnselected(tab: TabLayout.Tab) {
                 val pos = tab.getPosition()
                 Log.d(TAG, "onTabUnselected called: " + tab.getText() + " (pos: " + pos + ")")
 
             }
 
-            @Override
-            fun onTabReselected(tab: TabLayout.Tab) {
+            override fun onTabReselected(tab: TabLayout.Tab) {
                 val pos = tab.getPosition()
                 Log.d(TAG, "onTabReselected called: " + tab.getText() + " (pos: " + pos + ")")
 
@@ -733,7 +715,7 @@ class MainActivity : AppCompatActivity() {
 
     fun updateFloatingActionButtonVisibility() {
         val index = currentPlayerIndex
-        if (index < 0 || mediaPlayerTabs.size() <= index) {
+        if (index < 0 || mediaPlayerTabs.size <= index) {
             Log.d(TAG, "uFABV !i$index")
             return
         }
@@ -768,7 +750,7 @@ class MainActivity : AppCompatActivity() {
 
         val tabLayout = findViewById(R.id.tabLayout)
         val tabPos = tabLayout.getSelectedTabPosition()
-        if (tabPos < 0 || mediaPlayerTabs.size() <= tabPos) {
+        if (tabPos < 0 || mediaPlayerTabs.size <= tabPos) {
             return 0
         }
 
@@ -826,7 +808,7 @@ class MainActivity : AppCompatActivity() {
             // Since we created a service, we have to set the reference to currently played queue.
             // Since this function is for play request made on screen, we assume that
             // currently selected tab == playing tab
-            if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size()) {
+            if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
 
                 service!!.setCurrentlyPlayedPlaybackQueue(
                         mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
@@ -843,7 +825,7 @@ class MainActivity : AppCompatActivity() {
         if (currentlyPlayedQueueIndex != currentPlayerIndex) {
             // currently played tab != selected tab.
             if (0 <= currentlyPlayedQueueIndex) {
-                if (currentlyPlayedQueueIndex < mediaPlayerTabs.size()) {
+                if (currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
                     mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
                             .saveCurrentPlaybackPosition()
                 } else {
@@ -857,7 +839,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onMediaStartedOnScreen() {
 
-        if (currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+        if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
             Log.w(TAG, "cPI: $currentPlayerIndex")
             return
         }
@@ -938,7 +920,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val name: String?
-        if (0 <= currentlyPlayedQueueIndex && currentlyPlayedQueueIndex < mediaPlayerTabs.size()) {
+        if (0 <= currentlyPlayedQueueIndex && currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
             val currentlyPlayed = mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
             if (currentlyPlayed != null) {
                 name = currentlyPlayed!!.getCurrentlyPlayedMediaName()
@@ -968,7 +950,7 @@ class MainActivity : AppCompatActivity() {
 
         recyclerViewAdapter!!.notifyDataSetChanged()
 
-        if (currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+        if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
             Log.d(TAG, "sTFSV !!cPQI")
         } else {
             // Save the view mode to the tab instance.
@@ -986,7 +968,7 @@ class MainActivity : AppCompatActivity() {
 
     fun switchToFileSystemView() {
 
-        if (currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+        if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
             Log.d(TAG, "sTFSV !!cPI")
             return
         }
@@ -996,7 +978,7 @@ class MainActivity : AppCompatActivity() {
 
         val playbackQueue = mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
 
-        if (0 < playbackQueue.getMediaFilePathQueue().size()) {
+        if (0 < playbackQueue.getMediaFilePathQueue().size) {
             showPlayingTrackControl()
         }
         hidePlaybackQueueControl()
@@ -1028,8 +1010,7 @@ class MainActivity : AppCompatActivity() {
              * - Starts playing them
              * @param view
              */
-            @Override
-            fun onClick(view: View) {
+            override fun onClick(view: View) {
                 Log.d(TAG, "fab.oC")
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show()
@@ -1039,7 +1020,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                if (mediaPlayerTabs.size() <= currentPlayerIndex) {
+                if (mediaPlayerTabs.size <= currentPlayerIndex) {
                     Log.w(TAG, "mPTs.sz<=cPI")
                     return
                 }
@@ -1049,9 +1030,9 @@ class MainActivity : AppCompatActivity() {
 
                 // Put all the media files in the current directory to the queue and start playing
                 val mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs)
-                Log.d(TAG, "mFs.sz: " + mediaFiles.size())
+                Log.d(TAG, "mFs.sz: " + mediaFiles.size)
 
-                if (mediaFiles.size() === 0) {
+                if (mediaFiles.size === 0) {
                     Log.w(TAG, "0!mFs.sz")
                     return
                 }
@@ -1104,8 +1085,7 @@ class MainActivity : AppCompatActivity() {
 
         btn!!.setOnClickListener(
                 object : View.OnClickListener() {
-                    @Override
-                    fun onClick(view: View) {
+                    override fun onClick(view: View) {
                         Log.d(TAG, "btn pressed (play/pause)")
                         val self = view as Button//findViewById(R.id.play_pause);
 
@@ -1139,12 +1119,11 @@ class MainActivity : AppCompatActivity() {
 
         prevTrackBtn!!.setOnClickListener(
                 object : View.OnClickListener() {
-                    @Override
-                    fun onClick(view: View) {
+                    override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (prev)")
                         val self = view as Button
 
-                        if (currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+                        if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
                             return
                         }
 
@@ -1163,12 +1142,11 @@ class MainActivity : AppCompatActivity() {
 
         nextTrackBtn!!.setOnClickListener(
                 object : View.OnClickListener() {
-                    @Override
-                    fun onClick(view: View) {
+                    override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (next)")
                         val self = view as Button
 
-                        if (currentPlayerIndex < 0 || mediaPlayerTabs.size() <= currentPlayerIndex) {
+                        if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
                             return
                         }
 

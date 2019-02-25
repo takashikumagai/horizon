@@ -39,7 +39,6 @@ class RecyclerViewAdapter(
     internal var viewMode = 0
 
     val itemCount: Int
-        @Override
         get() {
 
             if (viewMode == 0) {
@@ -71,15 +70,13 @@ class RecyclerViewAdapter(
     }
 
     @NonNull
-    @Override
-    fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ViewHolder {
         Log.v(TAG, "onCVH")
         val view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false)
         return ViewHolder(view)
     }
 
-    @Override
-    fun onBindViewHolder(@NonNull holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(@NonNull holder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder: called.")
 
         if (viewMode == 0) {
@@ -182,8 +179,7 @@ class RecyclerViewAdapter(
         val navigator = currentFileSystemNavigator
 
         holder.parentLayout.setOnClickListener(object : View.OnClickListener() {
-            @Override
-            fun onClick(view: View) {
+            override fun onClick(view: View) {
                 Log.d(TAG, "onClick: clicked")
 
                 Toast.makeText(mContext, entry!!.getName(), Toast.LENGTH_SHORT).show()

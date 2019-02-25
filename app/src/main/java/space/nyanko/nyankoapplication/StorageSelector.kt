@@ -64,8 +64,7 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
         //}
     }
 
-    @Override
-    fun moveToChild(pos: Int): AbstractDirectoryNavigator? {
+    override fun moveToChild(pos: Int): AbstractDirectoryNavigator? {
 
         if (pos < 0 || currentDirectoryEntries.size() <= pos) {
             Log.d(TAG, "invalid pos")
@@ -94,8 +93,7 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
         return childDirectoryNavigator
     }
 
-    @Override
-    fun moveToParent(): AbstractDirectoryNavigator? {
+    override fun moveToParent(): AbstractDirectoryNavigator? {
 
         if (childDirectoryNavigator == null) {
             Log.d(TAG, "!cDN")

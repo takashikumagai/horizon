@@ -61,7 +61,7 @@ class Playback : Serializable {
 
     val currentlyPlayedMediaPath: String?
         get() {
-            if (0 <= pointedMediaIndex && pointedMediaIndex < mediaFilePathQueue.size()) {
+            if (0 <= pointedMediaIndex && pointedMediaIndex < mediaFilePathQueue.size) {
                 val f = File(mediaFilePathQueue.get(pointedMediaIndex))
                 return if (f != null) {
                     f.getPath()
@@ -93,7 +93,7 @@ class Playback : Serializable {
             return
         }
 
-        if (mediaFilePathQueue.size() <= pointedMediaIndex) {
+        if (mediaFilePathQueue.size <= pointedMediaIndex) {
             Log.d(TAG, "q.size<=pMI")
             return
         }
@@ -154,7 +154,7 @@ class Playback : Serializable {
         if (pointedMediaIndex < 0) {
             return false
         }
-        if (mediaFilePathQueue.size() - 1 <= pointedMediaIndex) {
+        if (mediaFilePathQueue.size - 1 <= pointedMediaIndex) {
             return false
         }
 
@@ -167,12 +167,12 @@ class Playback : Serializable {
 
     fun addToQueue(mediaFilePath: String) {
         Log.d(TAG, "addToQueue")
-        if (500 <= mediaFilePathQueue.size()) {
+        if (500 <= mediaFilePathQueue.size) {
             Log.w(TAG, "Too many songs/vids in the queue (they reached 500).")
         }
         mediaFilePathQueue.add(mediaFilePath)
 
-        if (mediaFilePathQueue.size() === 1) {
+        if (mediaFilePathQueue.size === 1) {
             // Queue just got one media file; point to it
             pointedMediaIndex = 0
         }
@@ -183,12 +183,12 @@ class Playback : Serializable {
             mediaFilePathQueue.add(file.getPath())
         }
 
-        if (0 < mediaFiles.size() && pointedMediaIndex == -1) {
+        if (0 < mediaFiles.size && pointedMediaIndex == -1) {
             pointedMediaIndex = 0
         }
     }
     //    public void startFirstInQueue() {
-    //        if(mediaFilePathQueue.size() == 0) {
+    //        if(mediaFilePathQueue.size == 0) {
     //            Log.d(TAG, "queue is empty");
     //            return;
     //        }
@@ -202,7 +202,7 @@ class Playback : Serializable {
      * Note that this function removes the first eleemnt from the queue
      */
     //    public void startNextInQueue() {
-    //        if(mediaFilePathQueue.size() == 0) {
+    //        if(mediaFilePathQueue.size == 0) {
     //            return;
     //        }
     //
@@ -213,7 +213,7 @@ class Playback : Serializable {
     //    }
 
     fun isPointed(filePath: String): Boolean {
-        if (pointedMediaIndex < 0 || mediaFilePathQueue.size() <= pointedMediaIndex) {
+        if (pointedMediaIndex < 0 || mediaFilePathQueue.size <= pointedMediaIndex) {
             return false
         }
 

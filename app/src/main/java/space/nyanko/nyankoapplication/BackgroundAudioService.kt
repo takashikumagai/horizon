@@ -53,8 +53,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     private var mediaSessionCallback: MyMediaSessionCallback? = null
 
     private val noisyReceiver = object : BroadcastReceiver() {
-        @Override
-        fun onReceive(context: Context, intent: Intent) {
+        override fun onReceive(context: Context, intent: Intent) {
             Log.d(TAG, "oR")
             //if( mMediaPlayer != null && mMediaPlayer.isPlaying() ) {
             //    mMediaPlayer.pause();
@@ -64,13 +63,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     internal inner class MyMediaSessionCallback : MediaSessionCompat.Callback(), AudioManager.OnAudioFocusChangeListener {
 
-        @Override
-        fun onPrepare() {
+        override fun onPrepare() {
             Log.d(TAG, "oP")
         }
 
-        @Override
-        fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
+        override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
             super.onMediaButtonEvent(mediaButtonEvent)
             Log.d(TAG, "oMBE: " + mediaButtonEvent.toString())
             val extras = mediaButtonEvent.getExtras()
@@ -81,7 +78,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 for (key in extras!!.keySet()) {
                     val value = extras!!.get(key)
                     Log.d(TAG, String.format("%s %s (%s)",
-                            key, value.toString(), value.getClass().getName()))
+                            key, value.toString(), value.javaClass.getName()))
                 }
                 val obj = extras!!.get("android.intent.extra.KEY_EVENT")
                 if (obj == null) {
@@ -110,14 +107,12 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             return super.onMediaButtonEvent(mediaButtonEvent)
         }
 
-        @Override
-        fun onPause() {
+        override fun onPause() {
             Log.d(TAG, "onPause")
             super.onPause()
         }
 
-        @Override
-        fun onPlay() {
+        override fun onPlay() {
             Log.d(TAG, "onPlay")
             super.onPlay()
             if (!retrievedAudioFocus()) {
@@ -125,20 +120,17 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             }
         }
 
-        @Override
-        fun onStop() {
+        override fun onStop() {
             Log.d(TAG, "onStop")
             super.onStop()
         }
 
-        @Override
-        fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
+        override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.d(TAG, "oPFMI: $mediaId")
             super.onPlayFromMediaId(mediaId, extras)
         }
 
-        @Override
-        fun onAudioFocusChange(focusChange: Int) {
+        override fun onAudioFocusChange(focusChange: Int) {
             Log.d(TAG, "oAFC: $focusChange")
 
             //MediaPlayer mediaPlayer = Playback.getMediaPlayer();
@@ -187,7 +179,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         Log.d(TAG, "ctor")
     }
 
-    fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): MediaBrowserServiceCompat.BrowserRoot? {
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): MediaBrowserServiceCompat.BrowserRoot? {
         return null
     }
 
@@ -199,8 +191,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         currentlyPlayed = playedPlaybackQueue
     }
 
-    @Override
-    fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle): BrowserRoot? {
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle): BrowserRoot? {
         return if (TextUtils.equals(clientPackageName, getPackageName())) {
             BrowserRoot(getString(R.string.app_name), null)
         } else null
@@ -208,13 +199,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     }
 
     // Not important for general audio service, required for class
-    @Override
-    fun onLoadChildren(parentId: String, result: Result<List<MediaBrowserCompat.MediaItem>>) {
+    override fun onLoadChildren(parentId: String, result: Result<List<MediaBrowserCompat.MediaItem>>) {
         result.sendResult(null)
     }
 
-    @Override
-    fun onCreate() {
+    override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "oC")
 
@@ -244,8 +233,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         )
     }
 
-    @Override
-    fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d(TAG, "oSC: $flags, $startId")
         val keyEvent = MediaButtonReceiver.handleIntent(mediaSession, intent)
 
@@ -257,8 +245,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    @Override
-    fun onDestroy() {
+    override fun onDestroy() {
         Log.d(TAG, "onDestroy")
 
         unregisterReceiver(noisyReceiver)
@@ -267,8 +254,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         super.onDestroy()
     }
 
-    @Override
-    fun onTaskRemoved(rootIntent: Intent) {
+    override fun onTaskRemoved(rootIntent: Intent) {
         Log.d(TAG, "oTR")
         super.onTaskRemoved(rootIntent)
 
