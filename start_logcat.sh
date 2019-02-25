@@ -6,6 +6,7 @@ echo $resuslt
 # Connect to the device first if it's not already connected.
 if [ "$result" = "2" ]; then
   # 'adb decices' printed only 2 lines -> there is currently no device connected.
+  echo "Connecting to the device"
   ./reconnect.sh
 fi
 
