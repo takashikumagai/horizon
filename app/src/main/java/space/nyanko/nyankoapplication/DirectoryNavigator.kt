@@ -65,14 +65,14 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
         }
         Log.d(TAG, "names (" + fileList!!.size + "): " + names)
 
-        var entries = fileList//ArrayList<File>(Arrays.asList(fileList))
+        var entries = fileList
 
+        val filtered = ArrayList<File>()
         val displayOnlyMediaFiles = true
         if (displayOnlyMediaFiles) {
             // Filter file list. Note that after this 'entries' contains directories
             // and media files.
 
-            val filtered = ArrayList<File>()
 
             // Gave up on using lambda because of this error:
             // Error: Call requires API level 24 (current min is 19): java.util.ArrayList#removeIf [NewApi]
@@ -82,15 +82,13 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
                     filtered.add(fileOrDir)
                 }
             }
-
-            entries = filtered
         }
 
         // Sort the files and directories inside the current directory
         // Note that each element of entries can be a file or a directory.
-        Collections.sort(entries)
+        Collections.sort(filtered)
 
-        currentDirectoryEntries = entries
+        currentDirectoryEntries = filtered
     }
 
     //    @Override
