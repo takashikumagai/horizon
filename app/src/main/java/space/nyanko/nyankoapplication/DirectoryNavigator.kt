@@ -11,10 +11,13 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
     private var currentDirectory: File? = null
 
-    override var currentDirectoryEntries: ArrayList<File>? = ArrayList()
+    override var currentDirectoryEntries: ArrayList<File> = ArrayList()
 
-    val isValid: Boolean
-        get() = currentDirectory != null
+    //val isValid: Boolean
+    //    get() = currentDirectory != null
+    fun isValid(): Boolean {
+        return if (currentDirectory != null) true else false
+    }
 
     override val currentDirectoryName: String
         get() = currentDirectory!!.getName()
@@ -62,7 +65,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
         }
         Log.d(TAG, "names (" + fileList!!.size + "): " + names)
 
-        var entries = ArrayList<File>(Arrays.asList(fileList))
+        var entries = fileList//ArrayList<File>(Arrays.asList(fileList))
 
         val displayOnlyMediaFiles = true
         if (displayOnlyMediaFiles) {

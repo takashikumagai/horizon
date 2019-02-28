@@ -34,7 +34,7 @@ class FileSystemNavigator : Serializable {
             if (currentNavigator != null) {
                 val entries = currentNavigator!!.currentDirectoryEntries
                 if (entries != null) {
-                    return entries!!.size()
+                    return entries!!.size
                 }
             }
 

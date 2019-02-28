@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 return null
             }
 
-            return mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
+            return mediaPlayerTabs.get(currentPlayerIndex).fileSystemNavigator
         }
 
     // No selected tab
@@ -94,12 +94,12 @@ class MainActivity : AppCompatActivity() {
         get() {
 
             val tabLayout = findViewById(R.id.tabLayout) ?: return null
-            val pos = tabLayout!!.getSelectedTabPosition()
+            val pos = tabLayout!!.selectedTabPosition
             if (pos < 0 || mediaPlayerTabs.size <= pos) {
                 Log.d(TAG, "pos<0")
                 return null
             } else {
-                return mediaPlayerTabs.get(pos).getPlaybackQueue()
+                return mediaPlayerTabs.get(pos).playbackQueue
             }
         }
 
@@ -115,13 +115,13 @@ class MainActivity : AppCompatActivity() {
 
     private val mediaPlayer: MediaPlayer?
         get() {
-            val service = BackgroundAudioService.getInstance()
+            val service = BackgroundAudioService.instance
             if (service == null) {
                 Log.d(TAG, "gMP !service")
                 return null
             }
 
-            return service!!.getMediaPlayer()
+            return service!!.mediaPlayer
         }
 
     inner class MyFabBehavior : FloatingActionButton.Behavior() {
@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity() {
             // Assuming all tab are now restored, we set the recycler view
             // references to playback instances.
             for (mptab in mediaPlayerTabs) {
-                val playbackTracker = mptab.getPlaybackQueue()
+                val playbackTracker = mptab.playbackQueue
                 playbackTracker.setRecyclerViewAdapter(recyclerViewAdapter)
                 playbackTracker.setPlayingTrackName(playingTrackName)
             }
@@ -217,17 +217,17 @@ class MainActivity : AppCompatActivity() {
             // Add tablayout tabs
             for (mptab in mediaPlayerTabs) {
                 val newTab = tabLayout.newTab()
-                newTab.setText(mptab.getFileSystemNavigator().getCurrentDirectoryName())
+                newTab.setText(mptab.fileSystemNavigator.currentDirectoryName)
                 Log.d(TAG, "adding tab. index: $currentPlayerIndex")
                 tabLayout.addTab(newTab)
             }
 
             if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
                 Playback.setCurrentPlayer(
-                        mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+                        mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
                 )
                 recyclerViewAdapter!!.setCurrentFileSystemNavigator(
-                        mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
+                        mediaPlayerTabs.get(currentPlayerIndex).fileSystemNavigator
                 )
 
                 Log.d(TAG, "Selecting a tab: $currentPlayerIndex")
@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: do this only once at startup
         if (savedInstanceState == null) {
-            if (BackgroundAudioService.getInstance() == null) {
+            if (BackgroundAudioService.instance == null) {
                 // Start a new service, or restart it.
                 startAudioService()
             } else {
@@ -280,7 +280,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 Log.d(TAG, "sb.onStopTT: " + seekBar.getProgress())
-                val service = BackgroundAudioService.getInstance()
+                val service = BackgroundAudioService.instance
                 if (service != null) {
                     val mediaPlayer = service!!.getMediaPlayer()
                     if (mediaPlayer != null) {
@@ -368,24 +368,24 @@ class MainActivity : AppCompatActivity() {
         for (mptab in mediaPlayerTabs) {
 
             // recyclerViewAdapter has already been re-created in onCreate()
-            mptab.getPlaybackQueue().setRecyclerViewAdapter(recyclerViewAdapter)
-            mptab.getPlaybackQueue().setPlayingTrackName(playingTrackName)
+            mptab.playbackQueue.setRecyclerViewAdapter(recyclerViewAdapter)
+            mptab.playbackQueue.setPlayingTrackName(playingTrackName)
 
             //mptab.getName();
             val tabLayout = findViewById(R.id.tabLayout)
             tabLayout.addTab(tabLayout.newTab().setText(
-                    mptab.getFileSystemNavigator().getCurrentDirectoryName()
+                    mptab.fileSystemNavigator.currentDirectoryName
             ))
         }
 
         if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
             // Set the FS navigator of the currently selected tab
             recyclerViewAdapter!!.setCurrentFileSystemNavigator(
-                    mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
+                    mediaPlayerTabs.get(currentPlayerIndex).fileSystemNavigator
             )
 
             // Restore the vie mode
-            val viewMode = mediaPlayerTabs.get(currentPlayerIndex).getViewMode()
+            val viewMode = mediaPlayerTabs.get(currentPlayerIndex).viewMode
             recyclerViewAdapter!!.setViewMode(viewMode)
 
             // Show the controls suited for each view mode
@@ -473,10 +473,10 @@ class MainActivity : AppCompatActivity() {
             // Add an FS navigator and a player
 
             mediaPlayerTabs.add(MediaPlayerTab())
-            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).getPlaybackQueue()
+            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
                     .setRecyclerViewAdapter(recyclerViewAdapter)
 
-            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).getPlaybackQueue()
+            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
                     .setPlayingTrackName(playingTrackName)
 
             return true
@@ -546,7 +546,7 @@ class MainActivity : AppCompatActivity() {
     private fun closeTab(): Boolean {
         Log.d(TAG, "R.id.close_tab")
         val tabLayout = findViewById(R.id.tabLayout)
-        val pos = tabLayout.getSelectedTabPosition()
+        val pos = tabLayout.selectedTabPosition
         Log.d(TAG, "tabpos: $pos")
         if (pos < 0) {
             Log.d(TAG, "R.id.ct pos<0")
@@ -582,19 +582,19 @@ class MainActivity : AppCompatActivity() {
             return true
         }
 
-        val newSelectedTabPosition = tabLayout.getSelectedTabPosition()
+        val newSelectedTabPosition = tabLayout.selectedTabPosition
 
         if (newSelectedTabPosition < 0) {
             Log.d(TAG, "nSTP<0")
             // There are one or more tabs left but none is selected
         } else if (currentPlayerIndex != newSelectedTabPosition) {
-            Log.w(TAG, "urrentPlayerIndex != tabLayout.getSelectedTabPosition()")
+            Log.w(TAG, "urrentPlayerIndex != tabLayout.selectedTabPosition")
             currentPlayerIndex = newSelectedTabPosition
         }
 
         if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
             Playback.setCurrentPlayer(
-                    mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue())
+                    mediaPlayerTabs.get(currentPlayerIndex).playbackQueue)
         } else {
             Log.w(TAG, "mPTs.size<=cPI")
         }
@@ -626,12 +626,12 @@ class MainActivity : AppCompatActivity() {
                 currentPlayerIndex = pos
 
                 recyclerViewAdapter!!.setCurrentFileSystemNavigator(
-                        mediaPlayerTabs.get(pos).getFileSystemNavigator())
-                recyclerViewAdapter!!.setViewMode(mediaPlayerTabs.get(pos).getViewMode())
+                        mediaPlayerTabs.get(pos).fileSystemNavigator)
+                recyclerViewAdapter!!.setViewMode(mediaPlayerTabs.get(pos).viewMode)
                 recyclerViewAdapter!!.notifyDataSetChanged()
 
                 Playback.setCurrentPlayer(
-                        mediaPlayerTabs.get(pos).getPlaybackQueue())
+                        mediaPlayerTabs.get(pos).playbackQueue)
 
                 //              switchTab(pos);
             }
@@ -650,7 +650,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun onBackPressed() {
+    override fun onBackPressed() {
         Log.d(TAG, "oBP")
 
         if (recyclerViewAdapter == null) {
@@ -658,7 +658,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val viewMode = recyclerViewAdapter!!.getViewMode()
+        val viewMode = recyclerViewAdapter!!.viewMode
         if (viewMode == 0) {
             val navigator = currentFileSystemNavigator
             var ret = 0
@@ -681,7 +681,7 @@ class MainActivity : AppCompatActivity() {
 
                 recyclerViewAdapter!!.notifyDataSetChanged()
 
-                setSelectedTabLabel(navigator!!.getCurrentDirectoryName())
+                setSelectedTabLabel(navigator!!.currentDirectoryName)
             } else {
                 // We have been already at the root of the tree so
                 // moving up to a parent point never happened
@@ -701,7 +701,7 @@ class MainActivity : AppCompatActivity() {
     fun setSelectedTabLabel(text: String) {
 
         val tabLayout = findViewById(R.id.tabLayout)
-        val pos = tabLayout.getSelectedTabPosition()
+        val pos = tabLayout.selectedTabPosition
         if (pos == -1) {
             // No selected tab
             Log.d(TAG, "pos<0")
@@ -720,7 +720,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val navigator = mediaPlayerTabs.get(index).getFileSystemNavigator().getCurrentNavigator()
+        val navigator = mediaPlayerTabs.get(index).fileSystemNavigator.currentNavigator
 
         if (navigator == null) {
             Log.d(TAG, "uFABV !cn")
@@ -749,12 +749,12 @@ class MainActivity : AppCompatActivity() {
     fun getMediaFileStatus(filePath: String): Int {
 
         val tabLayout = findViewById(R.id.tabLayout)
-        val tabPos = tabLayout.getSelectedTabPosition()
+        val tabPos = tabLayout.selectedTabPosition
         if (tabPos < 0 || mediaPlayerTabs.size <= tabPos) {
             return 0
         }
 
-        val player = mediaPlayerTabs.get(tabPos).getPlaybackQueue()
+        val player = mediaPlayerTabs.get(tabPos).playbackQueue
         return if (player.isPointed(filePath)) {
             1
         } else if (player.isInQueue(filePath)) {
@@ -795,11 +795,11 @@ class MainActivity : AppCompatActivity() {
 
     fun onMediaStartRequestedOnScreen(): Boolean {
 
-        var service = BackgroundAudioService.getInstance()
+        var service = BackgroundAudioService.instance
         if (service == null) {
             Log.e(TAG, "oMSROS !service")
             startAudioService()
-            service = BackgroundAudioService.getInstance()
+            service = BackgroundAudioService.instance
             if (service == null) {
                 Log.e(TAG, "oMSROS Failed to restart service")
                 return false
@@ -811,7 +811,7 @@ class MainActivity : AppCompatActivity() {
             if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
 
                 service!!.setCurrentlyPlayedPlaybackQueue(
-                        mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+                        mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
                 )
             } else {
                 Log.d(TAG, "oMSROS !cPQI")
@@ -826,7 +826,7 @@ class MainActivity : AppCompatActivity() {
             // currently played tab != selected tab.
             if (0 <= currentlyPlayedQueueIndex) {
                 if (currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
-                    mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
+                    mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
                             .saveCurrentPlaybackPosition()
                 } else {
                     Log.w(TAG, "sz<=cPQI")
@@ -851,12 +851,12 @@ class MainActivity : AppCompatActivity() {
         //   storing the playback information (queue, currently played track, etc)
         // - Note that this particular instance of Playback survivies the activity destruction
         //   and recreation
-        val service = BackgroundAudioService.getInstance()
+        val service = BackgroundAudioService.instance
         if (service == null) {
             Log.w(TAG, "!service")
         } else {
             service!!.setCurrentlyPlayedPlaybackQueue(
-                    mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
+                    mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
             )
 
             service!!.updateMediaControls()
@@ -921,7 +921,7 @@ class MainActivity : AppCompatActivity() {
 
         val name: String?
         if (0 <= currentlyPlayedQueueIndex && currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
-            val currentlyPlayed = mediaPlayerTabs.get(currentlyPlayedQueueIndex).getPlaybackQueue()
+            val currentlyPlayed = mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
             if (currentlyPlayed != null) {
                 name = currentlyPlayed!!.getCurrentlyPlayedMediaName()
 
@@ -939,14 +939,14 @@ class MainActivity : AppCompatActivity() {
     fun switchToPlaybackQueueView() {
 
         // Save the view mode
-        mediaPlayerTabs.get(currentPlayerIndex).setViewMode(1)
+        mediaPlayerTabs.get(currentPlayerIndex).viewMode = 1
 
         // Hide the playing track control and show the play queue
         // media control.
         hidePlayingTrackControl()
         showPlaybackQueueControl()
 
-        recyclerViewAdapter!!.setViewMode(1)
+        recyclerViewAdapter!!.viewMode = 1
 
         recyclerViewAdapter!!.notifyDataSetChanged()
 
@@ -956,7 +956,7 @@ class MainActivity : AppCompatActivity() {
             // Save the view mode to the tab instance.
             // We'll use this info to save the view mode on per-tab basis,
             // and restore the mode for each tab every time the user swtiches tabs.
-            mediaPlayerTabs.get(currentPlayerIndex).setViewMode(1)
+            mediaPlayerTabs.get(currentPlayerIndex).viewMode = 1
         }
         //        MediaPlayerTab mediaPlayerTab = getCurrentMediaPlayerTab();
         //        if(mediaPlayerTab != null) {
@@ -974,16 +974,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Save the view mode
-        mediaPlayerTabs.get(currentPlayerIndex).setViewMode(0)
+        mediaPlayerTabs.get(currentPlayerIndex).viewMode = 0
 
-        val playbackQueue = mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+        val playbackQueue = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
 
         if (0 < playbackQueue.getMediaFilePathQueue().size) {
             showPlayingTrackControl()
         }
         hidePlaybackQueueControl()
 
-        recyclerViewAdapter!!.setViewMode(0)
+        recyclerViewAdapter!!.viewMode = 0
         recyclerViewAdapter!!.notifyDataSetChanged()
     }
 
@@ -1025,7 +1025,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                val filesAndDirs = mediaPlayerTabs.get(currentPlayerIndex).getFileSystemNavigator()
+                val filesAndDirs = mediaPlayerTabs.get(currentPlayerIndex).fileSystemNavigator
                         .getCurrentDirectoryEntries()
 
                 // Put all the media files in the current directory to the queue and start playing
@@ -1042,7 +1042,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "!rTP")
                     return
                 }
-                val player = mediaPlayerTabs.get(currentPlayerIndex).getPlaybackQueue()
+                val player = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
                 player.clearQueue()
                 player.addToQueue(mediaFiles)
                 player.startCurrentlyPointedMediaInQueue()
@@ -1129,7 +1129,7 @@ class MainActivity : AppCompatActivity() {
 
                         onMediaStartRequestedOnScreen()
                         val tab = mediaPlayerTabs.get(currentPlayerIndex)
-                        tab.getPlaybackQueue().playPrevTrack()
+                        tab.playbackQueue.playPrevTrack()
                         onMediaStartedOnScreen()
                     }
                 })
@@ -1152,7 +1152,7 @@ class MainActivity : AppCompatActivity() {
 
                         onMediaStartRequestedOnScreen()
                         val tab = mediaPlayerTabs.get(currentPlayerIndex)
-                        tab.getPlaybackQueue().playNextTrack()
+                        tab.playbackQueue.playNextTrack()
                         onMediaStartedOnScreen()
                     }
                 })

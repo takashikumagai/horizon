@@ -23,9 +23,9 @@ abstract class AbstractDirectoryNavigator : Serializable {
 
     //abstract String getCurrentDirectoryPath();
 
-    internal abstract fun moveToParent(): AbstractDirectoryNavigator
+    internal abstract fun moveToParent(): AbstractDirectoryNavigator?
 
-    internal abstract fun moveToChild(pos: Int): AbstractDirectoryNavigator
+    internal abstract fun moveToChild(pos: Int): AbstractDirectoryNavigator?
 
     //abstract int changeDirectory(String childDirPath);
 }

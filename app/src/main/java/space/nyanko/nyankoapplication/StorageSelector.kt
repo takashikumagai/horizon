@@ -10,19 +10,17 @@ import java.util.ArrayList
 
 class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
 
-    @get:Override
-    internal val currentDirectoryEntries = ArrayList<File>()
+    //@get:Override
+    internal override val currentDirectoryEntries = ArrayList<File>()
 
     //private ArrayList<String> names = new ArrayList<String>();
 
     private var childDirectoryNavigator: AbstractDirectoryNavigator? = null
 
-    val currentDirectoryName: String
-        @Override
+    override val currentDirectoryName: String
         get() = "[Device Storage Directories]"
 
-    val isAtLeastOneMediaFilePresent: Boolean
-        @Override
+    override val isAtLeastOneMediaFilePresent: Boolean
         get() = false
 
     init {
@@ -44,11 +42,11 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
         //}
 
         val vols = StorageHelper.getStorages(true)
-        Log.d(TAG, Integer.toString(vols.size()) + " storage volumes found.")
+        Log.d(TAG, Integer.toString(vols.size) + " storage volumes found.")
         for (vol in vols) {
             Log.d(TAG, "Device name: '" + vol.device + "'")
-            Log.d(TAG, "  Path: " + vol.file.getPath())
-            Log.d(TAG, "  Type: " + vol.getType())
+            Log.d(TAG, "  Path: " + vol.file!!.getPath())
+            //Log.d(TAG, "  Type: " + vol.getType())
 
             currentDirectoryEntries.add(vol.file)
         }
@@ -66,7 +64,7 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
 
     override fun moveToChild(pos: Int): AbstractDirectoryNavigator? {
 
-        if (pos < 0 || currentDirectoryEntries.size() <= pos) {
+        if (pos < 0 || currentDirectoryEntries.size <= pos) {
             Log.d(TAG, "invalid pos")
             return null
         }

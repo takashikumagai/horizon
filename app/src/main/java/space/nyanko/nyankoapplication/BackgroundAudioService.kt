@@ -229,7 +229,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
         startForeground(
                 LockScreenMediaControl.NOTIFICATION_ID,
-                LockScreenMediaControl.getNotification()
+                LockScreenMediaControl.notification
         )
     }
 
@@ -273,8 +273,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         mediaPlayer = MediaPlayer()
 
         mediaPlayer!!.setOnCompletionListener(object : OnCompletionListener() {
-            @Override
-            fun onCompletion(mp: MediaPlayer) {
+
+            override fun onCompletion(mp: MediaPlayer) {
 
                 Log.d(TAG, "playback complete")
 
@@ -293,7 +293,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             }
         })
 
-        Playback.setMediaPlayer(mediaPlayer)
+        Playback.mediaPlayer = mediaPlayer
     }
 
     fun initMediaSession() {

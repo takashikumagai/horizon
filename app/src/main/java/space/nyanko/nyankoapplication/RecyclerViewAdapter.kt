@@ -38,21 +38,20 @@ class RecyclerViewAdapter(
      */
     internal var viewMode = 0
 
-    val itemCount: Int
-        get() {
+    override fun getItemCount(): Int {
 
             if (viewMode == 0) {
                 if (currentFileSystemNavigator != null) {
-                    return currentFileSystemNavigator!!.getNumCurrentDirectoryEntries()
+                    return currentFileSystemNavigator!!.numCurrentDirectoryEntries
                 } else {
                     Log.d(TAG, "gIC: !cFSN.")
                     return 0
                 }
             } else if (viewMode == 1) {
                 val mainActivity = mContext as MainActivity
-                val tabs = mainActivity.getMediaPlayerTabs()
-                val tab = tabs.get(mainActivity.getCurrentlyPlayedQueueIndex())
-                return tab.getPlaybackQueue().getMediaFilePathQueue().size()
+                val tabs = mainActivity.mediaPlayerTabs
+                val tab = tabs.get(mainActivity.currentlyPlayedQueueIndex)
+                return tab.playbackQueue.mediaFilePathQueue.size
             } else {
                 Log.e(TAG, "gIC !!vM")
                 return 0
@@ -70,13 +69,13 @@ class RecyclerViewAdapter(
     }
 
     @NonNull
-    override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.v(TAG, "onCVH")
         val view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(@NonNull holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder: called.")
 
         if (viewMode == 0) {
@@ -88,7 +87,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    fun setFileOrDirectoryToHolder(@NonNull holder: ViewHolder, position: Int) {
+    fun setFileOrDirectoryToHolder(holder: ViewHolder, position: Int) {
         Log.v(TAG, "sFODTH")
         //FileSystemNavigator currentFileSystemNavigator = null;
 
@@ -99,7 +98,7 @@ class RecyclerViewAdapter(
             return
         }
 
-        val entries = currentFileSystemNavigator!!.getCurrentDirectoryEntries()
+        val entries = currentFileSystemNavigator!!.currentDirectoryEntries
         val entry = entries.get(pos)
         if (entry == null) {
             Log.d(TAG, "onBVH: !entry")
@@ -140,7 +139,7 @@ class RecyclerViewAdapter(
                     //                    String title = HorizonUtils.getMediaFileTitle(entry);
                     val metaTags = HorizonUtils.getMediaFileMetaTags(entry, tags)
                     val title = metaTags.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                    if (title != null && 0 < title!!.length()) {
+                    if (title != null && 0 < title.length) {
                         // The media file has a meta tag; use the title instead of its file name
                         holder.fileName.setText("[T] " + title!!)
                     } else {
@@ -158,7 +157,7 @@ class RecyclerViewAdapter(
 
                     val duration = metaTags.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
                     if (duration != null) {
-                        val hhmmss = HorizonUtils.millisecondsToHhmmss(Long.parseLong(duration))
+                        val hhmmss = HorizonUtils.millisecondsToHhmmss(duration.toLong())
                         secondRow += ", $hhmmss"
                     }
                     holder.secondaryRow.setText(secondRow)
@@ -253,10 +252,10 @@ class RecyclerViewAdapter(
         val pos = holder.getAdapterPosition()
 
         val mainActivity = mContext as MainActivity
-        val tabs = mainActivity.getMediaPlayerTabs()
-        val mediaPlayerTab = tabs.get(mainActivity.getCurrentlyPlayedQueueIndex())
+        val tabs = mainActivity.mediaPlayerTabs
+        val mediaPlayerTab = tabs.get(mainActivity.currentlyPlayedQueueIndex)
 
-        val queue = mediaPlayerTab.getPlaybackQueue().getMediaFilePathQueue()
+        val queue = mediaPlayerTab.playbackQueue.mediaFilePathQueue
         if (pos < 0 || queue.size() <= pos) {
             Log.w(TAG, "sMIQTH pos: $pos")
             return

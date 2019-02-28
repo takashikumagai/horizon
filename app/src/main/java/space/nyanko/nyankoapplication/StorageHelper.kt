@@ -60,6 +60,7 @@ object StorageHelper {
                 while ((line = reader!!.readLine()) != null) {
                     // Log.d(TAG, line);
                     val tokens = StringTokenizer(line, " ")
+                    //String[] tokens = line.split(" ")
 
                     val device = tokens.nextToken()
                     // skipped devices that are not sdcard for sure
@@ -283,8 +284,8 @@ object StorageHelper {
         if (str == null || searchStr == null) {
             return false
         }
-        val len = searchStr.length()
-        val max = str.length() - len
+        val len = searchStr.length
+        val max = str.length - len
         for (i in 0..max) {
             if (str.regionMatches(true, i, searchStr, 0, len)) {
                 return true
@@ -395,6 +396,7 @@ object StorageHelper {
                 return false
             }
             if (getClass() !== obj!!.getClass()) {
+            if (javaClass !== obj!!.javaClass) {
                 return false
             }
             val other = obj as StorageVolume?
