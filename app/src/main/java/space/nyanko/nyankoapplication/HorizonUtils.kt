@@ -80,10 +80,10 @@ object HorizonUtils {
      * @return a hashmap where each entry is an integer representing a tag and the tag value,
      * or null if arg is invalid
      */
-    fun getMediaFileMetaTags(f: File?, tags: IntArray): HashMap<Integer, String>? {
+    fun getMediaFileMetaTags(f: File?, tags: IntArray): HashMap<Int, String>? {
         Log.v(TAG, "gMFMTs")
 
-        val tagMaps = HashMap<Integer, String>()
+        val tagMaps = HashMap<Int, String>()
 
         if (f == null) {
             return null
