@@ -177,22 +177,20 @@ class RecyclerViewAdapter(
 
         val navigator = currentFileSystemNavigator
 
-        holder.parentLayout.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View) {
-                Log.d(TAG, "onClick: clicked")
+        holder.parentLayout.setOnClickListener() { v ->
+            Log.d(TAG, "onClick: clicked")
 
-                Toast.makeText(mContext, entry!!.getName(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext, entry!!.getName(), Toast.LENGTH_SHORT).show()
 
-                // Update the tab label
-                mainActivity.setSelectedTabLabel(entry!!.getName())
+            // Update the tab label
+            mainActivity.setSelectedTabLabel(entry!!.getName())
 
-                if (viewMode == 0) {
-                    onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity)
-                } else if (viewMode == 1) {
-                    onEntryClickedInPlayQueueMode(entry)
-                }
+            if (viewMode == 0) {
+                onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity)
+            } else if (viewMode == 1) {
+                onEntryClickedInPlayQueueMode(entry)
             }
-        })
+        }
     }
 
     fun onEntryClickedInFileSystemViewMode(entry: File?,
