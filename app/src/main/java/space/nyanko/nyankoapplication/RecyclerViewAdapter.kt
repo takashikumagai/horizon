@@ -68,7 +68,7 @@ class RecyclerViewAdapter(
         this.currentFileSystemNavigator = currentFileSystemNavigator
     }
 
-    @NonNull
+    //@NonNull
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.v(TAG, "onCVH")
         val view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false)
@@ -99,7 +99,7 @@ class RecyclerViewAdapter(
         }
 
         val entries = currentFileSystemNavigator!!.currentDirectoryEntries
-        val entry = entries.get(pos)
+        val entry = entries?.get(pos)
         if (entry == null) {
             Log.d(TAG, "onBVH: !entry")
             return
@@ -138,7 +138,7 @@ class RecyclerViewAdapter(
                     val tags = intArrayOf(MediaMetadataRetriever.METADATA_KEY_TITLE, MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, MediaMetadataRetriever.METADATA_KEY_DURATION)
                     //                    String title = HorizonUtils.getMediaFileTitle(entry);
                     val metaTags = HorizonUtils.getMediaFileMetaTags(entry, tags)
-                    val title = metaTags.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                    val title = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
                     if (title != null && 0 < title.length) {
                         // The media file has a meta tag; use the title instead of its file name
                         holder.fileName.setText("[T] " + title!!)
@@ -148,14 +148,14 @@ class RecyclerViewAdapter(
                     }
 
                     var secondRow = ""
-                    val track = metaTags.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
+                    val track = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
                     if (track != null) {
                         secondRow = String.format("(%s)", track)
                     } else {
                         secondRow = "(-)"
                     }
 
-                    val duration = metaTags.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                    val duration = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
                     if (duration != null) {
                         val hhmmss = HorizonUtils.millisecondsToHhmmss(duration.toLong())
                         secondRow += ", $hhmmss"
@@ -197,10 +197,10 @@ class RecyclerViewAdapter(
 
     fun onEntryClickedInFileSystemViewMode(entry: File?,
                                            pos: Int,
-                                           navigator: FileSystemNavigator,
+                                           navigator: FileSystemNavigator?,
                                            mainActivity: MainActivity) {
         if (entry!!.isDirectory()) {
-            navigator.moveToChild(pos)
+            navigator?.moveToChild(pos)
             refreshDirectoryContentList(entry!!.getPath())
 
             mainActivity.updateFloatingActionButtonVisibility()
@@ -209,7 +209,7 @@ class RecyclerViewAdapter(
             if (HorizonUtils.isMediaFile(entry!!.getName())) {
                 // A playable media file, e.g. an mp3 fle, was tapped/clicked
                 Log.d(TAG, "is media file")
-                val player = mainActivity.getPlayerOfSelectedTab()
+                val player = mainActivity.playerOfSelectedTab
                 if (player == null) {
                     Log.d(TAG, "!player")
                     return
@@ -245,7 +245,7 @@ class RecyclerViewAdapter(
         // Jump to the tapped/clicked track
     }
 
-    fun setMediaInQueueToHolder(@NonNull holder: ViewHolder, position: Int) {
+    fun setMediaInQueueToHolder(holder: ViewHolder, position: Int) {
         Log.d(TAG, "sMIQTH")
         //FileSystemNavigator currentFileSystemNavigator = null;
 
@@ -256,7 +256,7 @@ class RecyclerViewAdapter(
         val mediaPlayerTab = tabs.get(mainActivity.currentlyPlayedQueueIndex)
 
         val queue = mediaPlayerTab.playbackQueue.mediaFilePathQueue
-        if (pos < 0 || queue.size() <= pos) {
+        if (pos < 0 || queue.size <= pos) {
             Log.w(TAG, "sMIQTH pos: $pos")
             return
         }
