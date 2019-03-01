@@ -177,7 +177,7 @@ class RecyclerViewAdapter(
 
         val navigator = currentFileSystemNavigator
 
-        holder.parentLayout.setOnClickListener(object : View.OnClickListener() {
+        holder.parentLayout.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
                 Log.d(TAG, "onClick: clicked")
 
