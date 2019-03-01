@@ -282,7 +282,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "sb.onStopTT: " + seekBar.getProgress())
                 val service = BackgroundAudioService.instance
                 if (service != null) {
-                    val mediaPlayer = service!!.getMediaPlayer()
+                    val mediaPlayer = service!!.mediaPlayer
                     if (mediaPlayer != null) {
                         mediaPlayer!!.seekTo(seekBar.getProgress())
                     }
@@ -386,7 +386,7 @@ class MainActivity : AppCompatActivity() {
 
             // Restore the vie mode
             val viewMode = mediaPlayerTabs.get(currentPlayerIndex).viewMode
-            recyclerViewAdapter!!.setViewMode(viewMode)
+            recyclerViewAdapter!!.viewMode = viewMode
 
             // Show the controls suited for each view mode
             if (viewMode == 0) {
@@ -627,7 +627,7 @@ class MainActivity : AppCompatActivity() {
 
                 recyclerViewAdapter!!.setCurrentFileSystemNavigator(
                         mediaPlayerTabs.get(pos).fileSystemNavigator)
-                recyclerViewAdapter!!.setViewMode(mediaPlayerTabs.get(pos).viewMode)
+                recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
                 recyclerViewAdapter!!.notifyDataSetChanged()
 
                 Playback.setCurrentPlayer(
@@ -923,7 +923,7 @@ class MainActivity : AppCompatActivity() {
         if (0 <= currentlyPlayedQueueIndex && currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
             val currentlyPlayed = mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
             if (currentlyPlayed != null) {
-                name = currentlyPlayed!!.getCurrentlyPlayedMediaName()
+                name = currentlyPlayed!!.currentlyPlayedMediaName
 
                 if (playingTrackName != null && name != null) {
                     playingTrackName!!.setText(name)
@@ -978,7 +978,7 @@ class MainActivity : AppCompatActivity() {
 
         val playbackQueue = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
 
-        if (0 < playbackQueue.getMediaFilePathQueue().size) {
+        if (0 < playbackQueue.mediaFilePathQueue.size) {
             showPlayingTrackControl()
         }
         hidePlaybackQueueControl()
@@ -1026,7 +1026,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val filesAndDirs = mediaPlayerTabs.get(currentPlayerIndex).fileSystemNavigator
-                        .getCurrentDirectoryEntries()
+                        .currentDirectoryEntries
 
                 // Put all the media files in the current directory to the queue and start playing
                 val mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs)
@@ -1063,7 +1063,7 @@ class MainActivity : AppCompatActivity() {
         fab.setImageBitmap(textAsBitmap("▶", 40f, Color.WHITE))
 
         val params = fab.getLayoutParams()
-        Log.v(TAG, "fab layout params: " + params.getClass())
+        Log.v(TAG, "fab layout params: " + params::class)
         val coordinatorLayoutParams = params as CoordinatorLayout.LayoutParams
 
         coordinatorLayoutParams.setBehavior(MyFabBehavior())
@@ -1089,7 +1089,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "btn pressed (play/pause)")
                         val self = view as Button//findViewById(R.id.play_pause);
 
-                        val mediaPlayer = Playback.getMediaPlayer()
+                        val mediaPlayer = Playback.mediaPlayer
                         // Both isPlaying() and pause() can throw IllegalStateException.
 
                         try {
