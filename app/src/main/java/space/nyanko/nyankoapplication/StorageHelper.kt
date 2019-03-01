@@ -57,7 +57,13 @@ object StorageHelper {
             try {
                 reader = BufferedReader(FileReader("/proc/mounts"))
                 var line: String
-                while ((line = reader!!.readLine()) != null) {
+                while (true) {//((line = reader!!.readLine()) != null) {
+                    line = reader!!.readLine()
+
+                    if(line == null) {
+                        break
+                    }
+
                     // Log.d(TAG, line);
                     val tokens = StringTokenizer(line, " ")
                     //String[] tokens = line.split(" ")
@@ -98,7 +104,7 @@ object StorageHelper {
                         deviceVolumeMap.put(device, volumes)
                     }
 
-                    val volume = StorageVolume(device, file, fileSystem)
+                    var volume = StorageVolume(device, file, fileSystem)
                     val flags = StringTokenizer(tokens.nextToken(), ",")
                     while (flags.hasMoreTokens()) {
                         val token = flags.nextToken()
@@ -319,7 +325,7 @@ object StorageHelper {
          *
          * @return true if this storage is mounted as read-only
          */
-        val isReadOnly: Boolean = false
+        var isReadOnly: Boolean = false
 
         /**
          * If true, the storage is removable
@@ -329,7 +335,7 @@ object StorageHelper {
          *
          * @return true if this storage is removable
          */
-        val isRemovable: Boolean = false
+        var isRemovable: Boolean = false
 
         /**
          * If true, the storage is emulated
@@ -339,7 +345,7 @@ object StorageHelper {
          *
          * @return true if this storage is emulated
          */
-        val isEmulated: Boolean = false
+        var isEmulated: Boolean = false
 
         /**
          * Type of this storage
@@ -349,7 +355,7 @@ object StorageHelper {
          *
          * @return Type of this storage
          */
-        val type: Type? = null
+        var type: Type? = null
 
         /**
          * Represents [StorageVolume] type
@@ -395,8 +401,8 @@ object StorageHelper {
             if (obj == null) {
                 return false
             }
-            if (getClass() !== obj!!.getClass()) {
-            if (javaClass !== obj!!.javaClass) {
+            //if (getClass() !== obj!!.getClass()) {
+            if (this.javaClass !== obj!!.javaClass) {
                 return false
             }
             val other = obj as StorageVolume?
