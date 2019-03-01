@@ -106,7 +106,7 @@ class Playback : Serializable {
         try {
             mediaFilepath = mediaFilePathQueue.get(pointedMediaIndex)
 
-            val service = BackgroundAudioService.getInstance()
+            val service = BackgroundAudioService.instance
             if (service != null) {
                 service!!.setMetadata()
             }
