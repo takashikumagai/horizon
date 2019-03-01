@@ -49,7 +49,7 @@ object StorageHelper {
      * @return list of mounted [StorageVolume]s
      */
     fun getStorages(includeUsb: Boolean): List<StorageVolume> {
-        val deviceVolumeMap = HashMap<String, List<StorageVolume>>()
+        val deviceVolumeMap = HashMap<String, ArrayList<StorageVolume>>()
 
         // this approach considers that all storages are mounted in the same non-root directory
         if (!STORAGES_ROOT.equals(File.separator)) {
@@ -137,9 +137,9 @@ object StorageHelper {
         var primaryStorageIncluded = false
         val externalStorage = Environment.getExternalStorageDirectory()
         val volumeList = ArrayList<StorageVolume>()
-        for (entry in deviceVolumeMap.entrySet()) {
-            val volumes = entry.getValue()
-            if (volumes.size() === 1) {
+        for (entry in deviceVolumeMap) {//.entrySet()) {
+            val volumes = entry.value
+            if (volumes.size === 1) {
                 // go ahead and add
                 val v = volumes.get(0)
                 val isPrimaryStorage = v.file!!.equals(externalStorage)
@@ -147,7 +147,7 @@ object StorageHelper {
                 setTypeAndAdd(volumeList, v, includeUsb, isPrimaryStorage)
                 continue
             }
-            val volumesLength = volumes.size()
+            val volumesLength = volumes.size
             for (i in 0 until volumesLength) {
                 val v = volumes.get(i)
                 if (v.file!!.equals(externalStorage)) {
@@ -192,7 +192,7 @@ object StorageHelper {
      * @param asFirstItem
      * if true, adds the volume at the beginning of the volumeList
      */
-    private fun setTypeAndAdd(volumeList: List<StorageVolume>,
+    private fun setTypeAndAdd(volumeList: ArrayList<StorageVolume>,
                               v: StorageVolume,
                               includeUsb: Boolean,
                               asFirstItem: Boolean) {
@@ -241,7 +241,7 @@ object StorageHelper {
      */
     private fun <T> arrayContains(array: Array<T>, `object`: T): Boolean {
         for (item in array) {
-            if (item.equals(`object`)) {
+            if ((item != null) && item.equals(`object`)) {
                 return true
             }
         }
@@ -293,7 +293,7 @@ object StorageHelper {
         val len = searchStr.length
         val max = str.length - len
         for (i in 0..max) {
-            if (str.regionMatches(true, i, searchStr, 0, len)) {
+            if (str.regionMatches(i, searchStr, 0, len, true)) {
                 return true
             }
         }
@@ -394,7 +394,7 @@ object StorageHelper {
          *
          * @see Object.equals
          */
-        override fun equals(obj: Object?): Boolean {
+        override fun equals(obj: Any?): Boolean {
             if (obj === this) {
                 return true
             }
