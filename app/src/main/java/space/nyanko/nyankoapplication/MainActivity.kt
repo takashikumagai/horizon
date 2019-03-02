@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.SeekBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     val playerOfSelectedTab: Playback?
         get() {
 
-            val tabLayout = findViewById(R.id.tabLayout) ?: return null
+            val tabLayout: TabLayout = findViewById(R.id.tabLayout) ?: return null
             val pos = tabLayout!!.selectedTabPosition
             if (pos < 0 || mediaPlayerTabs.size <= pos) {
                 Log.d(TAG, "pos<0")
@@ -171,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         requestAppPermissions()
 
         Log.d(TAG, "num mptabs: " + mediaPlayerTabs.size)
-        val tabLayout = findViewById(R.id.tabLayout)
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         Log.d(TAG, "num tablayout tabs: " + tabLayout.getTabCount())
 
         initRecyclerView()
@@ -233,7 +234,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Selecting a tab: $currentPlayerIndex")
                 // Select the tab that had been selected before the app was destroyed
                 val tab = tabLayout.getTabAt(currentPlayerIndex)
-                tab.select()
+                tab?.select()
             } else {
                 Log.w(TAG, "oC !cPI: $currentPlayerIndex")
             }
@@ -372,7 +373,7 @@ class MainActivity : AppCompatActivity() {
             mptab.playbackQueue.setPlayingTrackName(playingTrackName)
 
             //mptab.getName();
-            val tabLayout = findViewById(R.id.tabLayout)
+            val tabLayout: TabLayout = findViewById(R.id.tabLayout)
             tabLayout.addTab(tabLayout.newTab().setText(
                     mptab.fileSystemNavigator.currentDirectoryName
             ))
@@ -447,7 +448,7 @@ class MainActivity : AppCompatActivity() {
 
         } else if (id == R.id.new_tab) {
             Log.d(TAG, "R.id.new_tab")
-            val tabLayout = findViewById(R.id.tabLayout)
+            val tabLayout: TabLayout = findViewById(R.id.tabLayout)
             tabLayout.addTab(tabLayout.newTab())
             val newTab = tabLayout.getTabAt(tabLayout.getTabCount() - 1)
             if (newTab == null) {
@@ -545,7 +546,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun closeTab(): Boolean {
         Log.d(TAG, "R.id.close_tab")
-        val tabLayout = findViewById(R.id.tabLayout)
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         val pos = tabLayout.selectedTabPosition
         Log.d(TAG, "tabpos: $pos")
         if (pos < 0) {
@@ -559,7 +560,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (pos < mediaPlayerTabs.size) {
-            mediaPlayerTabs.remove(pos)
+            mediaPlayerTabs.removeAt(pos)
         } else {
             Log.w(TAG, "!!!fsn.size")
         }
@@ -605,14 +606,14 @@ class MainActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         Log.d(TAG, "initRecyclerView called")
 
-        val recyclerView = findViewById(R.id.recycler_view)
+        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerViewAdapter = RecyclerViewAdapter(this)
         recyclerView.setAdapter(recyclerViewAdapter)
         recyclerView.setLayoutManager(LinearLayoutManager(this))
     }
 
     private fun setTabListeners() {
-        val tabLayout = findViewById(R.id.tabLayout)
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val pos = tab.getPosition()
@@ -700,7 +701,7 @@ class MainActivity : AppCompatActivity() {
 
     fun setSelectedTabLabel(text: String) {
 
-        val tabLayout = findViewById(R.id.tabLayout)
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         val pos = tabLayout.selectedTabPosition
         if (pos == -1) {
             // No selected tab
@@ -748,7 +749,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun getMediaFileStatus(filePath: String): Int {
 
-        val tabLayout = findViewById(R.id.tabLayout)
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         val tabPos = tabLayout.selectedTabPosition
         if (tabPos < 0 || mediaPlayerTabs.size <= tabPos) {
             return 0
@@ -988,12 +989,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showPlaybackQueueControl() {
-        val pc = findViewById(R.id.playback_control)
+        val pc: LinearLayout = findViewById(R.id.playback_control)
         pc.setVisibility(View.VISIBLE)
     }
 
     fun hidePlaybackQueueControl() {
-        val pc = findViewById(R.id.playback_control)
+        val pc: LinearLayout = findViewById(R.id.playback_control)
         pc.setVisibility(View.GONE)
     }
 
@@ -1166,7 +1167,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "sPTB")
 
         // Show the playing track info and control (pause/resume)
-        val ptc = findViewById(R.id.playing_track_control)
+        val ptc: LinearLayout = findViewById(R.id.playing_track_control)
         ptc.setVisibility(View.VISIBLE)
     }
 
@@ -1174,7 +1175,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "hPTC")
 
         // Show the playing track info and control (pause/resume)
-        val ptc = findViewById(R.id.playing_track_control)
+        val ptc: LinearLayout = findViewById(R.id.playing_track_control)
         ptc.setVisibility(View.GONE)
     }
 
