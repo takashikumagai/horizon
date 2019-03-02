@@ -245,7 +245,7 @@ class Playback : Serializable {
         recyclerViewAdapter = adapter
     }
 
-    fun setPlayingTrackName(view: TextView) {
+    fun setPlayingTrackName(view: TextView?) {
         playingTrackName = view
     }
 
@@ -286,7 +286,7 @@ class Playback : Serializable {
          */
         var mediaPlayer: MediaPlayer? = null
 
-        fun setCurrentPlayer(currentPlayer: Playback) {
+        fun setCurrentPlayer(currentPlayer: Playback?) {
             Playback.currentPlayer = currentPlayer
 
             // Notify the service

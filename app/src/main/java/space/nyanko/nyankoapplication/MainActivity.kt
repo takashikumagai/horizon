@@ -728,7 +728,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val fab = floatingActionButton
-        if (navigator!!.isAtLeastOneMediaFilePresent()) {
+        if (navigator!!.isAtLeastOneMediaFilePresent) {
             Log.d(TAG, "fab visible")
             fab!!.setVisibility(View.VISIBLE)
 
@@ -885,7 +885,7 @@ class MainActivity : AppCompatActivity() {
             folderViewSeekBar!!.setProgress(pos)
         }
 
-        val time = HorizonUtils.millisecondsToHhmmssOrMmss(pos)
+        val time = HorizonUtils.millisecondsToHhmmssOrMmss(pos.toLong())
 
         // Update the current position, i.e. the 'AA:AA' part in 'AA:AA / BB:BB'
         if (folderViewPlayingTrackTime != null) {
@@ -908,7 +908,7 @@ class MainActivity : AppCompatActivity() {
             folderViewSeekBar!!.setMax(duration)
         }
 
-        val time = HorizonUtils.millisecondsToHhmmssOrMmss(duration)
+        val time = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
 
         // Update the duration, i.e. the 'BB:BB' part in 'AA:AA / BB:BB'
         if (folderViewPlayingTrackTime != null) {
@@ -1093,6 +1093,10 @@ class MainActivity : AppCompatActivity() {
                         // Both isPlaying() and pause() can throw IllegalStateException.
 
                         try {
+                            if(mediaPlayer == null) {
+                                return
+                            }
+
                             if (mediaPlayer.isPlaying()) {
                                 Log.d(TAG, "btn pausing")
                                 mediaPlayer.pause()
@@ -1196,7 +1200,7 @@ class MainActivity : AppCompatActivity() {
             val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
             val canvas = Canvas(image)
-            canvas.drawText(text, 0, baseline, paint)
+            canvas.drawText(text, 0f, baseline, paint)
             return image
         }
     }

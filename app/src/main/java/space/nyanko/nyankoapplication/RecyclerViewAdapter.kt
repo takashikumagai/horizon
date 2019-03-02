@@ -64,7 +64,7 @@ class RecyclerViewAdapter(
         notifyDataSetChanged()
     }
 
-    fun setCurrentFileSystemNavigator(currentFileSystemNavigator: FileSystemNavigator) {
+    fun setCurrentFileSystemNavigator(currentFileSystemNavigator: FileSystemNavigator?) {
         this.currentFileSystemNavigator = currentFileSystemNavigator
     }
 

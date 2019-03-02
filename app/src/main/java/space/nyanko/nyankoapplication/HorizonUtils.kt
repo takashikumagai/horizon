@@ -33,7 +33,12 @@ object HorizonUtils {
         }
     }
 
-    fun pickMediaFiles(filesAndDirs: ArrayList<File>): ArrayList<File> {
+    fun pickMediaFiles(filesAndDirs: ArrayList<File>?): ArrayList<File> {
+
+        if(filesAndDirs == null) {
+            return ArrayList<File>()
+        }
+
         val mediaFiles = ArrayList<File>()
         for (entry in filesAndDirs) {
             if (isMediaFile(entry.getName())) {
