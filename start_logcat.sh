@@ -16,6 +16,7 @@ BackgroundAudioService:D \
 mySessionTag:D \
 RecyclerViewAdapter:D \
 DirectoryNavigation:D \
+StorageHelper:D \
 StorageSelector:D \
 DirectoryNavigator:D \
 Playback:D \
