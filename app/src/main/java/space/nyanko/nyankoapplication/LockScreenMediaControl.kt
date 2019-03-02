@@ -66,9 +66,13 @@ internal object LockScreenMediaControl {
      */
     fun init(
             context: Context,
-            mediaSession: MediaSessionCompat,
+            mediaSession: MediaSessionCompat?,
             contentTitle: String) {
         Log.d(TAG, "init")
+
+        if(mediaSession == null) {
+            return;
+        }
 
         // Token to hand to the builder
         val compatToken = mediaSession.getSessionToken()

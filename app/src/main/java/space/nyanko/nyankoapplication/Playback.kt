@@ -241,7 +241,7 @@ class Playback : Serializable {
         playNextTrack()
     }
 
-    fun setRecyclerViewAdapter(adapter: RecyclerViewAdapter) {
+    fun setRecyclerViewAdapter(adapter: RecyclerViewAdapter?) {
         recyclerViewAdapter = adapter
     }
 

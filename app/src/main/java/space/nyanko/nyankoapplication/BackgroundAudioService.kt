@@ -179,10 +179,6 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         Log.d(TAG, "ctor")
     }
 
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): MediaBrowserServiceCompat.BrowserRoot? {
-        return null
-    }
-
     fun setCurrentlySelectedPlaybackQueue(selectedPlaybackQueue: Playback) {
         currentlySelected = selectedPlaybackQueue
     }
@@ -191,7 +187,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         currentlyPlayed = playedPlaybackQueue
     }
 
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle): BrowserRoot? {
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         return if (TextUtils.equals(clientPackageName, getPackageName())) {
             BrowserRoot(getString(R.string.app_name), null)
         } else null
@@ -272,7 +268,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
         mediaPlayer = MediaPlayer()
 
-        mediaPlayer!!.setOnCompletionListener(object : OnCompletionListener() {
+        mediaPlayer!!.setOnCompletionListener(object : OnCompletionListener {
 
             override fun onCompletion(mp: MediaPlayer) {
 
@@ -410,7 +406,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     fun updateMediaControls() {
         if (currentlyPlayed != null) {
-            val mediaName = currentlyPlayed!!.getCurrentlyPlayedMediaPath()
+            val mediaName = currentlyPlayed!!.currentlyPlayedMediaPath
             val title = getMediaTitle(mediaName)
             LockScreenMediaControl.init(this, mediaSession, title)
         }
