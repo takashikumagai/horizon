@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         hidePlayingTrackControl()
 
         playingTrackName = findViewById(R.id.playing_track_name) as TextView
-        playingTrackName!!.setOnClickListener(object : View.OnClickListener() {
+        playingTrackName!!.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
                 Log.d(TAG, "oC")
                 switchToPlaybackQueueView()
@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity() {
         folderViewPlayingTrackTime = findViewById(R.id.playing_track_time) as TextView
 
         folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
-        folderViewSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener() {
+        folderViewSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 Log.d(TAG, "sb.oPC: " + seekBar.getProgress())
             }
@@ -292,7 +292,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        runOnUiThread(object : Runnable() {
+        runOnUiThread(object : Runnable {
 
             override fun run() {
                 val mediaPlayer = mediaPlayer
@@ -613,7 +613,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTabListeners() {
         val tabLayout = findViewById(R.id.tabLayout)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val pos = tab.getPosition()
                 Log.d(TAG, "onTabSelected called: " + tab.getText() + " (pos: " + pos + ")")
@@ -1001,7 +1001,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "iFAB")
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener(object : View.OnClickListener() {
+        fab.setOnClickListener(object : View.OnClickListener {
 
             /**
              * When FAB is clicked, the app
@@ -1084,7 +1084,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn!!.setOnClickListener(
-                object : View.OnClickListener() {
+                object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn pressed (play/pause)")
                         val self = view as Button//findViewById(R.id.play_pause);
@@ -1122,7 +1122,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         prevTrackBtn!!.setOnClickListener(
-                object : View.OnClickListener() {
+                object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (prev)")
                         val self = view as Button
@@ -1145,7 +1145,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         nextTrackBtn!!.setOnClickListener(
-                object : View.OnClickListener() {
+                object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (next)")
                         val self = view as Button
