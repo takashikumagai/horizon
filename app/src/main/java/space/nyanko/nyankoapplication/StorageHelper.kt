@@ -10,6 +10,7 @@ import kotlin.collections.Map.Entry
 import java.util.StringTokenizer
 
 import android.os.Environment
+import android.util.Log
 
 /**
  * \brief Enumerates storage locations
@@ -56,9 +57,14 @@ object StorageHelper {
             var reader: BufferedReader? = null
             try {
                 reader = BufferedReader(FileReader("/proc/mounts"))
-                var line: String
+                if(reader == null) {
+                    Log.d(TAG,"gSs !reader")
+                    return ArrayList<StorageVolume>()
+                }
+
+                var line: String?
                 while (true) {//((line = reader!!.readLine()) != null) {
-                    line = reader!!.readLine()
+                    line = reader?.readLine()
 
                     if(line == null) {
                         break
