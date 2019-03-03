@@ -157,6 +157,8 @@ class MainActivity : AppCompatActivity() {
 
         initFloatingActionButton()
 
+        initPlayingTrackControl()
+
         hidePlaybackQueueControl()
         hidePlayingTrackControl()
 
@@ -424,6 +426,16 @@ class MainActivity : AppCompatActivity() {
         // Update the view (list of files and directories)
         // Do this both when onRIS is called and is not
         recyclerViewAdapter!!.notifyDataSetChanged()
+
+        val tab: MediaPlayerTab? = getCurrentlySelectedMediaPlayerTab()
+        val viewMode: Int? = tab?.viewMode
+        if(viewMode == null) {
+            Log.d(TAG, "oR vM!")
+        } else if(viewMode == 0) {
+            switchToFileSystemView()
+        } else if(viewMode == 1) {
+            switchToPlaybackQueueView()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -1113,6 +1125,32 @@ class MainActivity : AppCompatActivity() {
         fab.setVisibility(View.GONE)
     }
 
+    fun initPlayingTrackControl() {
+        val btn = findViewById(R.id.playing_track_play_pause_button) as Button?
+        btn?.setOnClickListener(
+                object : View.OnClickListener {
+                    override fun onClick(view: View) {
+                        Log.d(TAG,"play/pause")
+                        val self = view as Button//findViewById(R.id.play_pause);
+
+                        val playing = togglePlayPauseState()
+                        updatePlayingTrackPlayPauseButton(playing)
+                    }
+                }
+        )
+    }
+
+    fun updatePlayingTrackPlayPauseButton(playing: Boolean?) {
+        val btn = findViewById(R.id.playing_track_play_pause_button) as Button?
+        if(playing == null) {
+            btn?.setText("???")
+        } else if(playing) {
+            btn?.setText("||")
+        } else {
+            btn?.setText("▶")
+        }
+    }
+
     fun initPlayQueueMediaControlButtons() {
         val btn = findViewById(R.id.play_pause_button) as Button
         if (btn == null) {
@@ -1126,29 +1164,14 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "btn pressed (play/pause)")
                         val self = view as Button//findViewById(R.id.play_pause);
 
-                        val mediaPlayer = Playback.mediaPlayer
-                        // Both isPlaying() and pause() can throw IllegalStateException.
-
-                        try {
-                            if(mediaPlayer == null) {
-                                return
-                            }
-
-                            if (mediaPlayer.isPlaying()) {
-                                Log.d(TAG, "btn pausing")
-                                mediaPlayer.pause()
-                                self.setText("▶")
-                            } else {
-                                Log.d(TAG, "btn playing/resuming")
-                                mediaPlayer.start() // Start/resume playback
-                                self.setText("||")
-                            }
-                        } catch (ise: IllegalStateException) {
-                            Log.d(TAG, "ise caught")
-                        } catch (e: Exception) {
-                            Log.d(TAG, "Exception caught")
+                        val playing = togglePlayPauseState()
+                        if(playing == null) {
+                            self.setText("???")
+                        } else if(playing) {
+                            self.setText("||")
+                        } else {
+                            self.setText("▶")
                         }
-
                     }
                 })
 
@@ -1199,12 +1222,50 @@ class MainActivity : AppCompatActivity() {
                 })
     }
 
+    fun isMediaPlaying(): Boolean? {
+        return Playback.mediaPlayer?.isPlaying()
+    }
+
+    /**
+     *
+     * @return true: new state = playing, false: new state = paused, null: something went wrong
+     */
+    fun togglePlayPauseState(): Boolean? {
+        val mediaPlayer = Playback.mediaPlayer
+        // Both isPlaying() and pause() can throw IllegalStateException.
+
+        try {
+            if(mediaPlayer == null) {
+                Log.d(TAG, "tPPS !mp")
+                return null
+            }
+
+            if (mediaPlayer.isPlaying()) {
+                Log.d(TAG, "btn pausing")
+                mediaPlayer.pause()
+                return false
+            } else {
+                Log.d(TAG, "btn playing/resuming")
+                mediaPlayer.start() // Start/resume playback
+                return true
+            }
+        } catch (ise: IllegalStateException) {
+            Log.d(TAG, "ise caught")
+        } catch (e: Exception) {
+            Log.d(TAG, "Exception caught")
+        }
+
+        return null
+    }
+
     fun showPlayingTrackControl() {
         Log.d(TAG, "sPTB")
 
         // Show the playing track info and control (pause/resume)
         val ptc: LinearLayout = findViewById(R.id.playing_track_control)
         ptc.setVisibility(View.VISIBLE)
+
+        updatePlayingTrackPlayPauseButton(isMediaPlaying())
     }
 
     fun hidePlayingTrackControl() {
