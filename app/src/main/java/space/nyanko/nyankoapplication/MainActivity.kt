@@ -448,16 +448,26 @@ class MainActivity : AppCompatActivity() {
 
         } else if (id == R.id.new_tab) {
             Log.d(TAG, "R.id.new_tab")
-            val tabLayout: TabLayout = findViewById(R.id.tabLayout)
-            tabLayout.addTab(tabLayout.newTab())
-            val newTab = tabLayout.getTabAt(tabLayout.getTabCount() - 1)
+
+            // Add a new media player tab
+            mediaPlayerTabs.add(MediaPlayerTab())
+            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
+                    .setRecyclerViewAdapter(recyclerViewAdapter)
+
+            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
+                    .setPlayingTrackName(playingTrackName)
+
+            // Add a new layout tab
+            val tabTitle = mediaPlayerTabs.get(mediaPlayerTabs.size - 1)
+                    .fileSystemNavigator.currentDirectoryName
+            val newTab = addNewLayoutTab(tabTitle)
             if (newTab == null) {
                 Log.d(TAG, "!newTab")
                 return true
             }
+
             //newTab.setId(tabIdCounter);
             tabIdCounter += 1
-            newTab!!.setText("newtab")
             //            View child = tabLayout.getChildAt(tabLayout.getTabCount()-1);
             //            if(child == null) {
             //                Log.d(TAG,"!child");
@@ -473,17 +483,24 @@ class MainActivity : AppCompatActivity() {
 
             // Add an FS navigator and a player
 
-            mediaPlayerTabs.add(MediaPlayerTab())
-            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
-                    .setRecyclerViewAdapter(recyclerViewAdapter)
+            newTab?.select()
 
-            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
-                    .setPlayingTrackName(playingTrackName)
+            onTabSelection(newTab)
+
+
 
             return true
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun addNewLayoutTab(tabTitle: String): TabLayout.Tab? {
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
+        tabLayout.addTab(tabLayout.newTab())
+        val newTab = tabLayout.getTabAt(tabLayout.getTabCount() - 1)
+        newTab?.setText(tabTitle)
+        return newTab;
     }
 
     private fun startAudioService() {
@@ -612,29 +629,39 @@ class MainActivity : AppCompatActivity() {
         recyclerView.setLayoutManager(LinearLayoutManager(this))
     }
 
+    /**
+     * @brief Updates the selected tab and also updates the current tab index.
+     *
+     *
+     *
+     */
+    private fun onTabSelection(tab: TabLayout.Tab) {
+        val pos = tab.getPosition()
+        Log.d(TAG, "onTabSelected called: " + tab.getText() + " (pos: " + pos + ")")
+
+        if (pos < 0 || mediaPlayerTabs.size <= pos) {
+            Log.w(TAG, "oTS: invalid tab pos")
+            return
+        }
+
+        currentPlayerIndex = pos
+
+        recyclerViewAdapter!!.setCurrentFileSystemNavigator(
+                mediaPlayerTabs.get(pos).fileSystemNavigator)
+        recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
+        recyclerViewAdapter!!.notifyDataSetChanged()
+
+        Playback.setCurrentPlayer(
+                mediaPlayerTabs.get(pos).playbackQueue)
+
+        //              switchTab(pos);
+    }
+
     private fun setTabListeners() {
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                val pos = tab.getPosition()
-                Log.d(TAG, "onTabSelected called: " + tab.getText() + " (pos: " + pos + ")")
-
-                if (pos < 0 || mediaPlayerTabs.size <= pos) {
-                    Log.w(TAG, "oTS: invalid tab pos")
-                    return
-                }
-
-                currentPlayerIndex = pos
-
-                recyclerViewAdapter!!.setCurrentFileSystemNavigator(
-                        mediaPlayerTabs.get(pos).fileSystemNavigator)
-                recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
-                recyclerViewAdapter!!.notifyDataSetChanged()
-
-                Playback.setCurrentPlayer(
-                        mediaPlayerTabs.get(pos).playbackQueue)
-
-                //              switchTab(pos);
+                onTabSelection(tab);
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
