@@ -821,6 +821,15 @@ class MainActivity : AppCompatActivity() {
         return ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) === PackageManager.PERMISSION_GRANTED
     }
 
+    public fun getCurrentlySelectedMediaPlayerTab(): MediaPlayerTab? {
+        if(0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
+            return mediaPlayerTabs[currentPlayerIndex]
+        } else {
+            Log.d(TAG, "gCSMPT: "+currentPlayerIndex)
+            return null
+        }
+    }
+
     fun onMediaStartRequestedOnScreen(): Boolean {
 
         var service = BackgroundAudioService.instance

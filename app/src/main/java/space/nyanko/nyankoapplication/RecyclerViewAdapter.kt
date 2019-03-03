@@ -49,9 +49,9 @@ class RecyclerViewAdapter(
                 }
             } else if (viewMode == 1) {
                 val mainActivity = mContext as MainActivity
-                val tabs = mainActivity.mediaPlayerTabs
-                val tab = tabs.get(mainActivity.currentlyPlayedQueueIndex)
-                return tab.playbackQueue.mediaFilePathQueue.size
+                val tab = mainActivity.getCurrentlySelectedMediaPlayerTab()
+                val count = tab?.playbackQueue?.mediaFilePathQueue?.size
+                return if (count != null) count else 0
             } else {
                 Log.e(TAG, "gIC !!vM")
                 return 0
