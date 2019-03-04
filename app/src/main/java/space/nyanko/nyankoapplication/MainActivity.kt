@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
         folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
         folderViewSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                Log.d(TAG, "sb.oPC: " + seekBar.getProgress())
+                //Log.d(TAG, "sb.oPC: " + seekBar.getProgress())
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -307,7 +307,7 @@ class MainActivity : AppCompatActivity() {
                 updateSeekbarProgressAndTime(mediaPlayer)
 
                 // Add this runnable to the message queue
-                handler.postDelayed(this, 3000)
+                handler.postDelayed(this, 1000)
             }
         })
     }
@@ -407,7 +407,6 @@ class MainActivity : AppCompatActivity() {
 
         updateFloatingActionButtonVisibility()
 
-        updatePlayingTrackControlPanel(mediaPlayer)
         updateSeekbarProgressAndTime(mediaPlayer)
     }
 
@@ -436,6 +435,8 @@ class MainActivity : AppCompatActivity() {
         } else if(viewMode == 1) {
             switchToPlaybackQueueView()
         }
+
+        updatePlayingTrackControlPanel(this.mediaPlayer)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -928,6 +929,10 @@ class MainActivity : AppCompatActivity() {
      */
     fun updateSeekbarProgressAndTime(mediaPlayer: MediaPlayer?) {
 
+        if(mediaPlayer == null) {
+            return
+        }
+
         val pos = mediaPlayer!!.getCurrentPosition()
 
         if (folderViewSeekBar != null) {
@@ -951,6 +956,10 @@ class MainActivity : AppCompatActivity() {
      */
     fun updatePlayingTrackControlPanel(mediaPlayer: MediaPlayer?) {
         Log.d(TAG, "uPTCP")
+
+        if(mediaPlayer == null) {
+            return
+        }
 
         val duration = mediaPlayer!!.getDuration()
         if (folderViewSeekBar != null) {
