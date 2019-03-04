@@ -1070,8 +1070,8 @@ class MainActivity : AppCompatActivity() {
              */
             override fun onClick(view: View) {
                 Log.d(TAG, "fab.oC")
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show()
 
                 if (currentPlayerIndex < 0) {
                     Log.w(TAG, "fab.oC.cPI<0")
