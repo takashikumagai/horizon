@@ -64,7 +64,7 @@ object StorageHelper {
 
                 var line: String?
                 while (true) {//((line = reader!!.readLine()) != null) {
-                    line = reader?.readLine()
+                    line = reader.readLine()
 
                     if(line == null) {
                         break
@@ -122,7 +122,7 @@ object StorageHelper {
                             break
                         }
                     }
-                    volumes!!.add(volume)
+                    volumes.add(volume)
                 }
 
             } catch (ex: IOException) {
@@ -130,7 +130,7 @@ object StorageHelper {
             } finally {
                 if (reader != null) {
                     try {
-                        reader!!.close()
+                        reader.close()
                     } catch (ex: IOException) {
                         // ignored
                     }
@@ -229,7 +229,7 @@ object StorageHelper {
     private fun resolveType(v: StorageVolume): StorageVolume.Type {
         return if (v.file!!.equals(Environment.getExternalStorageDirectory()) && Environment.isExternalStorageEmulated()) {
             StorageVolume.Type.INTERNAL
-        } else if (containsIgnoreCase(v.file!!.getAbsolutePath(), "usb")) {
+        } else if (containsIgnoreCase(v.file.getAbsolutePath(), "usb")) {
             StorageVolume.Type.USB
         } else {
             StorageVolume.Type.EXTERNAL
@@ -390,7 +390,7 @@ object StorageHelper {
         override fun hashCode(): Int {
             val prime = 31
             var result = 1
-            result = prime * result + if (file == null) 0 else file!!.hashCode()
+            result = prime * result + if (file == null) 0 else file.hashCode()
             return result
         }
 
@@ -408,13 +408,13 @@ object StorageHelper {
                 return false
             }
             //if (getClass() !== obj!!.getClass()) {
-            if (this.javaClass !== obj!!.javaClass) {
+            if (this.javaClass !== obj.javaClass) {
                 return false
             }
             val other = obj as StorageVolume?
             return if (file == null) {
                 other!!.file == null
-            } else file!!.equals(other!!.file)
+            } else file.equals(other!!.file)
         }
 
         override fun toString(): String {

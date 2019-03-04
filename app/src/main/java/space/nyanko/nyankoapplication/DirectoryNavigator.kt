@@ -24,8 +24,8 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
     override val isAtLeastOneMediaFilePresent: Boolean
         get() {
-            Log.d(TAG, "iALOMFP: " + currentDirectoryEntries!!.size)
-            for (entry in currentDirectoryEntries!!) {
+            Log.d(TAG, "iALOMFP: " + currentDirectoryEntries.size)
+            for (entry in currentDirectoryEntries) {
                 if (HorizonUtils.isMediaFile(entry.getName())) {
                     return true
                 }
@@ -48,22 +48,22 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
     private fun updateCurrentDirectoryEntries() {
         val f = currentDirectory// new File(this.currentDirectory);
         if (f == null) {
-            currentDirectoryEntries!!.clear()
+            currentDirectoryEntries.clear()
             Log.d(TAG, "f==null")
             return
         }
 
-        val fileList = f!!.listFiles()
+        val fileList = f.listFiles()
         if (fileList == null) {
             Log.d(TAG, "fileList==null")
             return
         }
 
         var names = ""
-        for (file in fileList!!) {
+        for (file in fileList) {
             names += file.getName() + ", "
         }
-        Log.d(TAG, "names (" + fileList!!.size + "): " + names)
+        Log.d(TAG, "names (" + fileList.size + "): " + names)
 
         var entries = fileList
 
@@ -112,12 +112,12 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
             return null
         }
 
-        if (pos < 0 || currentDirectoryEntries!!.size <= pos) {
+        if (pos < 0 || currentDirectoryEntries.size <= pos) {
             Log.d(TAG, "invalid pos")
             return null
         }
 
-        currentDirectory = currentDirectoryEntries!!.get(pos)
+        currentDirectory = currentDirectoryEntries.get(pos)
 
         //String childPath = Paths.get( currentDirectory.path(), child.)
         updateCurrentDirectoryEntries()

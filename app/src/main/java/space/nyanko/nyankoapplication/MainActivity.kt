@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         get() {
 
             val tabLayout: TabLayout = findViewById(R.id.tabLayout) ?: return null
-            val pos = tabLayout!!.selectedTabPosition
+            val pos = tabLayout.selectedTabPosition
             if (pos < 0 || mediaPlayerTabs.size <= pos) {
                 Log.d(TAG, "pos<0")
                 return null
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                 return null
             }
 
-            return service!!.mediaPlayer
+            return service.mediaPlayer
         }
 
     inner class MyFabBehavior : FloatingActionButton.Behavior() {
@@ -284,12 +284,12 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 Log.d(TAG, "sb.onStopTT: " + seekBar.getProgress())
                 val service = BackgroundAudioService.instance
-                if (service != null) {
-                    val mediaPlayer = service!!.mediaPlayer
+                    val mediaPlayer = service?.mediaPlayer
                     if (mediaPlayer != null) {
-                        mediaPlayer!!.seekTo(seekBar.getProgress())
+                        mediaPlayer.seekTo(seekBar.getProgress())
+                    } else {
+                        Log.d(TAG, "oSTT !mP")
                     }
-                }
 
                 isTrackingSeekBar = false
             }
@@ -496,7 +496,7 @@ class MainActivity : AppCompatActivity() {
 
             // Add an FS navigator and a player
 
-            newTab?.select()
+            newTab.select()
 
             onTabSelection(newTab)
 
@@ -707,7 +707,7 @@ class MainActivity : AppCompatActivity() {
                 // Try moving to the parent point
                 // ret = 0: successfully moved to the parent point
                 // ret = -1: was already at the root point
-                ret = navigator!!.moveToParent()
+                ret = navigator.moveToParent()
             } else {
                 // This happens when there are no tabs
                 ret = -1
@@ -749,7 +749,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             val tab = tabLayout.getTabAt(pos)
             if (tab != null) {
-                tab!!.setText(text)
+                tab.setText(text)
             }
         }
     }
@@ -769,14 +769,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         val fab = floatingActionButton
-        if (navigator!!.isAtLeastOneMediaFilePresent) {
+        if (navigator.isAtLeastOneMediaFilePresent) {
             Log.d(TAG, "fab visible")
-            fab!!.setVisibility(View.VISIBLE)
+            fab?.setVisibility(View.VISIBLE)
 
-            fab!!.requestLayout()
+            fab?.requestLayout()
         } else {
             Log.d(TAG, "fab gone")
-            fab!!.setVisibility(View.GONE)
+            fab?.setVisibility(View.GONE)
         }
     }
 
@@ -860,14 +860,14 @@ class MainActivity : AppCompatActivity() {
             // currently selected tab == playing tab
             if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
 
-                service!!.setCurrentlyPlayedPlaybackQueue(
+                service.setCurrentlyPlayedPlaybackQueue(
                         mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
                 )
             } else {
                 Log.d(TAG, "oMSROS !cPQI")
             }
         }
-        val granted = service!!.retrievedAudioFocus()
+        val granted = service.retrievedAudioFocus()
         if (!granted) {
             return false
         }
@@ -905,12 +905,12 @@ class MainActivity : AppCompatActivity() {
         if (service == null) {
             Log.w(TAG, "!service")
         } else {
-            service!!.setCurrentlyPlayedPlaybackQueue(
+            service.setCurrentlyPlayedPlaybackQueue(
                     mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
             )
 
-            service!!.updateMediaControls()
-            service!!.showMediaControls()
+            service.updateMediaControls()
+            service.showMediaControls()
 
             updatePlayingTrackControlPanel(mediaPlayer)
         }
@@ -933,11 +933,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val pos = mediaPlayer!!.getCurrentPosition()
+        val pos = mediaPlayer.getCurrentPosition()
 
-        if (folderViewSeekBar != null) {
-            folderViewSeekBar!!.setProgress(pos)
-        }
+        folderViewSeekBar?.setProgress(pos)
 
         val time = HorizonUtils.millisecondsToHhmmssOrMmss(pos.toLong())
 
@@ -961,10 +959,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val duration = mediaPlayer!!.getDuration()
-        if (folderViewSeekBar != null) {
-            folderViewSeekBar!!.setMax(duration)
-        }
+        val duration = mediaPlayer.getDuration()
+
+        folderViewSeekBar?.setMax(duration)
 
         val time = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
 
@@ -981,7 +978,7 @@ class MainActivity : AppCompatActivity() {
         if (0 <= currentlyPlayedQueueIndex && currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
             val currentlyPlayed = mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
             if (currentlyPlayed != null) {
-                name = currentlyPlayed!!.currentlyPlayedMediaName
+                name = currentlyPlayed.currentlyPlayedMediaName
 
                 if (playingTrackName != null && name != null) {
                     playingTrackName!!.setText(name)
@@ -1167,7 +1164,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        btn!!.setOnClickListener(
+        btn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn pressed (play/pause)")
@@ -1190,7 +1187,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        prevTrackBtn!!.setOnClickListener(
+        prevTrackBtn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (prev)")
@@ -1213,7 +1210,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        nextTrackBtn!!.setOnClickListener(
+        nextTrackBtn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (next)")

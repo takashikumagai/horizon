@@ -106,7 +106,7 @@ class RecyclerViewAdapter(
         }
 
         val mainActivity = mContext as MainActivity
-        val st = mainActivity.getMediaFileStatus(entry!!.getPath())
+        val st = mainActivity.getMediaFileStatus(entry.getPath())
         var color = -0xff01
         if (st == 0) {
             color = -0x9090a
@@ -118,11 +118,11 @@ class RecyclerViewAdapter(
         holder.itemView.setBackgroundColor(color)
 
         // Set the icon based on the file type
-        if (entry!!.isDirectory()) {
+        if (entry.isDirectory()) {
 
             // Set the name of the directory
-            Log.d(TAG, "setting text: " + entry!!.getName())
-            holder.fileName.setText(entry!!.getName())
+            Log.d(TAG, "setting text: " + entry.getName())
+            holder.fileName.setText(entry.getName())
 
             if (holder.fileTypeIcon != null) {
                 Log.v(TAG, "setting the round icon.")
@@ -132,7 +132,7 @@ class RecyclerViewAdapter(
             // We are dealing with a file.
 
             // See if this one is a media file, e.g. mp3
-            val isMediaFile = HorizonUtils.isMediaFile(entry!!.getName())
+            val isMediaFile = HorizonUtils.isMediaFile(entry.getName())
             if (isMediaFile) {
                 if (HorizonOptions.showMetaTagTitles) {
                     val tags = intArrayOf(MediaMetadataRetriever.METADATA_KEY_TITLE, MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, MediaMetadataRetriever.METADATA_KEY_DURATION)
@@ -141,10 +141,10 @@ class RecyclerViewAdapter(
                     val title = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
                     if (title != null && 0 < title.length) {
                         // The media file has a meta tag; use the title instead of its file name
-                        holder.fileName.setText("[T] " + title!!)
+                        holder.fileName.setText("[T] " + title)
                     } else {
                         // Does not have the title tag; just set the file name
-                        holder.fileName.setText(entry!!.getName())
+                        holder.fileName.setText(entry.getName())
                     }
 
                     var secondRow = ""
@@ -164,7 +164,7 @@ class RecyclerViewAdapter(
 
                 } else {
                     // Option is set not to get meta tag; just set the file name
-                    holder.fileName.setText(entry!!.getName())
+                    holder.fileName.setText(entry.getName())
                 }
             } else {
                 // Do nothing; don't display it unless it's a media file.
@@ -180,10 +180,10 @@ class RecyclerViewAdapter(
         holder.parentLayout.setOnClickListener() { v ->
             Log.d(TAG, "onClick: clicked")
 
-            Toast.makeText(mContext, entry!!.getName(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext, entry.getName(), Toast.LENGTH_SHORT).show()
 
             // Update the tab label
-            mainActivity.setSelectedTabLabel(entry!!.getName())
+            mainActivity.setSelectedTabLabel(entry.getName())
 
             if (viewMode == 0) {
                 onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity)
@@ -199,12 +199,12 @@ class RecyclerViewAdapter(
                                            mainActivity: MainActivity) {
         if (entry!!.isDirectory()) {
             navigator?.moveToChild(pos)
-            refreshDirectoryContentList(entry!!.getPath())
+            refreshDirectoryContentList(entry.getPath())
 
             mainActivity.updateFloatingActionButtonVisibility()
 
-        } else if (entry!!.isFile()) {
-            if (HorizonUtils.isMediaFile(entry!!.getName())) {
+        } else if (entry.isFile()) {
+            if (HorizonUtils.isMediaFile(entry.getName())) {
                 // A playable media file, e.g. an mp3 fle, was tapped/clicked
                 Log.d(TAG, "is media file")
                 val player = mainActivity.playerOfSelectedTab
@@ -217,9 +217,9 @@ class RecyclerViewAdapter(
                     Log.d(TAG, "!rTP")
                     return
                 }
-                player!!.clearQueue()
-                player!!.addToQueue(entry!!.getPath())
-                player!!.startCurrentlyPointedMediaInQueue()
+                player.clearQueue()
+                player.addToQueue(entry.getPath())
+                player.startCurrentlyPointedMediaInQueue()
                 mainActivity.onMediaStartedOnScreen()
 
                 mainActivity.showPlayingTrackControl()

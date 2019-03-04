@@ -62,9 +62,9 @@ object HorizonUtils {
             return ""
         }
 
-        if (isMediaFile(f!!.getName())) {
+        if (isMediaFile(f.getName())) {
             val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(f!!.getPath())
+            mmr.setDataSource(f.getPath())
             val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
             if (title == null) {
                 Log.d(TAG, "!t")
@@ -94,9 +94,9 @@ object HorizonUtils {
             return null
         }
 
-        if (isMediaFile(f!!.getName())) {
+        if (isMediaFile(f.getName())) {
             val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(f!!.getPath())
+            mmr.setDataSource(f.getPath())
             for (tag in tags) {
                 val value = mmr.extractMetadata(tag)
                 tagMaps.put(tag, value)

@@ -71,16 +71,16 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             super.onMediaButtonEvent(mediaButtonEvent)
             Log.d(TAG, "oMBE: " + mediaButtonEvent.toString())
             val extras = mediaButtonEvent.getExtras()
-            Log.d(TAG, "extras: " + if (extras != null) extras!!.toString() else "null")
+            Log.d(TAG, "extras: " + if (extras != null) extras.toString() else "null")
             if (extras == null) {
                 Log.d(TAG, "!ex")
             } else {
-                for (key in extras!!.keySet()) {
-                    val value = extras!!.get(key)
+                for (key in extras.keySet()) {
+                    val value = extras.get(key)
                     Log.d(TAG, String.format("%s %s (%s)",
                             key, value.toString(), value.javaClass.getName()))
                 }
-                val obj = extras!!.get("android.intent.extra.KEY_EVENT")
+                val obj = extras.get("android.intent.extra.KEY_EVENT")
                 if (obj == null) {
                     Log.d(TAG, "!obj")
                 } else {
@@ -88,8 +88,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                     if (keyEvent == null) {
                         Log.d(TAG, "!kE")
                     } else {
-                        val action = keyEvent!!.getAction()
-                        val code = keyEvent!!.getKeyCode()
+                        val action = keyEvent.getAction()
+                        val code = keyEvent.getKeyCode()
                         Log.d(TAG, String.format("kE a: %d, kc: %d", action, code))
                         if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PAUSE) {
                             Log.d(TAG, "mp.pause")
@@ -102,7 +102,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 }
             }
             val cats = mediaButtonEvent.getCategories()
-            Log.d(TAG, "categories: " + if (cats != null) cats!!.toString() else "null")
+            Log.d(TAG, "categories: " + if (cats != null) cats.toString() else "null")
             Log.d(TAG, "data uri: " + mediaButtonEvent.getDataString())
             return super.onMediaButtonEvent(mediaButtonEvent)
         }
@@ -362,7 +362,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
         val f = File(mediaFilePath)
         val title = HorizonUtils.getMediaFileTitle(f)
-        return if (title != null && !title!!.equals("")) {
+        return if (title != null && !title.equals("")) {
             title
         } else {
             f.getName()

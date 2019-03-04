@@ -98,8 +98,8 @@ class Playback : Serializable {
             return
         }
 
-        if (mediaPlayer!!.isPlaying()) {
-            mediaPlayer!!.stop()
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop()
         }
 
         var mediaFilepath = ""
@@ -108,17 +108,17 @@ class Playback : Serializable {
 
             val service = BackgroundAudioService.instance
             if (service != null) {
-                service!!.setMetadata()
+                service.setMetadata()
             }
 
             Log.d(TAG, "resetting")
-            mediaPlayer!!.reset()
+            mediaPlayer.reset()
             Log.d(TAG, "setDataSource: $mediaFilepath")
-            mediaPlayer!!.setDataSource(mediaFilepath)
+            mediaPlayer.setDataSource(mediaFilepath)
             Log.d(TAG, "prepare")
-            mediaPlayer!!.prepare()
+            mediaPlayer.prepare()
             Log.d(TAG, "starting")
-            mediaPlayer!!.start()
+            mediaPlayer.start()
         } catch (ioe: IOException) {
             Log.e(TAG, "caught an IO exception: " + ioe.toString() + " File: " + mediaFilepath)
         } catch (e: Exception) {
