@@ -2,6 +2,8 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
+    <color name="bgDark">#2B2B2B</color>
+    <color name="bgSemiDark">#2F2F2F</color>
     <color name="colorAccent">#D81B60</color>
     <color name="orange">#FF5500</color>
     <color name="blue">#0000FF</color>

@@ -26,8 +26,8 @@
         android:padding="1dp"
         android:layout_marginLeft="3dp"
         android:text="default_text"
-        android:textColor="#111"
-        android:background="#FF0"
+        android:textColor="#BBB"
+        android:background="@color/bgDark"
         android:textSize="16sp"/>
 
     <TextView
@@ -39,8 +39,8 @@
         android:padding="1dp"
         android:layout_marginLeft="3dp"
         android:text="2nd row of media entry"
-        android:textColor="#666"
-        android:background="#3F3"
+        android:textColor="#999"
+        android:background="@color/bgDark"
         android:textSize="10sp"
         />
 
