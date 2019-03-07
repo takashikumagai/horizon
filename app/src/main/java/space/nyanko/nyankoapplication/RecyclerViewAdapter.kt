@@ -107,13 +107,13 @@ class RecyclerViewAdapter(
 
         val mainActivity = mContext as MainActivity
         val st = mainActivity.getMediaFileStatus(entry.getPath())
-        var color = -0xff01
+        var color: Int = 0xffff00ff.toInt()
         if (st == 0) {
-            color = -0x9090a
+            color = 0xff2b2b2b.toInt()
         } else if (st == 1) { // playing
-            color = -0x513370
+            color = 0xff314349.toInt()
         } else if (st == 2) { // queued
-            color = -0x4b2d6a
+            color = 0xff2d393d.toInt()
         }
         holder.itemView.setBackgroundColor(color)
 
