@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:padding="8dp"
+    android:background="@color/bgDark"
     android:id="@+id/parent_layout">
 
     <ImageView
@@ -26,8 +27,7 @@
         android:padding="1dp"
         android:layout_marginLeft="3dp"
         android:text="default_text"
-        android:textColor="#BBB"
-        android:background="@color/bgDark"
+        android:textColor="@color/textColorPrimary"
         android:textSize="16sp"/>
 
     <TextView
@@ -39,8 +39,7 @@
         android:padding="1dp"
         android:layout_marginLeft="3dp"
         android:text="2nd row of media entry"
-        android:textColor="#999"
-        android:background="@color/bgDark"
+        android:textColor="@color/textColorSecondary"
         android:textSize="10sp"
         />
 
