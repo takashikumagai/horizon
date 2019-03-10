@@ -1,0 +1,6 @@
+<svg id="pause-hdpi" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+  <rect x="3" y="3" rx="1" ry="1" width="9" height="26"
+  style="fill:#3e748f;stroke:#0d4351;stroke-width:1;opacity:1.0"></rect>
+  <rect x="20" y="3" rx="1" ry="1" width="9" height="26"
+  style="fill:#3e748f;stroke:#0d4351;stroke-width:1;opacity:1.0"></rect>
+</svg>
