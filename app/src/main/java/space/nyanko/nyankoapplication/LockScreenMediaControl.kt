@@ -95,17 +95,17 @@ internal object LockScreenMediaControl {
         builder.addAction(generateAction(
                 context,
                 BackgroundAudioService.ACTION_PREV_TRACK,
-                R.drawable.ic_file,
+                R.drawable.prev,
                 "Prev"))
         builder.addAction(generateAction(
                 context,
                 BackgroundAudioService.ACTION_PLAY_PAUSE,
-                R.drawable.ic_file,
+                R.drawable.pause,
                 "Play/Pause"))
         builder.addAction(generateAction(
                 context,
                 BackgroundAudioService.ACTION_NEXT_TRACK,
-                R.drawable.ic_file,
+                R.drawable.next,
                 "Next"))
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
