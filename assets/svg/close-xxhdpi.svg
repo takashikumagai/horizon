@@ -1,0 +1,6 @@
+<svg id="prev-xxhdpi" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <rect x="30" y="6" rx="2" ry="2" width="11" height="60" transform="rotate(45 36 36)"
+  style="fill:#c7c7c7;opacity:1.0"></rect>
+  <rect x="30" y="6" rx="2" ry="2" width="11" height="60" transform="rotate(135 36 36)"
+  style="fill:#c7c7c7;opacity:1.0"></rect>
+</svg>

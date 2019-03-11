@@ -1,0 +1,6 @@
+<svg id="newtab-xhdpi" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <rect x="20" y="4" rx="1" ry="1" width="7" height="40"
+  style="fill:#c7c7c7;opacity:1.0"></rect>
+  <rect x="20" y="4" rx="1" ry="1" width="7" height="40" transform="rotate(90 24 24)"
+  style="fill:#c7c7c7;opacity:1.0"></rect>
+</svg>

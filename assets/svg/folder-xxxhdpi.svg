@@ -1,0 +1,5 @@
+<svg id="musical_symbol-xxxhdpi" width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" rx="12" ry="12" width="240" height="240"
+  style="fill-opacity:0.0;stroke:#0d4351;stroke-width:6;opacity:1.0"></rect>
+  <path d="M48 48 L100 48 L108 64 L208 64 L208 208 L48 208 z" />
+</svg>
