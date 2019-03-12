@@ -368,6 +368,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "oRIS mPTs.sz: " + mediaPlayerTabs.size)
+        val savedTabIndex = currentPlayerIndex
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         for (mptab in mediaPlayerTabs) {
 
             // recyclerViewAdapter has already been re-created in onCreate()
@@ -375,11 +377,15 @@ class MainActivity : AppCompatActivity() {
             mptab.playbackQueue.setPlayingTrackName(playingTrackName)
 
             //mptab.getName();
-            val tabLayout: TabLayout = findViewById(R.id.tabLayout)
             tabLayout.addTab(tabLayout.newTab().setText(
                     mptab.fileSystemNavigator.currentDirectoryName
             ))
         }
+
+        // In the for loop above, the first call of tabLayout.addTab() creates the first tab
+        // and selects the created tab, which causes the onSelection() to be triggered and
+        // currentPlayerIndex to be overwritten, so we manually restore the value here
+        currentPlayerIndex = savedTabIndex
 
         if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
             // Set the FS navigator of the currently selected tab
@@ -398,6 +404,16 @@ class MainActivity : AppCompatActivity() {
                 switchToPlaybackQueueView()
             } else {
                 Log.e(TAG, "!vM: $viewMode")
+            }
+        }
+
+        if(0 <= currentPlayerIndex && currentPlayerIndex < tabLayout.tabCount) {
+            Log.d(TAG, "Re-selecting tab " + currentPlayerIndex)
+            val tab = tabLayout.getTabAt(currentPlayerIndex)
+            if(tab == null) {
+                Log.d(TAG,"oRIS !tab")
+            } else {
+                tab.select()
             }
         }
 
