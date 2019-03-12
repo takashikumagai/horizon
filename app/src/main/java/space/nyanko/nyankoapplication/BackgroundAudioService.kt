@@ -222,7 +222,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // Make this a foreground service
 
         // We need a notification so just make an empty one for now.
-        LockScreenMediaControl.init(this, mediaSession, "", "")
+        LockScreenMediaControl.init(this, mediaSession, false, "", "")
 
         startForeground(
                 LockScreenMediaControl.NOTIFICATION_ID,
@@ -379,9 +379,12 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             }
             if (mediaPlayer!!.isPlaying()) {
                 currentlyPlayed!!.pause()
+                LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
             } else {
                 currentlyPlayed!!.resume()
+                LockScreenMediaControl.changeState(this,mediaSession,true); // playing
             }
+            LockScreenMediaControl.show(this)
             // Play if track is paused, or pause if it is playing
             Log.d(TAG, "a:p/p")
         } else if (action === ACTION_PREV_TRACK) {
@@ -412,7 +415,9 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
                     intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
             val text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
-            LockScreenMediaControl.init(this, mediaSession, title, text)
+            val player = mediaPlayer
+            val isPlaying = if(player != null) player.isPlaying() else false
+            LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
         }
     }
 

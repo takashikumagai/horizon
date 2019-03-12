@@ -71,9 +71,10 @@ internal object LockScreenMediaControl {
     fun init(
             context: Context,
             mediaSession: MediaSessionCompat?,
+            isPlaying: Boolean,
             contentTitle: String?,
             contentText: String?) {
-        Log.d(TAG, "init")
+        Log.d(TAG, String.format("init %b %s %s",isPlaying,contentTitle,contentText))
 
         if(mediaSession == null) {
             return;
@@ -108,7 +109,7 @@ internal object LockScreenMediaControl {
         builder.addAction(generateAction(
                 context,
                 BackgroundAudioService.ACTION_PLAY_PAUSE,
-                R.drawable.pause,
+                if(isPlaying) R.drawable.pause else R.drawable.play,
                 "Play/Pause"))
         builder.addAction(generateAction(
                 context,
@@ -129,8 +130,8 @@ internal object LockScreenMediaControl {
         }
     }
 
-    fun changeState(context: Context, mediaSession: MediaSessionCompat?, playing: Boolean) {
-        //init(context, mediaSession, ...)
+    fun changeState(context: Context, mediaSession: MediaSessionCompat?, isPlaying: Boolean) {
+        init(context, mediaSession, isPlaying, contentTitle, contentText);
     }
 
     /**
