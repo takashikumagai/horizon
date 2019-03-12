@@ -1165,11 +1165,11 @@ class MainActivity : AppCompatActivity() {
     fun updatePlayingTrackPlayPauseButton(playing: Boolean?) {
         val btn = findViewById(R.id.playing_track_play_pause_button) as Button?
         if(playing == null) {
-            btn?.setText("???")
+            btn?.setBackground(ContextCompat.getDrawable(this,R.drawable.stop))
         } else if(playing) {
-            btn?.setText("||")
+            btn?.setBackground(ContextCompat.getDrawable(this,R.drawable.pause))
         } else {
-            btn?.setText("▶")
+            btn?.setBackground(ContextCompat.getDrawable(this,R.drawable.play))
         }
     }
 
