@@ -15,7 +15,7 @@
         android:padding="1dp"
         android:background="#99F"
         android:layout_margin="0dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/folder"
         />
 
     <TextView

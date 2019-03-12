@@ -12,7 +12,7 @@
         android:id="@+id/new_tab"
         android:orderInCategory="90"
         android:title="@string/new_tab"
-        android:icon="@drawable/ic_file"
+        android:icon="@drawable/newtab"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
