@@ -35,6 +35,10 @@ internal object LockScreenMediaControl {
     var notification: Notification? = null
         private set
 
+    private var contentTitle: String = ""
+
+    private var contentText: String = ""
+
     private fun generateAction(context: Context, action: String, icon: Int, title: CharSequence): NotificationCompat.Action {
 
         val intent = Intent(context.getApplicationContext(), BackgroundAudioService::class.java)
@@ -67,12 +71,16 @@ internal object LockScreenMediaControl {
     fun init(
             context: Context,
             mediaSession: MediaSessionCompat?,
-            contentTitle: String) {
+            contentTitle: String?,
+            contentText: String?) {
         Log.d(TAG, "init")
 
         if(mediaSession == null) {
             return;
         }
+
+        this.contentTitle = contentTitle ?: ""
+        this.contentText = contentText ?: ""
 
         // Token to hand to the builder
         val compatToken = mediaSession.getSessionToken()
@@ -87,7 +95,7 @@ internal object LockScreenMediaControl {
                         .setShowActionsInCompactView(1 /* #1: pause button */)
                         .setMediaSession(compatToken))
                 .setContentTitle(contentTitle)
-                .setContentText("Nyankolz")
+                .setContentText(contentText)
         //.setLargeIcon(albumArtBitmap)
 
         Log.d(TAG, "adding actions")
@@ -119,6 +127,10 @@ internal object LockScreenMediaControl {
             Log.e(TAG, "init !n")
             return
         }
+    }
+
+    fun changeState(context: Context, mediaSession: MediaSessionCompat?, playing: Boolean) {
+        //init(context, mediaSession, ...)
     }
 
     /**

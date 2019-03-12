@@ -12,6 +12,7 @@ import android.service.media.MediaBrowserService.BrowserRoot
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.AudioManager
+import android.media.MediaMetadataRetriever
 import android.text.TextUtils
 import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
@@ -221,7 +222,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // Make this a foreground service
 
         // We need a notification so just make an empty one for now.
-        LockScreenMediaControl.init(this, mediaSession, "")
+        LockScreenMediaControl.init(this, mediaSession, "", "")
 
         startForeground(
                 LockScreenMediaControl.NOTIFICATION_ID,
@@ -408,7 +409,10 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         if (currentlyPlayed != null) {
             val mediaName = currentlyPlayed!!.currentlyPlayedMediaPath
             val title = getMediaTitle(mediaName)
-            LockScreenMediaControl.init(this, mediaSession, title)
+            val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
+                    intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
+            val text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+            LockScreenMediaControl.init(this, mediaSession, title, text)
         }
     }
 
