@@ -8,12 +8,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.ServiceConnection
 import android.media.MediaPlayer
 import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import com.google.android.material.tabs.TabLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -46,7 +48,7 @@ import java.io.ObjectInputStream
 import java.util.ArrayList
 
 @SuppressLint("RestrictedApi")
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCallbacks {
 
     /**
      * @brief Index to the tab where a track is playing
@@ -76,6 +78,14 @@ class MainActivity : AppCompatActivity() {
 
     private var playingTrackName: TextView? = null
 
+    private var backgroundAudioService: BackgroundAudioService? = null
+
+    private var boundToService: Boolean = false
+
+    /**
+     * Callbacks for service binding, passed to bindService()
+     * */
+    private var serviceConnection: ServiceConnection? = null
 
     private val handler = Handler()
 
@@ -145,6 +155,26 @@ class MainActivity : AppCompatActivity() {
 
     init {
         Log.d(TAG, "ctor")
+
+        val currentActivity: MainActivity = this
+
+        serviceConnection = object : ServiceConnection {
+
+            override fun onServiceConnected(className: ComponentName, service: IBinder) {
+                Log.d(TAG, "onServiceConnected")
+                // cast the IBinder and get MyService instance
+                val binder = service as BackgroundAudioService.LocalBinder
+                val audioService = binder.service
+                backgroundAudioService = audioService
+                boundToService = true
+                audioService.setAudioServiceCallbacks(currentActivity)//@MyActivity)
+            }
+
+            override fun onServiceDisconnected(arg0: ComponentName) {
+                Log.d(TAG, "onServiceDisconnected")
+                boundToService = false
+            }
+        }
     }
 
     override protected fun onCreate(savedInstanceState: Bundle?) {
@@ -310,6 +340,25 @@ class MainActivity : AppCompatActivity() {
                 handler.postDelayed(this, 1000)
             }
         })
+    }
+
+    override protected fun onStart() {
+        super.onStart()
+        Log.d(TAG, "oStart")
+        // bind to Service
+        val intent = Intent(this, BackgroundAudioService::class.java)
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override protected fun onStop() {
+        super.onStop()
+        Log.d(TAG, "oStop")
+        // Unbind from service
+        if (boundToService) {
+            backgroundAudioService?.setAudioServiceCallbacks(null) // unregister
+            unbindService(serviceConnection)
+            boundToService = false
+        }
     }
 
     override fun onDestroy() {
@@ -934,6 +983,16 @@ class MainActivity : AppCompatActivity() {
 
         //        View ptc = findViewById(R.id.playing_track_control);
         //        ptc.setVisibility(View.VISIBLE);
+    }
+
+    override fun onAudioPause() {
+        Log.d(TAG, "onAudioPause")
+        updatePlayingTrackPlayPauseButton(false)
+    }
+
+    override fun onAudioPlay() {
+        Log.d(TAG, "onAudioPlay")
+        updatePlayingTrackPlayPauseButton(true)
     }
 
     /**

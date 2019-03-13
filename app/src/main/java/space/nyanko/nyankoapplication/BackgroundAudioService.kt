@@ -1,6 +1,8 @@
 package space.nyanko.nyankoapplication
 
 import android.os.Bundle
+import android.os.Binder
+import android.os.IBinder
 import android.app.Service
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -62,6 +64,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         }
     }
 
+    // Binder given to clients
+    private val binder = LocalBinder()
+
+    private var callbacks: AudioServiceCallbacks? = null
+
     internal inner class MyMediaSessionCallback : MediaSessionCompat.Callback(), AudioManager.OnAudioFocusChangeListener {
 
         override fun onPrepare() {
@@ -95,10 +102,15 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                         if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PAUSE) {
                             Log.d(TAG, "mp.pause")
                             mediaPlayer!!.pause()
+                            callbacks?.onAudioPause()
+                            LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
                         } else if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PLAY) {
                             Log.d(TAG, "mp.start")
                             mediaPlayer!!.start()
+                            callbacks?.onAudioPlay()
+                            LockScreenMediaControl.changeState(this,mediaSession,true); // playing
                         }
+                        LockScreenMediaControl.show(this)
                     }
                 }
             }
@@ -174,6 +186,23 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 }// Not sure what to do with this one...
             }
         }
+    }
+
+    interface AudioServiceCallbacks {
+        fun onAudioPause()
+        fun onAudioPlay()
+    }
+
+    // Class used for the client Binder.
+    inner class LocalBinder : Binder() {//Binder<*>() {
+        internal// Return this instance of BackgroundService so clients can call public methods
+        val service: BackgroundAudioService
+            get() = this@BackgroundAudioService
+    }
+
+    override fun onBind(intent: Intent): IBinder {
+        Log.d(TAG, "onBind")
+        return binder
     }
 
     init {
@@ -431,6 +460,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         Log.d(TAG, "hMCs")
 
         LockScreenMediaControl.hide(this)
+    }
+
+    fun setAudioServiceCallbacks(callbacks: AudioServiceCallbacks?) {
+        Log.d(TAG, "sASC")
+        this.callbacks = callbacks;
     }
 
     companion object {
