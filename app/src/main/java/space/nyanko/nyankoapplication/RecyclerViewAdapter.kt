@@ -126,7 +126,7 @@ class RecyclerViewAdapter(
 
             if (holder.fileTypeIcon != null) {
                 Log.v(TAG, "setting the round icon.")
-                holder.fileTypeIcon!!.setImageResource(R.drawable.ic_file)
+                holder.fileTypeIcon!!.setImageResource(R.drawable.folder)
             }
         } else {
             // We are dealing with a file.
@@ -141,10 +141,10 @@ class RecyclerViewAdapter(
                     val title = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
                     if (title != null && 0 < title.length) {
                         // The media file has a meta tag; use the title instead of its file name
-                        holder.fileName.setText("[T] " + title)
+                        holder.fileName.setText(title)
                     } else {
                         // Does not have the title tag; just set the file name
-                        holder.fileName.setText(entry.getName())
+                        holder.fileName.setText("> " + entry.getName())
                     }
 
                     var secondRow = ""
@@ -166,12 +166,21 @@ class RecyclerViewAdapter(
                     // Option is set not to get meta tag; just set the file name
                     holder.fileName.setText(entry.getName())
                 }
+
+                // Set the audio file icon
+                if (holder.fileTypeIcon != null) {
+                    Log.v(TAG, "setting the audio file icon.")
+                    holder.fileTypeIcon!!.setImageResource(R.drawable.audio_file)
+                }
+
             } else {
-                // Do nothing; don't display it unless it's a media file.
-            }
-            if (holder.fileTypeIcon != null) {
-                Log.v(TAG, "setting the square icon.")
-                holder.fileTypeIcon!!.setImageResource(R.drawable.ic_file)
+                // This should not happen as entries are supposed to contain
+                // only directories and media files
+                Log.w(TAG, "sFODTH !!!media file " + entry.getPath())
+                if (holder.fileTypeIcon != null) {
+                    Log.v(TAG, "setting the square icon.")
+                    holder.fileTypeIcon!!.setImageResource(R.drawable.ic_file)
+                }
             }
         }
 
@@ -300,7 +309,6 @@ class RecyclerViewAdapter(
 
             // Icon for showing the file type
             fileTypeIcon = itemView.findViewById(R.id.file_type_icon)
-            fileTypeIcon!!.setImageResource(R.drawable.ic_file)
 
             Log.v(TAG, "vh ctor fileName: $fileName")
         }
