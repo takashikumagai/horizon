@@ -105,6 +105,14 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                         } else if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PLAY) {
                             Log.d(TAG, "mp.start")
                             play()
+                        } else if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_HEADSETHOOK) {
+                            Log.d(TAG, "oMBE headsethook")
+                            val mediaPlayer = this@BackgroundAudioService.mediaPlayer
+                            if(mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                pause()
+                            } else {
+                                play()
+                            }
                         }
                     }
                 }
