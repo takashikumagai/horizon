@@ -20,6 +20,7 @@ def convert_drawables(img_name_stem):
     cairosvg.svg2png(url='svg/{}-xxhdpi.svg'.format(img_name_stem),  write_to='../app/src/main/res/drawable-xxhdpi/{}.png'.format(img_name_stem))
     cairosvg.svg2png(url='svg/{}-xxxhdpi.svg'.format(img_name_stem), write_to='../app/src/main/res/drawable-xxxhdpi/{}.png'.format(img_name_stem))
 
+convert_drawables('audio_file')
 convert_drawables('close')
 convert_drawables('folder')
 convert_drawables('newtab')
