@@ -101,16 +101,17 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                         Log.d(TAG, String.format("kE a: %d, kc: %d", action, code))
                         if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PAUSE) {
                             Log.d(TAG, "mp.pause")
-                            mediaPlayer!!.pause()
-                            callbacks?.onAudioPause()
-                            LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
+                            pause()
+                            //mediaPlayer!!.pause()
+                            //callbacks?.onAudioPause()
+                            //LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
                         } else if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PLAY) {
                             Log.d(TAG, "mp.start")
-                            mediaPlayer!!.start()
-                            callbacks?.onAudioPlay()
-                            LockScreenMediaControl.changeState(this,mediaSession,true); // playing
+                            play()
+                            //mediaPlayer!!.start()
+                            //callbacks?.onAudioPlay()
+                            //LockScreenMediaControl.changeState(this,mediaSession,true); // playing
                         }
-                        LockScreenMediaControl.show(this)
                     }
                 }
             }
@@ -400,7 +401,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     }
 
+    /**
+     * @brief Called when the user taps the play/pause button on the notification.
+     */
     private fun handleIntent(intent: Intent) {
+        Log.d(TAG,"hI " + intent.getAction())
         val action = intent.getAction()
         if (action === ACTION_PLAY_PAUSE) {
             if (mediaPlayer == null || currentlyPlayed == null) {
@@ -408,12 +413,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             }
             if (mediaPlayer!!.isPlaying()) {
                 currentlyPlayed!!.pause()
-                LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
+                pause()
             } else {
                 currentlyPlayed!!.resume()
-                LockScreenMediaControl.changeState(this,mediaSession,true); // playing
+                play()
             }
-            LockScreenMediaControl.show(this)
             // Play if track is paused, or pause if it is playing
             Log.d(TAG, "a:p/p")
         } else if (action === ACTION_PREV_TRACK) {
@@ -435,6 +439,28 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 Log.d(TAG, "a:next cP!")
             }
         }
+    }
+
+    fun play() {
+        // Play/resume
+        mediaPlayer?.start()
+
+        callbacks?.onAudioPlay() // Notify the activity class
+
+        // Update the notification
+        LockScreenMediaControl.changeState(this,mediaSession,true); // playing
+        LockScreenMediaControl.show(this)
+    }
+
+    fun pause() {
+        // Pause the currently playing track
+        mediaPlayer?.pause()
+
+        callbacks?.onAudioPause() // Notify the activity class
+
+        // Update the notification
+        LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
+        LockScreenMediaControl.show(this)
     }
 
     fun updateMediaControls() {
