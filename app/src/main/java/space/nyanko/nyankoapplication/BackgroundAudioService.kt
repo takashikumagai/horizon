@@ -102,15 +102,9 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                         if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PAUSE) {
                             Log.d(TAG, "mp.pause")
                             pause()
-                            //mediaPlayer!!.pause()
-                            //callbacks?.onAudioPause()
-                            //LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
                         } else if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PLAY) {
                             Log.d(TAG, "mp.start")
                             play()
-                            //mediaPlayer!!.start()
-                            //callbacks?.onAudioPlay()
-                            //LockScreenMediaControl.changeState(this,mediaSession,true); // playing
                         }
                     }
                 }
