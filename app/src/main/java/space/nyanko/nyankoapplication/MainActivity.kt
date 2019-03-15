@@ -22,7 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.SeekBar
@@ -1207,12 +1207,12 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun initPlayingTrackControl() {
-        val btn = findViewById(R.id.playing_track_play_pause_button) as Button?
+        val btn = findViewById(R.id.playing_track_play_pause_button) as ImageButton?
         btn?.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG,"play/pause")
-                        val self = view as Button//findViewById(R.id.play_pause);
+                        val self = view as ImageButton//findViewById(R.id.play_pause);
 
                         val playing = togglePlayPauseState()
                         updatePlayingTrackPlayPauseButton(playing)
@@ -1222,18 +1222,18 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun updatePlayingTrackPlayPauseButton(playing: Boolean?) {
-        val btn = findViewById(R.id.playing_track_play_pause_button) as Button?
+        val btn = findViewById(R.id.playing_track_play_pause_button) as ImageButton?
         if(playing == null) {
-            btn?.setBackground(ContextCompat.getDrawable(this,R.drawable.stop))
+            btn?.setImageResource(R.drawable.stop)
         } else if(playing) {
-            btn?.setBackground(ContextCompat.getDrawable(this,R.drawable.pause))
+            btn?.setImageResource(R.drawable.pause)
         } else {
-            btn?.setBackground(ContextCompat.getDrawable(this,R.drawable.play))
+            btn?.setImageResource(R.drawable.play)
         }
     }
 
     fun initPlayQueueMediaControlButtons() {
-        val btn = findViewById(R.id.play_pause_button) as Button
+        val btn = findViewById(R.id.play_pause_button) as ImageButton
         if (btn == null) {
             Log.d(TAG, "!play/pause btn")
             return
@@ -1243,20 +1243,20 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn pressed (play/pause)")
-                        val self = view as Button//findViewById(R.id.play_pause);
+                        val self = view as ImageButton
 
                         val playing = togglePlayPauseState()
                         if(playing == null) {
-                            self.setText("???")
+                            self.setImageResource(R.drawable.stop)
                         } else if(playing) {
-                            self.setText("||")
+                            self.setImageResource(R.drawable.pause)
                         } else {
-                            self.setText("▶")
+                            self.setImageResource(R.drawable.play)
                         }
                     }
                 })
 
-        val prevTrackBtn = findViewById(R.id.prev_track) as Button
+        val prevTrackBtn = findViewById(R.id.prev_track) as ImageButton
         if (prevTrackBtn == null) {
             Log.d(TAG, "!pTB")
             return
@@ -1266,7 +1266,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (prev)")
-                        val self = view as Button
+                        val self = view as ImageButton
 
                         if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
                             return
@@ -1279,7 +1279,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                     }
                 })
 
-        val nextTrackBtn = findViewById(R.id.next_track) as Button
+        val nextTrackBtn = findViewById(R.id.next_track) as ImageButton
         if (nextTrackBtn == null) {
             Log.d(TAG, "!nTB")
             return
@@ -1289,7 +1289,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (next)")
-                        val self = view as Button
+                        val self = view as ImageButton
 
                         if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
                             return
