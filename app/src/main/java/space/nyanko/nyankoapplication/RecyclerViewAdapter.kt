@@ -87,6 +87,13 @@ class RecyclerViewAdapter(
         }
     }
 
+    fun setFileTypeIcon(holder: ViewHolder, drawableResourceId: Int) {
+        if (holder.fileTypeIcon != null) { // sanity check
+            Log.v(TAG, "setting the audio file icon.")
+            holder.fileTypeIcon!!.setImageResource(drawableResourceId)
+        }
+    }
+
     fun setFileOrDirectoryToHolder(holder: ViewHolder, position: Int) {
         Log.v(TAG, "sFODTH")
         //FileSystemNavigator currentFileSystemNavigator = null;
@@ -124,10 +131,8 @@ class RecyclerViewAdapter(
             Log.d(TAG, "setting text: " + entry.getName())
             holder.fileName.setText(entry.getName())
 
-            if (holder.fileTypeIcon != null) {
-                Log.v(TAG, "setting the round icon.")
-                holder.fileTypeIcon!!.setImageResource(R.drawable.folder)
-            }
+            setFileTypeIcon(holder, R.drawable.folder)
+
         } else {
             // We are dealing with a file.
 
@@ -167,11 +172,7 @@ class RecyclerViewAdapter(
                     holder.fileName.setText(entry.getName())
                 }
 
-                // Set the audio file icon
-                if (holder.fileTypeIcon != null) {
-                    Log.v(TAG, "setting the audio file icon.")
-                    holder.fileTypeIcon!!.setImageResource(R.drawable.audio_file)
-                }
+                setFileTypeIcon(holder,R.drawable.audio_file)
 
             } else {
                 // This should not happen as entries are supposed to contain
@@ -273,6 +274,7 @@ class RecyclerViewAdapter(
         val f = File(path)
         if (f != null) {
             holder.fileName.setText(f.getName())
+            setFileTypeIcon(holder,R.drawable.audio_file)
         } else {
             holder.fileName.setText("!f")
         }
