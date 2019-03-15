@@ -8,14 +8,17 @@
     android:background="@color/bgDark"
     android:id="@+id/parent_layout">
 
-    <ImageView
+    <TextView
         android:id="@+id/file_type_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:padding="1dp"
-        android:background="#99F"
+        android:paddingTop="1dp"
+        android:paddingLeft="2dp"
         android:layout_margin="0dp"
-        android:src="@drawable/folder"
+        android:background="@drawable/folder"
+        android:text=""
+        android:textSize="14dp"
+        android:textColor="#0d4351"
         />
 
     <TextView

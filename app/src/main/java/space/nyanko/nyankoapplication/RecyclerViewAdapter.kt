@@ -90,7 +90,7 @@ class RecyclerViewAdapter(
     fun setFileTypeIcon(holder: ViewHolder, drawableResourceId: Int) {
         if (holder.fileTypeIcon != null) { // sanity check
             Log.v(TAG, "setting the audio file icon.")
-            holder.fileTypeIcon!!.setImageResource(drawableResourceId)
+            holder.fileTypeIcon!!.setBackgroundResource(drawableResourceId)
         }
     }
 
@@ -155,15 +155,13 @@ class RecyclerViewAdapter(
                     var secondRow = ""
                     val track = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
                     if (track != null) {
-                        secondRow = String.format("(%s)", track)
-                    } else {
-                        secondRow = "(-)"
+                        holder.fileTypeIcon?.setText(track)
                     }
 
                     val duration = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
                     if (duration != null) {
                         val hhmmss = HorizonUtils.millisecondsToHhmmss(duration.toLong())
-                        secondRow += ", $hhmmss"
+                        secondRow = "$hhmmss"
                     }
                     holder.secondaryRow.setText(secondRow)
 
@@ -295,7 +293,7 @@ class RecyclerViewAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        internal var fileTypeIcon: ImageView? = null
+        internal var fileTypeIcon: TextView? = null
 
         internal var fileName: TextView
 
