@@ -176,10 +176,7 @@ class RecyclerViewAdapter(
                 // This should not happen as entries are supposed to contain
                 // only directories and media files
                 Log.w(TAG, "sFODTH !!!media file " + entry.getPath())
-                if (holder.fileTypeIcon != null) {
-                    Log.v(TAG, "setting the square icon.")
-                    holder.fileTypeIcon!!.setImageResource(R.drawable.ic_file)
-                }
+                setFileTypeIcon(holder, R.drawable.ic_file)
             }
         }
 
