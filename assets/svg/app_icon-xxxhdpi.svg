@@ -1,0 +1,31 @@
+<svg id="app_icon-xxxhdpi" width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <g
+    transform="matrix(2.1,0, 0,2.1, 0,0)"
+    stroke="#dadada"
+    fill="#dadada">
+    <path
+      d="M20 42.5 L27.5 15 L43 37.5 L60 36.2 L77 37.5 L92.5 15 L100 42.5 L107 70 L105 80 L95 90 L68 95.5 L52 95.5 L25 90 L15 80 L13 70 Z"
+      style="fill-opacity:0.0;stroke-width:2.8;opacity:1.0" />
+
+    <!-- eyes -->
+    <circle cx="37" cy="58" r="2.5" style="stroke-opacity:0.0" />
+    <circle cx="83" cy="58" r="2.5" style="stroke-opacity:0.0" />
+
+    <!-- rhinarium -->
+    <path d="M54 67 L66 67 L60 74 Z" style="stroke-opacity:0.0" />
+
+    <!-- mouth -->
+    <path d="M60 72 L58 79 L52 85 L45 86" style="fill-opacity:0.0;stroke-width:2.4" />
+    <path d="M60 72 L62 79 L68 85 L75 86" style="fill-opacity:0.0;stroke-width:2.4" />
+
+    <!-- whiskers (left side) -->
+    <path d="M25 72 L15 70 L5 69" style="fill-opacity:0.0;stroke-width:2.4" />
+    <path d="M25 76 L15 75 L5 76" style="fill-opacity:0.0;stroke-width:2.4" />
+    <path d="M25 80 L15 81 L5 83" style="fill-opacity:0.0;stroke-width:2.4" />
+
+    <!-- whiskers (right side) -->
+    <path d="M95 72 L105 70 L115 69" style="fill-opacity:0.0;stroke-width:2.4" />
+    <path d="M95 76 L105 75 L115 76" style="fill-opacity:0.0;stroke-width:2.4" />
+    <path d="M95 80 L105 81 L115 83" style="fill-opacity:0.0;stroke-width:2.4" />
+  </g>
+</svg>
