@@ -261,12 +261,20 @@ class RecyclerViewAdapter(
         val mediaPlayerTab = tabs.get(mainActivity.currentlyPlayedQueueIndex)
 
         val queue = mediaPlayerTab.playbackQueue.mediaFilePathQueue
-        if (pos < 0 || queue.size <= pos) {
+        if (pos < 0) { // Sanity check
             Log.w(TAG, "sMIQTH pos: $pos")
             return
         }
-        val path = queue.get(pos)
 
+        if(queue.size <= pos) {
+            // Make sure that the row is empty
+            holder.fileName.setText("")
+            holder.secondaryRow.setText("")
+            holder.itemView.setBackgroundColor(0xff2b2b2b.toInt())
+            return
+        }
+
+        val path = queue.get(pos)
 
         val f = File(path)
         if (f != null) {
@@ -276,6 +284,8 @@ class RecyclerViewAdapter(
             holder.fileName.setText("!f")
         }
         holder.secondaryRow.setText("In Queue")
+
+        holder.itemView.setBackgroundColor(0xff2b2b2b.toInt())
     }
 
 
