@@ -89,7 +89,7 @@ internal object LockScreenMediaControl {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 // Show controls on lock screen even when user hides sensitive content.
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.drawable.ic_file)
+                .setSmallIcon(R.drawable.app_icon)
                 // Add media control buttons that invoke intents in your media service
                 // Apply the media style template
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
