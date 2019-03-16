@@ -114,6 +114,12 @@ object HorizonUtils {
                 TimeUnit.MILLISECONDS.toSeconds(milliseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)))
     }
 
+    /**
+     * @brief Returns a string representing time in the MM:SS format
+     *        if the argument is shorter than an hour, or in the
+     *        HH:MM:SS format if it's longer than an hour.
+     *
+     */
     fun millisecondsToHhmmssOrMmss(milliseconds: Long): String {
         val h = TimeUnit.MILLISECONDS.toHours(milliseconds)
         val min = TimeUnit.MILLISECONDS.toMinutes(milliseconds) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds))
