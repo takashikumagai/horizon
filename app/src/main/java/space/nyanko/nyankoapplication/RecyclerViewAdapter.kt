@@ -131,6 +131,8 @@ class RecyclerViewAdapter(
             Log.d(TAG, "setting text: " + entry.getName())
             holder.fileName.setText(entry.getName())
 
+            holder.secondaryRow.setText("Folder")
+
             setFileTypeIcon(holder, R.drawable.folder)
 
         } else {
@@ -160,7 +162,7 @@ class RecyclerViewAdapter(
 
                     val duration = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
                     if (duration != null) {
-                        val hhmmss = HorizonUtils.millisecondsToHhmmss(duration.toLong())
+                        val hhmmss = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
                         secondRow = "$hhmmss"
                     }
                     holder.secondaryRow.setText(secondRow)
