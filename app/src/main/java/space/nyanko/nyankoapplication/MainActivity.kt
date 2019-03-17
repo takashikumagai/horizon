@@ -239,21 +239,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             Log.d(TAG, "restored: $currentPlayerIndex")
             Log.d(TAG, "mptabs: " + mediaPlayerTabs.size)
 
-            // Assuming all tab are now restored, we set the recycler view
-            // references to playback instances.
-            for (mptab in mediaPlayerTabs) {
-                val playbackTracker = mptab.playbackQueue
-                playbackTracker.setRecyclerViewAdapter(recyclerViewAdapter)
-                playbackTracker.setPlayingTrackName(playingTrackName)
-            }
+            setViewsToPlaybackManagers()
 
-            // Add tablayout tabs
-            for (mptab in mediaPlayerTabs) {
-                val newTab = tabLayout.newTab()
-                newTab.setText(mptab.fileSystemNavigator.currentDirectoryName)
-                Log.d(TAG, "adding tab. index: $currentPlayerIndex")
-                tabLayout.addTab(newTab)
-            }
+            restoreTabLayoutTabs()
 
             if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
                 Playback.setCurrentPlayer(
@@ -380,17 +368,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         Log.d(TAG, "oRIS mPTs.sz: " + mediaPlayerTabs.size)
         val savedTabIndex = currentPlayerIndex
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
-        for (mptab in mediaPlayerTabs) {
 
-            // recyclerViewAdapter has already been re-created in onCreate()
-            mptab.playbackQueue.setRecyclerViewAdapter(recyclerViewAdapter)
-            mptab.playbackQueue.setPlayingTrackName(playingTrackName)
+        setViewsToPlaybackManagers()
 
-            //mptab.getName();
-            tabLayout.addTab(tabLayout.newTab().setText(
-                    mptab.fileSystemNavigator.currentDirectoryName
-            ))
-        }
+        restoreTabLayoutTabs()
 
         // In the for loop above, the first call of tabLayout.addTab() creates the first tab
         // and selects the created tab, which causes the onSelection() to be triggered and
@@ -532,6 +513,28 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setViewsToPlaybackManagers() {
+        // Assuming all tab are now restored, we set the recycler view
+        // references to playback instances.
+        for (mptab in mediaPlayerTabs) {
+            val playbackTracker = mptab.playbackQueue
+            playbackTracker.setRecyclerViewAdapter(recyclerViewAdapter)
+            playbackTracker.setPlayingTrackName(playingTrackName)
+        }
+    }
+
+    private fun restoreTabLayoutTabs() {
+        // Add tablayout tabs
+        // Unlike other views, these tabs need to be manually re-created.
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
+        for (mptab in mediaPlayerTabs) {
+            val newTab = tabLayout.newTab()
+            newTab.setText(mptab.fileSystemNavigator.currentDirectoryName)
+            Log.d(TAG, "adding tab. index: $currentPlayerIndex")
+            tabLayout.addTab(newTab)
+        }
     }
 
     private fun addNewLayoutTab(tabTitle: String): TabLayout.Tab? {
