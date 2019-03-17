@@ -138,15 +138,15 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     inner class MyFabBehavior : FloatingActionButton.Behavior() {
 
         override fun onDependentViewChanged(parent: CoordinatorLayout,
-                                   child: FloatingActionButton,
-                                   dependency: View): Boolean {
+                                            child: FloatingActionButton,
+                                            dependency: View): Boolean {
             Log.d(TAG, "fab_behavior oDVC")
             return super.onDependentViewChanged(parent, child, dependency)
         }
 
         override fun onLayoutChild(parent: CoordinatorLayout,
-                          child: FloatingActionButton,
-                          layoutDirection: Int): Boolean {
+                                   child: FloatingActionButton,
+                                   layoutDirection: Int): Boolean {
             Log.d(TAG, "fab_behavior oLC")
             return super.onLayoutChild(parent, child, layoutDirection)
         }
@@ -417,11 +417,11 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             }
         }
 
-        if(0 <= currentPlayerIndex && currentPlayerIndex < tabLayout.tabCount) {
+        if (0 <= currentPlayerIndex && currentPlayerIndex < tabLayout.tabCount) {
             Log.d(TAG, "Re-selecting tab " + currentPlayerIndex)
             val tab = tabLayout.getTabAt(currentPlayerIndex)
-            if(tab == null) {
-                Log.d(TAG,"oRIS !tab")
+            if (tab == null) {
+                Log.d(TAG, "oRIS !tab")
             } else {
                 tab.select()
             }
@@ -454,11 +454,11 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         val tab: MediaPlayerTab? = getCurrentlySelectedMediaPlayerTab()
         val viewMode: Int? = tab?.viewMode
-        if(viewMode == null) {
+        if (viewMode == null) {
             Log.d(TAG, "oR vM!")
-        } else if(viewMode == 0) {
+        } else if (viewMode == 0) {
             switchToFileSystemView()
-        } else if(viewMode == 1) {
+        } else if (viewMode == 1) {
             switchToPlaybackQueueView()
         }
 
@@ -861,10 +861,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     public fun getCurrentlySelectedMediaPlayerTab(): MediaPlayerTab? {
-        if(0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
+        if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
             return mediaPlayerTabs[currentPlayerIndex]
         } else {
-            Log.d(TAG, "gCSMPT: "+currentPlayerIndex)
+            Log.d(TAG, "gCSMPT: " + currentPlayerIndex)
             return null
         }
     }
@@ -965,11 +965,12 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
      */
     fun updateSeekbarProgressAndTime(mediaPlayer: MediaPlayer?) {
 
-        if(mediaPlayer == null) {
+        if (mediaPlayer == null) {
             return
         }
 
         val pos = mediaPlayer.getCurrentPosition()
+        Log.d(TAG, "uSPAT " + pos)
 
         folderViewSeekBar?.setProgress(pos)
 
@@ -991,7 +992,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     fun updatePlayingTrackControlPanel(mediaPlayer: MediaPlayer?) {
         Log.d(TAG, "uPTCP")
 
-        if(mediaPlayer == null) {
+        if (mediaPlayer == null) {
             return
         }
 
@@ -1172,7 +1173,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         btn?.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
-                        Log.d(TAG,"play/pause")
+                        Log.d(TAG, "play/pause")
                         val self = view as ImageButton//findViewById(R.id.play_pause);
 
                         val playing = togglePlayPauseState()
