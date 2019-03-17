@@ -18,6 +18,7 @@
         android:textColor="#5BB"
         app:tabTextColor="@color/textColorSecondary"
         app:tabSelectedTextColor="@color/textColorPrimary"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
