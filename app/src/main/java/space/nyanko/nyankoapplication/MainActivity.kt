@@ -275,14 +275,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             }
         }
 
-        //        serviceConnection = new ServiceConnection();
-        //        boolean res = bindService(serviceIntent,serviceConnection,0);
-        //        Log.d(TAG,"bS: " + res);
-        //        if(res) {
-        //            ;
-        //        }
-        //serviceConnection
-
         folderViewPlayingTrackTime = findViewById(R.id.playing_track_time) as TextView
 
         initSeekBar();
