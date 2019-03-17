@@ -279,18 +279,9 @@ class Playback : Serializable {
 
         private val TAG = "Playback"
 
-        private var currentPlayer: Playback? = null
-
         /**
          * Set by the service
          */
         var mediaPlayer: MediaPlayer? = null
-
-        fun setCurrentPlayer(currentPlayer: Playback?) {
-            Playback.currentPlayer = currentPlayer
-
-            // Notify the service
-            //BackgroundAudioService.setCurrentPlaybackQueue(currentPlayer);
-        }
     }
 }

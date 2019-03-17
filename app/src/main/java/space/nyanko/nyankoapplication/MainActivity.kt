@@ -244,9 +244,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             restoreTabLayoutTabs()
 
             if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
-                Playback.setCurrentPlayer(
-                        mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
-                )
                 recyclerViewAdapter!!.setCurrentFileSystemNavigator(
                         mediaPlayerTabs.get(currentPlayerIndex).fileSystemNavigator
                 )
@@ -632,7 +629,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         if (tabLayout.getTabCount() === 0) {
             Log.d(TAG, "All tabs removed")
             currentPlayerIndex = -1
-            Playback.setCurrentPlayer(null)
 
             recyclerViewAdapter!!.setCurrentFileSystemNavigator(null)
             // Notify recycler view adapter because otherwise the file list will remain
@@ -653,8 +649,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
         if (0 <= currentPlayerIndex && currentPlayerIndex < mediaPlayerTabs.size) {
-            Playback.setCurrentPlayer(
-                    mediaPlayerTabs.get(currentPlayerIndex).playbackQueue)
         } else {
             Log.w(TAG, "mPTs.size<=cPI")
         }
@@ -692,9 +686,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 mediaPlayerTabs.get(pos).fileSystemNavigator)
         recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
         recyclerViewAdapter!!.notifyDataSetChanged()
-
-        Playback.setCurrentPlayer(
-                mediaPlayerTabs.get(pos).playbackQueue)
 
         //              switchTab(pos);
     }
