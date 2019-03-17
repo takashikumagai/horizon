@@ -300,46 +300,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         folderViewPlayingTrackTime = findViewById(R.id.playing_track_time) as TextView
 
-        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
-        folderViewSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                //Log.d(TAG, "sb.oPC: " + seekBar.getProgress())
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-                Log.d(TAG, "sb.onStartTT: " + seekBar.getProgress())
-                isTrackingSeekBar = true
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                Log.d(TAG, "sb.onStopTT: " + seekBar.getProgress())
-                val service = BackgroundAudioService.instance
-                    val mediaPlayer = service?.mediaPlayer
-                    if (mediaPlayer != null) {
-                        mediaPlayer.seekTo(seekBar.getProgress())
-                    } else {
-                        Log.d(TAG, "oSTT !mP")
-                    }
-
-                isTrackingSeekBar = false
-            }
-        })
-
-        runOnUiThread(object : Runnable {
-
-            override fun run() {
-                val mediaPlayer = mediaPlayer
-                if (mediaPlayer == null) {
-                    Log.d(TAG, "rout !mP")
-                    return
-                }
-
-                updateSeekbarProgressAndTime(mediaPlayer)
-
-                // Add this runnable to the message queue
-                handler.postDelayed(this, 1000)
-            }
-        })
+        initSeekBar();
     }
 
     override protected fun onStart() {
@@ -1219,6 +1180,52 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                     }
                 }
         )
+    }
+
+    fun initSeekBar() {
+
+        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
+        folderViewSeekBar!!.setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                        //Log.d(TAG, "sb.oPC: " + seekBar.getProgress())
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar) {
+                        Log.d(TAG, "sb.onStartTT: " + seekBar.getProgress())
+                        isTrackingSeekBar = true
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar) {
+                        Log.d(TAG, "sb.onStopTT: " + seekBar.getProgress())
+                        val service = BackgroundAudioService.instance
+                        val mediaPlayer = service?.mediaPlayer
+                        if (mediaPlayer != null) {
+                            mediaPlayer.seekTo(seekBar.getProgress())
+                        } else {
+                            Log.d(TAG, "oSTT !mP")
+                        }
+
+                        isTrackingSeekBar = false
+                    }
+                })
+
+        runOnUiThread(
+                object : Runnable {
+
+                    override fun run() {
+                        val mediaPlayer = mediaPlayer
+                        if (mediaPlayer == null) {
+                            Log.d(TAG, "rout !mP")
+                            return
+                        }
+
+                        updateSeekbarProgressAndTime(mediaPlayer)
+
+                        // Add this runnable to the message queue
+                        handler.postDelayed(this, 1000)
+                    }
+                })
     }
 
     fun updatePlayingTrackPlayPauseButton(playing: Boolean?) {
