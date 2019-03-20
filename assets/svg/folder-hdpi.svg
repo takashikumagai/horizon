@@ -1,6 +1,6 @@
 <svg id="folder-hdpi" width="96" height="96" xmlns="http://www.w3.org/2000/svg">
   <rect x="3" y="3" rx="6" ry="6" width="90" height="90"
-  style="fill-opacity:0.0;stroke:#0d4351;stroke-width:3;opacity:1.0"></rect>
+  style="fill-opacity:0.0;stroke:#92a2a5;stroke-width:3;opacity:1.0"></rect>
   <path d="M18 25
            a3,3 0 0 1 3,-3
            L43 22
@@ -12,5 +12,5 @@
            L21 74
            a3,3 0 0 1 -3,-3
            z"
-           style="fill:#32454C"/>
+           style="fill:#95a2a5"/>
 </svg>
