@@ -53,7 +53,18 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
             return
         }
 
-        val fileList = f.listFiles()
+        // Tried to do this with f.walkTopDown().maxDepth(1) but the results
+        // were not ordered in directory first plus they include the argument
+        // directory so decided not to bethoer
+
+        val entries = f.listFiles()
+
+        val displayOnlyMediaFiles = true
+        var dirsAndFilesToShow: MutableList<File> =
+                if (displayOnlyMediaFiles) pickDirsAndMediaFiles(entries)
+                else entries.toCollection(ArrayList())// ArrayList<File>(Arrays.asList(entries))
+
+        val fileList = sortDirsFirst(dirsAndFilesToShow)
         if (fileList == null) {
             Log.d(TAG, "fileList==null")
             return
@@ -65,30 +76,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
         }
         Log.d(TAG, "names (" + fileList.size + "): " + names)
 
-        var entries = fileList
-
-        val filtered = ArrayList<File>()
-        val displayOnlyMediaFiles = true
-        if (displayOnlyMediaFiles) {
-            // Filter file list. Note that after this 'entries' contains directories
-            // and media files.
-
-
-            // Gave up on using lambda because of this error:
-            // Error: Call requires API level 24 (current min is 19): java.util.ArrayList#removeIf [NewApi]
-            //entries.removeIf(e -> !e.isDirectory() && !);
-            for (fileOrDir in entries) {
-                if (fileOrDir.isDirectory() || HorizonUtils.isMediaFile(fileOrDir.getPath())) {
-                    filtered.add(fileOrDir)
-                }
-            }
-        }
-
-        // Sort the files and directories inside the current directory
-        // Note that each element of entries can be a file or a directory.
-        Collections.sort(filtered)
-
-        currentDirectoryEntries = filtered
+        currentDirectoryEntries = ArrayList<File>(fileList)
     }
 
     //    @Override
@@ -157,6 +145,50 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
         updateCurrentDirectoryEntries()
 
         return this
+    }
+
+    fun pickDirsAndMediaFiles(dirsAndFiles: Array<File>): MutableList<File> {
+        val filtered = ArrayList<File>()
+        // Filter file list. Note that after this 'entries' contains directories
+        // and media files.
+
+
+        // Gave up on using lambda because of this error:
+        // Error: Call requires API level 24 (current min is 19): java.util.ArrayList#removeIf [NewApi]
+        //entries.removeIf(e -> !e.isDirectory() && !);
+        for (fileOrDir in dirsAndFiles) {
+            if (fileOrDir.isDirectory() || HorizonUtils.isMediaFile(fileOrDir.getPath())) {
+                filtered.add(fileOrDir)
+            }
+        }
+
+        return filtered
+    }
+
+    // Sort the files and directories inside the current directory
+    // Note that each element of entries can be a file or a directory.
+    fun sortDirsFirst(entries: MutableList<File>): List<File> {
+        entries.sortWith(object: Comparator<File>{
+            override fun compare(f1: File, f2: File): Int {
+                if(f1.isDirectory()) {
+                    if(f2.isDirectory()) {
+                        // Both f1 and f2 are directories
+                        return if (f1.toString() < f2.toString()) -1 else 1
+                    } else {
+                        return -1
+                    }
+                } else {
+                    if(f2.isDirectory()) {
+                        return 1
+                    } else {
+                        // Both f1 and f2 are files
+                        return if (f1.toString() < f2.toString()) -1 else 1
+                    }
+                }
+            }
+        })
+
+        return entries
     }
 
     companion object {
