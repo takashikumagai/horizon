@@ -87,6 +87,12 @@ class RecyclerViewAdapter(
         }
     }
 
+    /**
+     * @brief Sets the specified drawabe as the file/folder icon
+     *
+     * @param drawableResourceId drawable ID or 0 to remove the background
+     *
+     */
     fun setFileTypeIcon(holder: ViewHolder, drawableResourceId: Int) {
         if (holder.fileTypeIcon != null) { // sanity check
             Log.v(TAG, "setting the audio file icon.")
@@ -134,6 +140,8 @@ class RecyclerViewAdapter(
             holder.secondaryRow.setText("Folder")
 
             setFileTypeIcon(holder, R.drawable.folder)
+
+            holder.fileTypeIcon?.setText("")
 
         } else {
             // We are dealing with a file.
@@ -271,6 +279,7 @@ class RecyclerViewAdapter(
             holder.fileName.setText("")
             holder.secondaryRow.setText("")
             holder.itemView.setBackgroundColor(0xff2b2b2b.toInt())
+            setFileTypeIcon(holder,0)
             return
         }
 
