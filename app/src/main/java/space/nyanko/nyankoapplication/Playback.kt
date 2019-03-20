@@ -62,12 +62,7 @@ class Playback : Serializable {
     val currentlyPlayedMediaPath: String?
         get() {
             if (0 <= pointedMediaIndex && pointedMediaIndex < mediaFilePathQueue.size) {
-                val f = File(mediaFilePathQueue.get(pointedMediaIndex))
-                return if (f != null) {
-                    f.getPath()
-                } else {
-                    null
-                }
+                return File(mediaFilePathQueue.get(pointedMediaIndex)).getPath()
             } else {
                 return null
             }
@@ -172,7 +167,7 @@ class Playback : Serializable {
         }
         mediaFilePathQueue.add(mediaFilePath)
 
-        if (mediaFilePathQueue.size === 1) {
+        if (mediaFilePathQueue.size == 1) {
             // Queue just got one media file; point to it
             pointedMediaIndex = 0
         }
