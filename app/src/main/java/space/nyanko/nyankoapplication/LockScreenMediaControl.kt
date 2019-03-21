@@ -117,6 +117,18 @@ internal object LockScreenMediaControl {
                 R.drawable.next,
                 "Next"))
 
+        // Create an explicit intent to open MainActivity when the notification is tapped.
+        val intent = Intent(context, MainActivity::class.java).apply {
+            Log.d(TAG,"intent apply")
+            //flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+        builder//.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                // Set the intent that will fire when the user taps the notification
+                .setContentIntent(pendingIntent)
+//                //.setAutoCancel(true)
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             Log.d(TAG, "sdk<codes.o")
             builder.setVibrate(longArrayOf(0L))
