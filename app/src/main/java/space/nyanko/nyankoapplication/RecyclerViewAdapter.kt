@@ -200,11 +200,7 @@ class RecyclerViewAdapter(
             // Update the tab label
             mainActivity.setSelectedTabLabel(entry.getName())
 
-            if (viewMode == 0) {
-                onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity)
-            } else if (viewMode == 1) {
-                onEntryClickedInPlayQueueMode(entry)
-            }
+            onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity)
         }
     }
 
@@ -258,9 +254,21 @@ class RecyclerViewAdapter(
         }
     }
 
-    fun onEntryClickedInPlayQueueMode(entry: File?) {
+    fun onEntryClickedInPlayQueueMode(entry: File?, pos: Int) {
+
+        val mainActivity = mContext as MainActivity
 
         // Jump to the tapped/clicked track
+        val mediaPlayerTab
+                = mainActivity.mediaPlayerTabs.get(mainActivity.currentPlayerIndex)
+
+        if(mediaPlayerTab == null) {
+            Log.w(TAG,"oECIPQM !mPT")
+        } else {
+            mediaPlayerTab.playbackQueue.playTrackAt(pos)
+        }
+
+        notifyDataSetChanged()
     }
 
     fun setMediaInQueueToHolder(holder: ViewHolder, position: Int) {
@@ -300,6 +308,14 @@ class RecyclerViewAdapter(
         holder.secondaryRow.setText("In Queue")
 
         holder.itemView.setBackgroundColor(0xff2b2b2b.toInt())
+
+        holder.parentLayout.setOnClickListener() { v ->
+            Log.d(TAG, "playlist onClick " + f.getName())
+
+            Toast.makeText(mContext, f.getName(), Toast.LENGTH_SHORT).show()
+
+            onEntryClickedInPlayQueueMode(f, pos)
+        }
     }
 
 

@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     /**
      * @brief Index to the currently selected tab, i.e. tab on the screen
      */
-    private var currentPlayerIndex = -1
+    var currentPlayerIndex = -1
 
     //==================== Model ====================
 

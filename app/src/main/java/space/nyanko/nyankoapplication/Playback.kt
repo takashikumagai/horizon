@@ -160,6 +160,23 @@ class Playback : Serializable {
         return true
     }
 
+    /**
+     * @brief Start playing the i-th track in the play queue
+     *
+     */
+    fun playTrackAt(pos: Int): Boolean {
+        if(pos < 0 || mediaFilePathQueue.size <= pos) {
+            Log.w(TAG, "pTA !pos " + pos)
+            return false
+        }
+
+        pointedMediaIndex = pos
+
+        startCurrentlyPointedMediaInQueue()
+
+        return true
+    }
+
     fun addToQueue(mediaFilePath: String) {
         Log.d(TAG, "addToQueue")
         if (500 <= mediaFilePathQueue.size) {
