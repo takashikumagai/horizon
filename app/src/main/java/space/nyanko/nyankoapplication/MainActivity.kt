@@ -1336,6 +1336,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     fun showPlayingTrackControl() {
         Log.d(TAG, "sPTB")
 
+        updatePlayingTrackControlPanel(this.mediaPlayer)
+        updateSeekbarProgressAndTime(this.mediaPlayer)
+
         // Show the playing track info and control (pause/resume)
         val ptc: LinearLayout = findViewById(R.id.playing_track_control)
         ptc.setVisibility(View.VISIBLE)
