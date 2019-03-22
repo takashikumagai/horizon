@@ -1,6 +1,6 @@
 <svg id="musical_symbol-xxhdpi" width="96" height="96" xmlns="http://www.w3.org/2000/svg">
   <rect x="3" y="3" rx="6" ry="6" width="90" height="90"
-  style="fill-opacity:0.0;stroke:#0d4351;stroke-width:3;opacity:1.0"></rect>
+  style="fill-opacity:0.0;stroke:#919da0;stroke-width:3;opacity:1.0"></rect>
   <path
      transform="matrix(0.07,0,0,-0.07,50,12)"
      d="m 0,0 c 0,-198 209,-335 209,-533 0,-71 -16,-141 -42,-207 -5,-8 -12,-12 -19,-12 -13,0 -26,11 -23,27 26,61 42,126 42,192 0,104 -95,208 -167,283 l -16,0 0,250 16,0 z"
