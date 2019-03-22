@@ -146,42 +146,11 @@ class RecyclerViewAdapter(
         } else {
             // We are dealing with a file.
 
+
             // See if this one is a media file, e.g. mp3
             val isMediaFile = HorizonUtils.isMediaFile(entry.getName())
             if (isMediaFile) {
-                if (HorizonOptions.showMetaTagTitles) {
-                    val tags = intArrayOf(MediaMetadataRetriever.METADATA_KEY_TITLE, MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER, MediaMetadataRetriever.METADATA_KEY_DURATION)
-                    //                    String title = HorizonUtils.getMediaFileTitle(entry);
-                    val metaTags = HorizonUtils.getMediaFileMetaTags(entry, tags)
-                    val title = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                    if (title != null && 0 < title.length) {
-                        // The media file has a meta tag; use the title instead of its file name
-                        holder.fileName.setText(title)
-                    } else {
-                        // Does not have the title tag; just set the file name
-                        holder.fileName.setText("> " + entry.getName())
-                    }
-
-                    var secondRow = ""
-                    val track = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
-                    if (track != null) {
-                        holder.fileTypeIcon?.setText(track)
-                    }
-
-                    val duration = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                    if (duration != null) {
-                        val hhmmss = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
-                        secondRow = "$hhmmss"
-                    }
-                    holder.secondaryRow.setText(secondRow)
-
-                } else {
-                    // Option is set not to get meta tag; just set the file name
-                    holder.fileName.setText(entry.getName())
-                }
-
-                setFileTypeIcon(holder,R.drawable.audio_file)
-
+                setMediaFileToViewHolder(entry,holder)
             } else {
                 // This should not happen as entries are supposed to contain
                 // only directories and media files
@@ -203,6 +172,61 @@ class RecyclerViewAdapter(
             onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity)
         }
     }
+
+    fun setMediaFileToViewHolder(entry: File, holder: ViewHolder) {
+
+        var metaTags: HashMap<Int, String>? = HashMap<Int, String>()
+        if(HorizonOptions.retrieveMediaMetadata) {
+            val tags = intArrayOf(
+                    MediaMetadataRetriever.METADATA_KEY_TITLE,
+                    MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER,
+                    MediaMetadataRetriever.METADATA_KEY_DURATION)
+            metaTags = HorizonUtils.getMediaFileMetaTags(entry, tags)
+        }
+
+        if (HorizonOptions.showMetaTagTitles) {
+
+            val title = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
+            if (title != null && 0 < title.length) {
+                // The media file has a meta tag; use the title instead of its file name
+                holder.fileName.setText(title)
+            } else {
+                // Does not have the title tag; just set the file name
+                holder.fileName.setText(entry.getName())
+            }
+        } else {
+            // User explicitly chose to see file name instead of title
+            holder.fileName.setText(entry.getName())
+        }
+
+        // Show the track number in the upper right corner of the media type icon
+        // if the media file has the track number metadata
+        val track = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
+        if (track != null) {
+            holder.fileTypeIcon?.setText(track)
+        } else {
+            holder.fileTypeIcon?.setText("")
+        }
+
+        setFileTypeIcon(holder,R.drawable.audio_file)
+
+        // Track duration
+        var secondRow = ""
+        val duration = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        if (duration != null) {
+            val hhmmss = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
+            secondRow = "$hhmmss"
+        }
+        holder.secondaryRow.setText(secondRow)
+    }
+
+    fun clearViewHolder(holder: ViewHolder) {
+        holder.fileTypeIcon?.setText("")
+        holder.fileName.setText("")
+        holder.secondaryRow.setText("")
+    }
+
+
 
     fun onEntryClickedInFileSystemViewMode(entry: File?,
                                            pos: Int,
@@ -300,12 +324,10 @@ class RecyclerViewAdapter(
 
         val f = File(path)
         if (f != null) {
-            holder.fileName.setText(f.getName())
-            setFileTypeIcon(holder,R.drawable.audio_file)
+            setMediaFileToViewHolder(f,holder)
         } else {
-            holder.fileName.setText("!f")
+            clearViewHolder(holder)
         }
-        holder.secondaryRow.setText("In Queue")
 
         holder.itemView.setBackgroundColor(0xff2b2b2b.toInt())
 

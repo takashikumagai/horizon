@@ -13,7 +13,15 @@ object HorizonOptions {
     private val TAG = "HorizonOptions"
 
     /**
-     * \brief whether to extract metadata from media files.
+     * @brief Whether or not to attempt to metadata from media files.
+     *
+     *
+     *
+     */
+    var retrieveMediaMetadata = true
+
+    /**
+     * @brief whether to extract metadata from media files.
      *
      * - true: shows the meta tag title, falls back to the file name if
      *
