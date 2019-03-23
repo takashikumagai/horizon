@@ -13,12 +13,12 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:paddingTop="1dp"
-        android:paddingLeft="2dp"
+        android:paddingLeft="4dp"
         android:layout_margin="0dp"
         android:background="@drawable/folder"
         android:text=""
-        android:textSize="14dp"
-        android:textColor="#0d4351"
+        android:textSize="12dp"
+        android:textColor="@color/textColorSecondary"
         />
 
     <TextView
