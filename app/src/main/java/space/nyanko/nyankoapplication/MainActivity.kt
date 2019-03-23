@@ -432,7 +432,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             switchToPlaybackQueueView()
         }
 
-        updatePlayingTrackControlPanel(this.mediaPlayer)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -956,7 +955,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
         val pos = mediaPlayer.getCurrentPosition()
-        Log.d(TAG, "uSPAT " + pos)
+        //Log.d(TAG, "uSPAT " + pos)
 
         folderViewSeekBar?.setProgress(pos)
 
@@ -974,9 +973,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     /**
      * @brief Find better name than 'playing track control panel'
+     *
+     * - Updates the track duration information (time and seekbar)
+     *   - Note that this function does not update the current position
+     * - Updates the playing track title
      */
     fun updatePlayingTrackControlPanel(mediaPlayer: MediaPlayer?) {
-        Log.d(TAG, "uPTCP")
+        Log.d(TAG, "uPTCP " + currentlyPlayedQueueIndex)
 
         if (mediaPlayer == null) {
             return
@@ -1011,6 +1014,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             } else {
                 Log.w(TAG, "uPTCP !cP")
             }
+        } else {
+            Log.d(TAG,"uPTCP !cPQI " + currentlyPlayedQueueIndex);
         }
     }
 
@@ -1054,11 +1059,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // Save the view mode
         mediaPlayerTabs.get(currentPlayerIndex).viewMode = 0
 
-        val playbackQueue = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
+//        val playbackQueue = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
+        val playbackQueue = getCurrentlyPlayingTab()?.playbackQueue
 
-        if (0 < playbackQueue.mediaFilePathQueue.size) {
+        if (playbackQueue != null && 0 < playbackQueue.mediaFilePathQueue.size) {
             showPlayingTrackControl()
         }
+
         hidePlaybackQueueControl()
 
         recyclerViewAdapter!!.viewMode = 0
@@ -1137,8 +1144,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 //}
             }
         })
-
-        fab.setImageBitmap(textAsBitmap("▶", 40f, Color.WHITE))
 
         val params = fab.getLayoutParams()
         Log.v(TAG, "fab layout params: " + params::class)
@@ -1301,6 +1306,17 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         return Playback.mediaPlayer?.isPlaying()
     }
 
+    fun getCurrentlyPlayingTab(): MediaPlayerTab? {
+        Log.d(TAG, "gCPT " + currentPlayerIndex)
+        if(0 <= currentlyPlayedQueueIndex
+                && currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
+            return mediaPlayerTabs.get(currentlyPlayedQueueIndex)
+        } else {
+            Log.d(TAG, "gCPT r!")
+            return null
+        }
+    }
+
     /**
      *
      * @return true: new state = playing, false: new state = paused, null: something went wrong
@@ -1343,6 +1359,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         val ptc: LinearLayout = findViewById(R.id.playing_track_control)
         ptc.setVisibility(View.VISIBLE)
 
+        // Update the track title and duration
+        updatePlayingTrackControlPanel(this.mediaPlayer)
+
+        // Update button state (playing or paused)
         updatePlayingTrackPlayPauseButton(isMediaPlaying())
     }
 
@@ -1363,21 +1383,5 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         private var tabIdCounter = 1000
 
         private val APPLICATION_STATE_FILE_NAME = "appstate"
-
-        //method to convert your text to image
-        fun textAsBitmap(text: String, textSize: Float, textColor: Int): Bitmap {
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-            paint.setTextSize(textSize)
-            paint.setColor(textColor)
-            paint.setTextAlign(Paint.Align.LEFT)
-            val baseline = -paint.ascent() // ascent() is negative
-            val width = (paint.measureText(text) + 0.0f).toInt() // round
-            val height = (baseline + paint.descent() + 0.0f).toInt()
-            val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-            val canvas = Canvas(image)
-            canvas.drawText(text, 0f, baseline, paint)
-            return image
-        }
     }
 }
