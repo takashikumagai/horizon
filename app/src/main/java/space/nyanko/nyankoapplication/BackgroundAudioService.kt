@@ -469,9 +469,13 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         if (currentlyPlayed != null) {
             val mediaName = currentlyPlayed!!.currentlyPlayedMediaPath
             val title = getMediaTitle(mediaName)
-            val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
-                    intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
-            val text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+            var text: String? = ""
+            if(mediaName != null) {
+                // File(null) would throw a NPE
+                val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
+                        intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
+                text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+            }
             val player = mediaPlayer
             val isPlaying = if(player != null) player.isPlaying() else false
             LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
