@@ -13,7 +13,6 @@ import android.view.ViewParent
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.TextView
-import android.widget.Toast
 
 import java.io.File
 import java.io.IOException
@@ -163,8 +162,6 @@ class RecyclerViewAdapter(
 
         holder.parentLayout.setOnClickListener() { v ->
             Log.d(TAG, "onClick: clicked")
-
-            Toast.makeText(mContext, entry.getName(), Toast.LENGTH_SHORT).show()
 
             // Update the tab label
             mainActivity.setSelectedTabLabel(entry.getName())
@@ -333,8 +330,6 @@ class RecyclerViewAdapter(
 
         holder.parentLayout.setOnClickListener() { v ->
             Log.d(TAG, "playlist onClick " + f.getName())
-
-            Toast.makeText(mContext, f.getName(), Toast.LENGTH_SHORT).show()
 
             onEntryClickedInPlayQueueMode(f, pos)
         }
