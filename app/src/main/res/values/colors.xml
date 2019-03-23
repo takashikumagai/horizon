@@ -6,6 +6,7 @@
     <color name="textColorSecondary">#A7A7A7</color>
     <color name="bgDark">#2B2B2B</color>
     <color name="bgSemiDark">#2F2F2F</color>
+    <color name="bgButton">#3F3F3F</color>
     <color name="colorAccent">#4BA2CC</color>
     <color name="orange">#FF5500</color>
     <color name="blue">#0000FF</color>

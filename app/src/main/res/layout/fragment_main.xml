@@ -129,6 +129,7 @@
                 android:layout_height="56dp"
                 android:padding="16dp"
                 android:scaleType="fitCenter"
+                android:background="@color/bgButton"
                 android:src="@drawable/pause"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -158,6 +159,7 @@
             android:layout_height="52dp"
             android:padding="16dp"
             android:scaleType="fitCenter"
+            android:background="@color/bgButton"
             android:src="@drawable/prev" />
         <!--Button
             android:layout_width="wrap_content"
@@ -170,6 +172,7 @@
             android:layout_height="52dp"
             android:padding="16dp"
             android:scaleType="fitCenter"
+            android:background="@color/bgButton"
             android:src="@drawable/play" />
 
         <ImageButton
@@ -178,6 +181,7 @@
             android:layout_height="52dp"
             android:padding="16dp"
             android:scaleType="fitCenter"
+            android:background="@color/bgButton"
             android:src="@drawable/next" />
 
     </LinearLayout>
