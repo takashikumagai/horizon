@@ -326,7 +326,16 @@ class RecyclerViewAdapter(
             clearViewHolder(holder)
         }
 
-        holder.itemView.setBackgroundColor(0xff2b2b2b.toInt())
+        var color = 0xff2b2b2b.toInt()
+        var text = ""
+        if(pos == mediaPlayerTab.playbackQueue.pointedMediaIndex) {
+            color = 0xff2d393d.toInt() // playing
+            text = " - Playing"
+        } else {
+            color = 0xff2b2b2b.toInt() // queued
+        }
+        holder.itemView.setBackgroundColor(color)
+        //holder.secondaryRow.setText(holder.secondaryRow.getText() + text)
 
         holder.parentLayout.setOnClickListener() { v ->
             Log.d(TAG, "playlist onClick " + f.getName())
