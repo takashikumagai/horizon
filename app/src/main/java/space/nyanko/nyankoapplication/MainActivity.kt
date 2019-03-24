@@ -187,6 +187,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         initFloatingActionButton()
 
+        initResumeFab()
+
         initPlayingTrackControl()
 
         hidePlaybackQueueControl()
@@ -677,6 +679,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 mediaPlayerTabs.get(pos).fileSystemNavigator)
         recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
         recyclerViewAdapter!!.notifyDataSetChanged()
+
+        switchToFileSystemView()
     }
 
     private fun setTabListeners() {
@@ -690,6 +694,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 val pos = tab.getPosition()
                 Log.d(TAG, "onTabUnselected: " + tab.getText() + " " + pos)
 
+                // Set the view mode of unselected tab to Folder View
+                if(0 <= pos && pos < mediaPlayerTabs.size) {
+                    mediaPlayerTabs.get(pos).viewMode = 0
+                }
+
+                // hiding playlist control & showing playing track control
+                // are done in onTabSelection() via switchToFileSystemView()
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -746,6 +757,34 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         } else {
             Log.e(TAG, "oBP !!vM")
         }
+    }
+
+    fun resume() {
+        Log.d(TAG, "resume")
+
+        if(currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
+            Log.d(TAG, "resume !cPI: $currentPlayerIndex")
+            return
+        }
+
+        val mediaPlayerTab = mediaPlayerTabs.get(currentPlayerIndex)
+        if(mediaPlayerTab.playbackQueue.mediaFilePathQueue.size == 0) {
+            Log.d(TAG,"resume q.0")
+            return
+        }
+
+        currentlyPlayedQueueIndex = currentPlayerIndex
+
+        val readyToPlay = onMediaStartRequestedOnScreen()
+        if (!readyToPlay) {
+            Log.d(TAG, "resume !rTP")
+            return
+        }
+        val player = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
+        player.startCurrentlyPointedMediaInQueue()
+        onMediaStartedOnScreen()
+
+        switchToPlaybackQueueView()
     }
 
     fun setSelectedTabLabel(text: String) {
@@ -1060,6 +1099,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 //        val playbackQueue = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
         val playbackQueue = getCurrentlyPlayingTab()?.playbackQueue
 
+        // Show the playing track control if the play queue has at least
+        // one track
         if (playbackQueue != null && 0 < playbackQueue.mediaFilePathQueue.size) {
             showPlayingTrackControl()
         }
@@ -1122,7 +1163,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
                 val readyToPlay = onMediaStartRequestedOnScreen()
                 if (!readyToPlay) {
-                    Log.d(TAG, "!rTP")
+                    Log.d(TAG, "fab.oC !rTP")
                     return
                 }
                 val player = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
@@ -1155,6 +1196,16 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
         fab.setVisibility(View.GONE)
+    }
+
+    fun initResumeFab() {
+        val fab = findViewById(R.id.resume) as FloatingActionButton
+        fab.setOnClickListener(object : View.OnClickListener {
+
+            override fun onClick(view: View) {
+                resume()
+            }
+        })
     }
 
     fun initPlayingTrackControl() {
