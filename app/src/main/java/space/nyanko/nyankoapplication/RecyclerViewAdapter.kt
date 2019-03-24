@@ -300,7 +300,7 @@ class RecyclerViewAdapter(
 
         val mainActivity = mContext as MainActivity
         val tabs = mainActivity.mediaPlayerTabs
-        val mediaPlayerTab = tabs.get(mainActivity.currentlyPlayedQueueIndex)
+        val mediaPlayerTab = tabs.get(mainActivity.currentPlayerIndex)
 
         val queue = mediaPlayerTab.playbackQueue.mediaFilePathQueue
         if (pos < 0) { // Sanity check
