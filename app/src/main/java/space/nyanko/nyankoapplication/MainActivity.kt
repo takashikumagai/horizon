@@ -648,7 +648,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     private fun initRecyclerView() {
-        Log.d(TAG, "initRecyclerView called")
+        Log.d(TAG, "initRecyclerView")
 
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerViewAdapter = RecyclerViewAdapter(this)
@@ -664,7 +664,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
      */
     private fun onTabSelection(tab: TabLayout.Tab) {
         val pos = tab.getPosition()
-        Log.d(TAG, "onTabSelected called: " + tab.getText() + " (pos: " + pos + ")")
+        Log.d(TAG, "onTabSelection: " + tab.getText() + " " + pos)
 
         if (pos < 0 || mediaPlayerTabs.size <= pos) {
             Log.w(TAG, "oTS: invalid tab pos")
@@ -677,8 +677,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 mediaPlayerTabs.get(pos).fileSystemNavigator)
         recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
         recyclerViewAdapter!!.notifyDataSetChanged()
-
-        //              switchTab(pos);
     }
 
     private fun setTabListeners() {
@@ -690,13 +688,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 val pos = tab.getPosition()
-                Log.d(TAG, "onTabUnselected called: " + tab.getText() + " (pos: " + pos + ")")
+                Log.d(TAG, "onTabUnselected: " + tab.getText() + " " + pos)
 
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
                 val pos = tab.getPosition()
-                Log.d(TAG, "onTabReselected called: " + tab.getText() + " (pos: " + pos + ")")
+                Log.d(TAG, "onTabReselected: " + tab.getText() + " " + pos)
 
             }
         })
@@ -706,7 +704,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         Log.d(TAG, "oBP")
 
         if (recyclerViewAdapter == null) {
-            Log.w(TAG, "rVA")
+            Log.w(TAG, "!rVA")
             return
         }
 

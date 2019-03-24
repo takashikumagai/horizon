@@ -75,7 +75,7 @@ class RecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.d(TAG, "onBindViewHolder: called.")
+        Log.d(TAG, "onBindViewHolder: " + position)
 
         if (viewMode == 0) {
             setFileOrDirectoryToHolder(holder, position)
@@ -100,7 +100,7 @@ class RecyclerViewAdapter(
     }
 
     fun setFileOrDirectoryToHolder(holder: ViewHolder, position: Int) {
-        Log.v(TAG, "sFODTH")
+        Log.v(TAG, "sFODTH: $position")
         //FileSystemNavigator currentFileSystemNavigator = null;
 
         val pos = holder.getAdapterPosition()
@@ -318,6 +318,7 @@ class RecyclerViewAdapter(
         }
 
         val path = queue.get(pos)
+        Log.d(TAG, "sMIQTH " + path)
 
         val f = File(path)
         if (f != null) {
