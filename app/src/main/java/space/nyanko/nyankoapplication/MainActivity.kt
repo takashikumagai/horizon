@@ -971,11 +971,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     override fun onAudioPause() {
         Log.d(TAG, "onAudioPause")
         updatePlayingTrackPlayPauseButton(false)
+        updatePlayQueuePlayPauseButton(false)
     }
 
     override fun onAudioPlay() {
         Log.d(TAG, "onAudioPlay")
         updatePlayingTrackPlayPauseButton(true)
+        updatePlayQueuePlayPauseButton(true)
     }
 
     /**
@@ -1114,6 +1116,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     fun showPlaybackQueueControl() {
         val pc: LinearLayout = findViewById(R.id.playback_control)
         pc.setVisibility(View.VISIBLE)
+
+        updatePlayingTrackPlayPauseButton(isMediaPlaying())
     }
 
     fun hidePlaybackQueueControl() {
@@ -1349,6 +1353,17 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                         onMediaStartedOnScreen()
                     }
                 })
+    }
+
+    fun updatePlayQueuePlayPauseButton(playing: Boolean?) {
+        val btn = findViewById(R.id.play_pause_button) as ImageButton?
+        if(playing == null) {
+            btn?.setImageResource(R.drawable.stop)
+        } else if(playing) {
+            btn?.setImageResource(R.drawable.pause)
+        } else {
+            btn?.setImageResource(R.drawable.play)
+        }
     }
 
     fun isMediaPlaying(): Boolean? {
