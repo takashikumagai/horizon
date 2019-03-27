@@ -124,6 +124,15 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             return fab
         }
 
+    val resumeFab: FloatingActionButton?
+        get() {
+            val fab = findViewById(R.id.resume) as FloatingActionButton
+            if (fab == null) {
+                Log.e(TAG, "!resumeFab")
+            }
+            return fab
+        }
+
     private val mediaPlayer: MediaPlayer?
         get() {
             val service = BackgroundAudioService.instance
@@ -687,6 +696,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         mediaPlayerTabs.get(pos).viewMode = 0
 
         switchToFileSystemView()
+
+        updateResumeButtonVisibility()
     }
 
     private fun setTabListeners() {
@@ -791,6 +802,28 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         onMediaStartedOnScreen()
 
         switchToPlaybackQueueView()
+    }
+
+    fun updateResumeButtonVisibility() {
+
+        val mediaPlayerTab = getCurrentlySelectedMediaPlayerTab()
+
+        if(mediaPlayerTab == null) {
+            Log.d(TAG, "uRBV !mPT")
+            return
+        }
+
+        val playQueue = mediaPlayerTab.playbackQueue
+        if(playQueue == null) {
+            Log.d(TAG, "uRBV!!!")
+            return
+        }
+
+        if(0 < playQueue.mediaFilePathQueue.size) {
+            resumeFab?.setVisibility(View.VISIBLE)
+        } else {
+            resumeFab?.setVisibility(View.GONE)
+        }
     }
 
     fun setSelectedTabLabel(text: String) {
