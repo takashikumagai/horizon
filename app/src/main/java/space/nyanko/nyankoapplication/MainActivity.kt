@@ -677,8 +677,14 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         recyclerViewAdapter!!.setCurrentFileSystemNavigator(
                 mediaPlayerTabs.get(pos).fileSystemNavigator)
-        recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
-        recyclerViewAdapter!!.notifyDataSetChanged()
+
+        // These are called in switchToFileSystemView() so no need
+        // to called them here.
+        //recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
+        //recyclerViewAdapter!!.notifyDataSetChanged()
+
+        // When the tab is selected, the view is always in the folder view mode
+        mediaPlayerTabs.get(pos).viewMode = 0
 
         switchToFileSystemView()
     }
@@ -1111,6 +1117,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         recyclerViewAdapter!!.viewMode = 0
         recyclerViewAdapter!!.notifyDataSetChanged()
+
+        updateFloatingActionButtonVisibility()
     }
 
     fun showPlaybackQueueControl() {
