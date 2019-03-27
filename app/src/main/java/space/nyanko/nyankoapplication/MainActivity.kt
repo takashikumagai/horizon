@@ -790,15 +790,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             return
         }
 
-        currentlyPlayedQueueIndex = currentPlayerIndex
-
         val readyToPlay = onMediaStartRequestedOnScreen()
         if (!readyToPlay) {
             Log.d(TAG, "resume !rTP")
             return
         }
         val player = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
-        player.startCurrentlyPointedMediaInQueue()
+        player.resumeCurrentlyPointedMediaInQueue()
         onMediaStartedOnScreen()
 
         switchToPlaybackQueueView()
@@ -931,6 +929,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun onMediaStartRequestedOnScreen(): Boolean {
+        Log.e(TAG, "oMSROS")
 
         var service = BackgroundAudioService.instance
         if (service == null) {
@@ -956,13 +955,16 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
         val granted = service.retrievedAudioFocus()
         if (!granted) {
+            Log.d(TAG, "oMSROS !g")
             return false
         }
 
+        Log.d(TAG, "oMSROS indices: $currentPlayerIndex $currentlyPlayedQueueIndex")
         if (currentlyPlayedQueueIndex != currentPlayerIndex) {
             // currently played tab != selected tab.
             if (0 <= currentlyPlayedQueueIndex) {
                 if (currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
+                    Log.d(TAG, "saving playback pos for " + currentlyPlayedQueueIndex)
                     mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
                             .saveCurrentPlaybackPosition()
                 } else {
@@ -1103,8 +1105,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         mediaPlayerTabs.get(currentPlayerIndex).viewMode = 1
 
         // Hide the playing track control and show the play queue
-        // media control.
+        // media control, after updating the play/pause button
         hidePlayingTrackControl()
+        updatePlayQueuePlayPauseButton(isMediaPlaying())
         showPlaybackQueueControl()
 
         recyclerViewAdapter!!.viewMode = 1
@@ -1214,7 +1217,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 val player = mediaPlayerTabs.get(currentPlayerIndex).playbackQueue
                 player.clearQueue()
                 player.addToQueue(mediaFiles)
-                player.startCurrentlyPointedMediaInQueue()
+                player.resetSavedPlaybackPosition()
+                player.playCurrentlyPointedMediaInQueue()
                 onMediaStartedOnScreen()
 
                 switchToPlaybackQueueView()
@@ -1251,6 +1255,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 resume()
             }
         })
+
+        fab.setVisibility(View.GONE)
     }
 
     fun initPlayingTrackControl() {

@@ -74,7 +74,15 @@ class Playback : Serializable {
         pointedMediaIndex = -1
     }
 
-    fun startCurrentlyPointedMediaInQueue() {
+    fun resetSavedPlaybackPosition() {
+        playbackPosition = 0
+    }
+
+    /**
+     * @brief Plays from the start or resumes the playback at the last paused position
+     *
+     */
+    fun startCurrentlyPointedMediaInQueue(resume: Boolean) {
         Log.d(TAG, "sCPMIQ")
 
         val mediaPlayer = mediaPlayer
@@ -112,6 +120,10 @@ class Playback : Serializable {
             mediaPlayer.setDataSource(mediaFilepath)
             Log.d(TAG, "prepare")
             mediaPlayer.prepare()
+            if(resume) {
+                Log.d(TAG, "seeking")
+                mediaPlayer.seekTo(playbackPosition)
+            }
             Log.d(TAG, "starting")
             mediaPlayer.start()
         } catch (ioe: IOException) {
@@ -133,6 +145,14 @@ class Playback : Serializable {
         }
     }
 
+    fun playCurrentlyPointedMediaInQueue() {
+        startCurrentlyPointedMediaInQueue(false)
+    }
+
+    fun resumeCurrentlyPointedMediaInQueue() {
+        startCurrentlyPointedMediaInQueue(true)
+    }
+
     fun playPrevTrack(): Boolean {
         if (pointedMediaIndex <= 0) {
             return false
@@ -140,7 +160,7 @@ class Playback : Serializable {
 
         pointedMediaIndex -= 1
 
-        startCurrentlyPointedMediaInQueue()
+        playCurrentlyPointedMediaInQueue()
 
         return true
     }
@@ -155,7 +175,7 @@ class Playback : Serializable {
 
         pointedMediaIndex += 1
 
-        startCurrentlyPointedMediaInQueue()
+        playCurrentlyPointedMediaInQueue()
 
         return true
     }
@@ -172,7 +192,8 @@ class Playback : Serializable {
 
         pointedMediaIndex = pos
 
-        startCurrentlyPointedMediaInQueue()
+        resetSavedPlaybackPosition()
+        playCurrentlyPointedMediaInQueue()
 
         return true
     }
@@ -266,6 +287,7 @@ class Playback : Serializable {
             Log.w(TAG, "sCPP !mP")
         }
 
+        Log.d(TAG, "sCPP: " + mediaPlayer!!.getCurrentPosition())
         playbackPosition = mediaPlayer!!.getCurrentPosition()
     }
 

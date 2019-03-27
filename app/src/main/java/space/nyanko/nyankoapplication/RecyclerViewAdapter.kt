@@ -256,7 +256,8 @@ class RecyclerViewAdapter(
                 }
                 player.clearQueue()
                 player.addToQueue(entry.getPath())
-                player.startCurrentlyPointedMediaInQueue()
+                player.resetSavedPlaybackPosition()
+                player.playCurrentlyPointedMediaInQueue()
                 mainActivity.onMediaStartedOnScreen()
 
                 mainActivity.showPlayingTrackControl()
