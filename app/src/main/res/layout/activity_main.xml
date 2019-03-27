@@ -28,36 +28,30 @@
         android:id="@+id/resume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/recycler_view"
-        app:layout_anchorGravity="top|end"
+        android:layout_gravity="top|end"
+        app:layout_anchor="@id/fab"
+        app:layout_anchorGravity="top"
         android:layout_marginBottom="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
-        android:src="@drawable/pause" />
+        android:src="@drawable/resume"
+        app:backgroundTint="@color/colorPrimaryDark"
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        android:layout_gravity="top|end"
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|end"
-        android:src="@drawable/play" />
-
-    <!--TextView
-        android:id="@+id/fab_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="▶"
-        android:elevation="8dp"
-        android:textColor="@android:color/white"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="32dp"
-        app:layout_anchor="@id/fab"
-        app:layout_anchorGravity="center" /-->
+        app:useCompatPadding="true"
+        android:src="@drawable/play"
+        app:backgroundTint="@color/colorPrimaryDark"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
