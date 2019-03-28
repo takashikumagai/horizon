@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Update drawables (convert SVG to PNG)
+cd assets
+./update_images.py
+cd ..
+
+# Build
 ./gradlew clean
 
 ./gradlew build; gradle_return_code=$?
