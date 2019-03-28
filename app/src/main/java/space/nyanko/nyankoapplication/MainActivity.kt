@@ -705,6 +705,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         recyclerViewAdapter!!.setCurrentFileSystemNavigator(
                 mediaPlayerTabs.get(pos).fileSystemNavigator)
 
+        val navigator = mediaPlayerTabs.get(pos).fileSystemNavigator
+        setTitle(navigator?.currentDirectoryName ?: "")
+
         // These are called in switchToFileSystemView() so no need
         // to called them here.
         //recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
@@ -770,6 +773,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
             if (ret == 0) {
                 // Moved to the parent directory/point
+
+                setTitle(navigator?.currentDirectoryName ?: "")
 
                 // Show/hide FAB depending on whether the directory contains
                 // one or more media files.

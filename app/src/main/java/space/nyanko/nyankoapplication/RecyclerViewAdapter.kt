@@ -232,6 +232,8 @@ class RecyclerViewAdapter(
         if (entry!!.isDirectory()) {
             navigator?.moveToChild(pos)
 
+            mainActivity.setTitle(navigator?.currentDirectoryName ?: "")
+
             // Reset the scroll position when opening a directory
             val recyclerView: RecyclerView = mainActivity.findViewById(R.id.recycler_view)
             recyclerView.scrollToPosition(0)
