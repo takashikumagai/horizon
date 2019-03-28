@@ -482,6 +482,13 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         }
     }
 
+    fun clearMediaControls() {
+        val isPlaying = false
+        val title = ""
+        val text = ""
+        LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
+    }
+
     fun showMediaControls() {
         Log.d(TAG, "sMCs")
 

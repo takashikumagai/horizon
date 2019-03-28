@@ -603,18 +603,36 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     private fun closeTab(): Boolean {
-        Log.d(TAG, "R.id.close_tab")
+        Log.d(TAG, "closeTab")
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         val pos = tabLayout.selectedTabPosition
         Log.d(TAG, "tabpos: $pos")
         if (pos < 0) {
-            Log.d(TAG, "R.id.ct pos<0")
+            Log.d(TAG, "ct pos<0")
             return false
         }
         val tab = tabLayout.getTabAt(pos)
         if (tab == null) {
-            Log.d(TAG, "R.id.ct !tab")
+            Log.d(TAG, "ct !tab")
             return false
+        }
+
+        // If the closing tab is also the playing tab
+        // - Stop the playback
+        // - Hide the notification
+        // - Hide playing track control and playlist view control
+        if(pos == currentlyPlayedQueueIndex) {
+            Log.d(TAG, "ct pos==cPQI")
+            currentlyPlayedQueueIndex = -1
+            mediaPlayer?.stop()
+            val service = BackgroundAudioService.instance
+            if(service != null) {
+                service.clearMediaControls()
+                service.hideMediaControls()
+            }
+
+            hidePlayingTrackControl()
+            hidePlaybackQueueControl()
         }
 
         if (pos < mediaPlayerTabs.size) {
