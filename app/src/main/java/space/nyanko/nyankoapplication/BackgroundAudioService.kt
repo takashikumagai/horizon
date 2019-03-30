@@ -13,6 +13,7 @@ import android.content.ComponentName
 import android.service.media.MediaBrowserService.BrowserRoot
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
+import android.media.MediaPlayer.OnSeekCompleteListener
 import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 import android.text.TextUtils
@@ -130,9 +131,14 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
         override fun onPlay() {
             Log.d(TAG, "onPlay")
-            super.onPlay()
-            if (!retrievedAudioFocus()) {
+            if (retrievedAudioFocus()) {
+                Log.d(TAG, "onPlay rAF")
+                super.onPlay()
                 return
+            } else {
+                // Failed to retrieve audio focus; we are not supposed to
+                // play audio
+                Log.d(TAG, "onPlay !rAF")
             }
         }
 
@@ -160,14 +166,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 AudioManager.AUDIOFOCUS_LOSS -> {
                     // a loss of audio focus of unknown duration
                     Log.d(TAG, "oAFC AL")
-
-                    if (mediaPlayer!!.isPlaying()) {
-                        mediaPlayer!!.stop()
-                    }
+                    pause()
                 }
                 AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
                     Log.d(TAG, "oAFC ALT")
-                    mediaPlayer!!.pause()
+                    pause()
                 }
                 AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
                     Log.d(TAG, "oAFC ALTCD")
@@ -194,6 +197,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     interface AudioServiceCallbacks {
         fun onAudioPause()
         fun onAudioPlay()
+        fun onAudioStop()
     }
 
     // Class used for the client Binder.
@@ -322,6 +326,13 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             }
         })
 
+        mediaPlayer!!.setOnSeekCompleteListener(object : OnSeekCompleteListener {
+
+            override fun onSeekComplete(mp: MediaPlayer) {
+                Log.d(TAG, "onSeekComplete: not implemented")
+            }
+        })
+
         Playback.mediaPlayer = mediaPlayer
     }
 
@@ -414,10 +425,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 return
             }
             if (mediaPlayer!!.isPlaying()) {
-                currentlyPlayed!!.pause()
                 pause()
             } else {
-                currentlyPlayed!!.resume()
                 play()
             }
             // Play if track is paused, or pause if it is playing
@@ -443,8 +452,27 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         }
     }
 
-    fun play() {
+    /**
+     * @brief Attempts to acquire audio focus first. If it succeeds, resumes playback
+     *
+     * 1. Attempts to acquire audio focus.
+     * 2. Resumes the playback from the current position.
+     *
+     * @return false if it failed to start playing/resuming
+     */
+    fun play(): Boolean {
+        Log.d(TAG, "play")
+
+        val granted = retrievedAudioFocus()
+        if (!granted) {
+            Log.d(TAG, "play !g")
+            return false
+        }
+
+        currentlyPlayed?.seekToCurrentPosition()
+
         // Play/resume
+        // Note: android.media.MediaPlayer.start() does not have a return value
         mediaPlayer?.start()
 
         callbacks?.onAudioPlay() // Notify the activity class
@@ -452,13 +480,30 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // Update the notification
         LockScreenMediaControl.changeState(this,mediaSession,true); // playing
         LockScreenMediaControl.show(this)
+
+        return true
     }
 
     fun pause() {
+        Log.d(TAG, "pause")
+
+        currentlyPlayed?.saveCurrentPlaybackPosition()
+
         // Pause the currently playing track
         mediaPlayer?.pause()
 
         callbacks?.onAudioPause() // Notify the activity class
+
+        // Update the notification
+        LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
+        LockScreenMediaControl.show(this)
+    }
+
+    fun stop() {
+        // Pause the currently playing track
+        mediaPlayer?.stop()
+
+        callbacks?.onAudioStop() // Notify the activity class
 
         // Update the notification
         LockScreenMediaControl.changeState(this,mediaSession,false); // not playing

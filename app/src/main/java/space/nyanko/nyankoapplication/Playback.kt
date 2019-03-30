@@ -79,32 +79,35 @@ class Playback : Serializable {
     }
 
     /**
-     * @brief Plays from the start or resumes the playback at the last paused position
+     * @brief Plays the track which is at the head in the queue
+     *
+     * Plays from the start or resumes the playback at the last paused position
      *
      */
-    fun startCurrentlyPointedMediaInQueue(resume: Boolean) {
+    fun startCurrentlyPointedMediaInQueue(resume: Boolean): Boolean {
         Log.d(TAG, "sCPMIQ")
 
         val mediaPlayer = mediaPlayer
         if (mediaPlayer == null) {
             Log.w(TAG, "!mP")
-            return
+            return false
         }
 
         if (pointedMediaIndex < 0) {
             Log.d(TAG, "pMI<0")
-            return
+            return false
         }
 
         if (mediaFilePathQueue.size <= pointedMediaIndex) {
             Log.d(TAG, "q.size<=pMI")
-            return
+            return false
         }
 
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop()
         }
 
+        var started = false
         var mediaFilepath = ""
         try {
             mediaFilepath = mediaFilePathQueue.get(pointedMediaIndex)
@@ -112,6 +115,8 @@ class Playback : Serializable {
             val service = BackgroundAudioService.instance
             if (service != null) {
                 service.setMetadata()
+            } else {
+                return false
             }
 
             Log.d(TAG, "resetting")
@@ -121,36 +126,45 @@ class Playback : Serializable {
             Log.d(TAG, "prepare")
             mediaPlayer.prepare()
             if(resume) {
-                Log.d(TAG, "seeking")
-                mediaPlayer.seekTo(playbackPosition)
+                // Do nothing; service.play() seeks to the current position
+            } else {
+                playbackPosition = 0
             }
+
+            // Acquire audio focus and if it succeeds, start playing
             Log.d(TAG, "starting")
-            mediaPlayer.start()
+            started = service.play()
+
         } catch (ioe: IOException) {
             Log.e(TAG, "caught an IO exception: " + ioe.toString() + " File: " + mediaFilepath)
         } catch (e: Exception) {
             Log.e(TAG, "caught an exception: " + e.toString() + " File: " + mediaFilepath)
+        } finally {
+            // Repaint GUI as a currently played track has just been changed.
+            // or the failed-to-start track might need to show the status on its view
+            if (recyclerViewAdapter != null) {
+                recyclerViewAdapter!!.notifyDataSetChanged()
+            } else {
+                Log.e(TAG, "!rVA")
+            }
         }
 
-        // Repaint GUI as a currently played track has just been changed.
-        if (recyclerViewAdapter != null) {
-            recyclerViewAdapter!!.notifyDataSetChanged()
-        } else {
-            Log.e(TAG, "!rVA")
+        if(started) {
+            if (playingTrackName != null) {
+                val f = File(mediaFilepath)
+                playingTrackName!!.setText(f.getName())
+            }
         }
 
-        if (playingTrackName != null) {
-            val f = File(mediaFilepath)
-            playingTrackName!!.setText(f.getName())
-        }
+        return started
     }
 
-    fun playCurrentlyPointedMediaInQueue() {
-        startCurrentlyPointedMediaInQueue(false)
+    fun playCurrentlyPointedMediaInQueue(): Boolean {
+        return startCurrentlyPointedMediaInQueue(false)
     }
 
-    fun resumeCurrentlyPointedMediaInQueue() {
-        startCurrentlyPointedMediaInQueue(true)
+    fun resumeCurrentlyPointedMediaInQueue(): Boolean {
+        return startCurrentlyPointedMediaInQueue(true)
     }
 
     fun playPrevTrack(): Boolean {
@@ -160,9 +174,7 @@ class Playback : Serializable {
 
         pointedMediaIndex -= 1
 
-        playCurrentlyPointedMediaInQueue()
-
-        return true
+        return playCurrentlyPointedMediaInQueue()
     }
 
     fun playNextTrack(): Boolean {
@@ -175,9 +187,7 @@ class Playback : Serializable {
 
         pointedMediaIndex += 1
 
-        playCurrentlyPointedMediaInQueue()
-
-        return true
+        return playCurrentlyPointedMediaInQueue()
     }
 
     /**
@@ -193,9 +203,7 @@ class Playback : Serializable {
         pointedMediaIndex = pos
 
         resetSavedPlaybackPosition()
-        playCurrentlyPointedMediaInQueue()
-
-        return true
+        return playCurrentlyPointedMediaInQueue()
     }
 
     fun addToQueue(mediaFilePath: String) {
@@ -212,6 +220,7 @@ class Playback : Serializable {
     }
 
     fun addToQueue(mediaFiles: ArrayList<File>) {
+        Log.d(TAG, "aTQ " + mediaFiles.toString())
         for (file in mediaFiles) {
             mediaFilePathQueue.add(file.getPath())
         }
@@ -271,6 +280,7 @@ class Playback : Serializable {
 
     fun onCompletion(mp: MediaPlayer) {
         Log.d(TAG, "oC pMI: $pointedMediaIndex")
+        playbackPosition = 0
         playNextTrack()
     }
 
@@ -291,22 +301,25 @@ class Playback : Serializable {
         playbackPosition = mediaPlayer!!.getCurrentPosition()
     }
 
-    fun pause() {
-        if (mediaPlayer == null) {
-            return
-        }
+//    fun onPause() {
+//        if (mediaPlayer == null) {
+//            Log.w(TAG, "onPause !mP")
+//            return
+//        }
+//
+//        //mediaPlayer!!.pause()
+//        playbackPosition = mediaPlayer!!.getCurrentPosition()
+//    }
 
-        mediaPlayer!!.pause()
-        playbackPosition = mediaPlayer!!.getCurrentPosition()
-    }
-
-    fun resume() {
+    fun seekToCurrentPosition() {
+        Log.w(TAG, "sTCP " + playbackPosition)
         if (mediaPlayer == null) {
+            Log.w(TAG, "seekToCurrentPosition !mP")
             return
         }
 
         mediaPlayer!!.seekTo(playbackPosition)
-        mediaPlayer!!.start()
+        //mediaPlayer!!.start()
     }
 
     companion object {

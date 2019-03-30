@@ -260,10 +260,14 @@ class RecyclerViewAdapter(
                 player.clearQueue()
                 player.addToQueue(entry.getPath())
                 player.resetSavedPlaybackPosition()
-                player.playCurrentlyPointedMediaInQueue()
-                mainActivity.onMediaStartedOnScreen()
+                val started = player.playCurrentlyPointedMediaInQueue()
+                if(started) {
+                    mainActivity.onMediaStartedOnScreen()
 
-                mainActivity.showPlayingTrackControl()
+                    mainActivity.showPlayingTrackControl()
+                } else {
+                    Log.d(TAG, "oECIFSV !started")
+                }
 
                 notifyDataSetChanged()
 
@@ -290,7 +294,10 @@ class RecyclerViewAdapter(
         if(mediaPlayerTab == null) {
             Log.w(TAG,"oECIPQM !mPT")
         } else {
-            mediaPlayerTab.playbackQueue.playTrackAt(pos)
+            val started = mediaPlayerTab.playbackQueue.playTrackAt(pos)
+            if(!started) {
+                Log.d(TAG,"oECIPQM !started")
+            }
         }
 
         notifyDataSetChanged()

@@ -79,6 +79,16 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     private var playingTrackName: TextView? = null
 
     private var backgroundAudioService: BackgroundAudioService? = null
+        get() {
+            val service = BackgroundAudioService.instance
+            if (service == null) {
+                Log.d(TAG, "gBAS !service")
+                return null
+            } else {
+                return service
+            }
+            return BackgroundAudioService.instance
+        }
 
     private var boundToService: Boolean = false
 
@@ -976,11 +986,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 Log.d(TAG, "oMSROS !cPQI")
             }
         }
-        val granted = service.retrievedAudioFocus()
-        if (!granted) {
-            Log.d(TAG, "oMSROS !g")
-            return false
-        }
 
         Log.d(TAG, "oMSROS indices: $currentPlayerIndex $currentlyPlayedQueueIndex")
         if (currentlyPlayedQueueIndex != currentPlayerIndex) {
@@ -1000,6 +1005,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun onMediaStartedOnScreen() {
+        Log.d(TAG, "oMSOS " + currentPlayerIndex)
 
         if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
             Log.w(TAG, "cPI: $currentPlayerIndex")
@@ -1032,16 +1038,22 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         //        ptc.setVisibility(View.VISIBLE);
     }
 
+    override fun onAudioPlay() {
+        Log.d(TAG, "onAudioPlay")
+        updatePlayingTrackPlayPauseButton(true)
+        updatePlayQueuePlayPauseButton(true)
+    }
+
     override fun onAudioPause() {
         Log.d(TAG, "onAudioPause")
         updatePlayingTrackPlayPauseButton(false)
         updatePlayQueuePlayPauseButton(false)
     }
 
-    override fun onAudioPlay() {
-        Log.d(TAG, "onAudioPlay")
-        updatePlayingTrackPlayPauseButton(true)
-        updatePlayQueuePlayPauseButton(true)
+    override fun onAudioStop() {
+        Log.d(TAG, "onAudioStop")
+        updatePlayingTrackPlayPauseButton(false)
+        updatePlayQueuePlayPauseButton(false)
     }
 
     /**
@@ -1123,6 +1135,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun switchToPlaybackQueueView() {
+        Log.d(TAG, "sTPV")
 
         // Save the view mode
         mediaPlayerTabs.get(currentPlayerIndex).viewMode = 1
@@ -1241,10 +1254,12 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 player.clearQueue()
                 player.addToQueue(mediaFiles)
                 player.resetSavedPlaybackPosition()
-                player.playCurrentlyPointedMediaInQueue()
-                onMediaStartedOnScreen()
+                val started = player.playCurrentlyPointedMediaInQueue()
+                if(started) {
+                    onMediaStartedOnScreen()
 
-                switchToPlaybackQueueView()
+                    switchToPlaybackQueueView()
+                }
 
                 // Update background colors of queued tracks
                 // This is done in switchToPlaybackQueueView() so commented out.
@@ -1290,8 +1305,11 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                         Log.d(TAG, "play/pause")
                         val self = view as ImageButton//findViewById(R.id.play_pause);
 
-                        val playing = togglePlayPauseState()
-                        updatePlayingTrackPlayPauseButton(playing)
+                        //val playing =
+                        togglePlayPauseState()
+                        // The following is done in onAudioPlay callback
+                        // called from the service
+                        //updatePlayingTrackPlayPauseButton(playing)
                     }
                 }
         )
@@ -1367,14 +1385,15 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                         Log.d(TAG, "btn pressed (play/pause)")
                         val self = view as ImageButton
 
-                        val playing = togglePlayPauseState()
-                        if(playing == null) {
+                        //val playing =
+                        togglePlayPauseState()
+                        /*if(playing == null) {
                             self.setImageResource(R.drawable.stop)
                         } else if(playing) {
                             self.setImageResource(R.drawable.pause)
                         } else {
                             self.setImageResource(R.drawable.play)
-                        }
+                        }*/
                     }
                 })
 
@@ -1453,9 +1472,11 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     /**
      *
-     * @return true: new state = playing, false: new state = paused, null: something went wrong
+     * @return true if the playback successfully (started play or resume),
+     *         false if it failed to start
      */
     fun togglePlayPauseState(): Boolean? {
+        Log.d(TAG, "tPPS")
         val mediaPlayer = Playback.mediaPlayer
         // Both isPlaying() and pause() can throw IllegalStateException.
 
@@ -1467,12 +1488,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
             if (mediaPlayer.isPlaying()) {
                 Log.d(TAG, "btn pausing")
-                mediaPlayer.pause()
+                backgroundAudioService?.pause()
                 return false
             } else {
+                // Start/resume the playback
                 Log.d(TAG, "btn playing/resuming")
-                mediaPlayer.start() // Start/resume playback
-                return true
+                val started = backgroundAudioService?.play()
+                return started
             }
         } catch (ise: IllegalStateException) {
             Log.d(TAG, "ise caught")
