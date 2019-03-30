@@ -128,6 +128,7 @@ class RecyclerViewAdapter(
             color = 0xff2d393d.toInt()
         }
         holder.itemView.setBackgroundColor(color)
+        holder.fileName.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary))
 
         // Set the icon based on the file type
         if (entry.isDirectory()) {
@@ -331,15 +332,18 @@ class RecyclerViewAdapter(
         }
 
         var color = 0xff2b2b2b.toInt()
-        var text = ""
+        var textColor = R.color.textColorPrimary
         if(pos == mediaPlayerTab.playbackQueue.pointedMediaIndex) {
-            color = 0xff2d393d.toInt() // playing
-            text = " - Playing"
+            //color = 0xff2d393d.toInt() // playing
+            color = 0xff2b2b2b.toInt() // Use the same color for playing track
+            textColor = R.color.colorAccent
         } else {
             color = 0xff2b2b2b.toInt() // queued
+            textColor = R.color.textColorPrimary
         }
         holder.itemView.setBackgroundColor(color)
-        //holder.secondaryRow.setText(holder.secondaryRow.getText() + text)
+
+        holder.fileName.setTextColor(mContext.getResources().getColor(textColor))
 
         holder.parentLayout.setOnClickListener() { v ->
             Log.d(TAG, "playlist onClick " + f.getName())
