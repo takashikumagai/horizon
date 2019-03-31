@@ -3,6 +3,8 @@
     transform="matrix(2.1,0, 0,2.1, 0,0)"
     stroke="#dadada"
     fill="#dadada">
+    <rect x="5" y="5" rx="6" ry="6" width="110" height="110"
+    style="fill-opacity:1.0;fill:#2e4147;stroke-opacity:0.0"></rect>
     <path
       d="M20 42.5 L27.5 15 L43 37.5 L60 36.2 L77 37.5 L92.5 15 L100 42.5 L107 70 L105 80 L95 90 L68 95.5 L52 95.5 L25 90 L15 80 L13 70 Z"
       style="fill-opacity:0.0;stroke-width:3.0;opacity:1.0" />
@@ -18,14 +20,17 @@
     <path d="M60 72 L59.5 79 L53 83 L47 84" style="fill-opacity:0.0;stroke-width:2.4" />
     <path d="M60 72 L60.5 79 L67 83 L73 84" style="fill-opacity:0.0;stroke-width:2.4" />
 
-    <!-- whiskers (left side) -->
-    <path d="M25 71 L15 69 L5 68" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M25 76 L15 75 L5 76" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M25 81 L15 82 L5 84" style="fill-opacity:0.0;stroke-width:2.4" />
+    <g
+      style="fill-opacity:0.0;stroke-width:2.8">
+      <!-- whiskers (left side) -->
+      <path d="M25 70 L15 68 L5 67" />
+      <path d="M25 76 L15 75 L5 76" />
+      <path d="M25 82 L15 83 L5 85" />
 
-    <!-- whiskers (right side) -->
-    <path d="M95 71 L105 69 L115 68" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M95 76 L105 75 L115 76" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M95 81 L105 82 L115 84" style="fill-opacity:0.0;stroke-width:2.4" />
+      <!-- whiskers (right side) -->
+      <path d="M95 70 L105 68 L115 67" />
+      <path d="M95 76 L105 75 L115 76" />
+      <path d="M95 82 L105 83 L115 85" />
+    </g>
   </g>
 </svg>

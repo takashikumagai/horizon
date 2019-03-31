@@ -1,0 +1,47 @@
+<svg id="app_icon-xxxhdpi" width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <g
+    transform="matrix(4.2,0, 0,4.2, 0,20)"
+    stroke="#dadada"
+    fill="#dadada">
+    <rect x="5" y="5" rx="6" ry="6" width="110" height="110"
+    style="fill-opacity:1.0;fill:#2e4147;stroke-opacity:0.0"></rect>
+    <path
+      d="M20 42.5 L27.5 15 L43 37.5 L60 36.2 L77 37.5 L92.5 15 L100 42.5 L107 70 L105 80 L95 90 L68 95.5 L52 95.5 L25 90 L15 80 L13 70 Z"
+      style="fill-opacity:1.0;stroke-width:2.0;opacity:1.0" />
+
+    <!-- eyes -->
+    <circle cx="39" cy="58" r="2.8" style="fill:#3a3a3a;stroke-opacity:0.0" />
+    <circle cx="81" cy="58" r="2.8" style="fill:#3a3a3a;stroke-opacity:0.0" />
+
+    <!-- rhinarium -->
+    <path d="M54 67 L66 67 L60 74 Z" style="stroke:#3a3a3a;stroke-opacity:1.0" />
+
+    <!-- mouth -->
+    <path d="M60 72 L59.5 79 L55 83 L50 84 L48 83.5" style="fill-opacity:0.0;stroke:#3a3a3a;stroke-width:2.4" />
+    <path d="M60 72 L60.5 79 L65 83 L70 84 L72 83.5" style="fill-opacity:0.0;stroke:#3a3a3a;stroke-width:2.4" />
+
+    <g
+      style="fill-opacity:0.0;stroke:#7a7a7a;stroke-width:2.8">
+      <!-- whiskers (left side) -->
+      <path d="M25 70 L15 68 L5 67" />
+      <path d="M25 76 L15 75 L5 76" />
+      <path d="M25 82 L15 83 L5 85" />
+
+      <!-- whiskers (right side) -->
+      <path d="M95 70 L105 68 L115 67" />
+      <path d="M95 76 L105 75 L115 76" />
+      <path d="M95 82 L105 83 L115 85" />
+    </g>
+  </g>
+  <g transform="matrix(0.8,0,0,0.8,160,42)" style="fill:#202020">
+    <path
+     transform="matrix(0.2,0,0,-0.2,136,32)"
+     d="m 0,0 c 0,-198 209,-335 209,-533 0,-71 -16,-141 -42,-207 -5,-8 -12,-12 -19,-12 -13,0 -26,11 -23,27 26,61 42,126 42,192 0,104 -95,208 -167,283 l -16,0 0,250 16,0 z"
+    />
+    <rect x="124" y="30" rx="4" ry="4" width="12" height="164"/>
+    <path
+     transform="matrix(0.2,0,0,-0.2,70,195)"
+     d="m 220,138 c 56,0 109,-29 109,-91 0,-72 -56,-121 -103,-149 -36,-21 -76,-36 -117,-36 -56,0 -109,29 -109,91 0,72 56,121 103,149 36,21 76,36 117,36 z"
+    />
+  </g>
+</svg>

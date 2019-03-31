@@ -1,15 +1,16 @@
-<svg id="ic_launcher_round-xxhdpi" width="192" height="192" xmlns="http://www.w3.org/2000/svg">
+<svg id="ic_launcher_round-xxxhdpi" width="144" height="144" xmlns="http://www.w3.org/2000/svg">
   <g
-    transform="matrix(1.575,0, 0,1.575, 0,0)"
+    transform="matrix(0.9,0, 0,0.9, 18,24)"
     stroke="#dadada"
     fill="#dadada">
+    <circle cx="60" cy="53" r="72" style="fill:#2e4147;fill-opacity:1.0;stroke-opacity:0.0"/>
     <path
       d="M20 42.5 L27.5 15 L43 37.5 L60 36.2 L77 37.5 L92.5 15 L100 42.5 L107 70 L105 80 L95 90 L68 95.5 L52 95.5 L25 90 L15 80 L13 70 Z"
-      style="fill-opacity:0.0;stroke-width:3.0;opacity:1.0" />
+      style="fill-opacity:0.0;stroke-width:4.0;opacity:1.0" />
 
     <!-- eyes -->
-    <circle cx="37" cy="58" r="2.5" style="stroke-opacity:0.0" />
-    <circle cx="83" cy="58" r="2.5" style="stroke-opacity:0.0" />
+    <circle cx="39" cy="58" r="2.8" style="stroke-opacity:0.0" />
+    <circle cx="81" cy="58" r="2.8" style="stroke-opacity:0.0" />
 
     <!-- rhinarium -->
     <path d="M54 67 L66 67 L60 74 Z" style="stroke-opacity:0.0" />
@@ -18,14 +19,17 @@
     <path d="M60 72 L59.5 79 L53 83 L47 84" style="fill-opacity:0.0;stroke-width:2.4" />
     <path d="M60 72 L60.5 79 L67 83 L73 84" style="fill-opacity:0.0;stroke-width:2.4" />
 
-    <!-- whiskers (left side) -->
-    <path d="M25 71 L15 69 L5 68" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M25 76 L15 75 L5 76" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M25 81 L15 82 L5 84" style="fill-opacity:0.0;stroke-width:2.4" />
+    <g
+      style="fill-opacity:0.0;stroke-width:2.8">
+      <!-- whiskers (left side) -->
+      <path d="M25 70 L15 68 L5 67" />
+      <path d="M25 76 L15 75 L5 76" />
+      <path d="M25 82 L15 83 L5 85" />
 
-    <!-- whiskers (right side) -->
-    <path d="M95 71 L105 69 L115 68" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M95 76 L105 75 L115 76" style="fill-opacity:0.0;stroke-width:2.4" />
-    <path d="M95 81 L105 82 L115 84" style="fill-opacity:0.0;stroke-width:2.4" />
+      <!-- whiskers (right side) -->
+      <path d="M95 70 L105 68 L115 67" />
+      <path d="M95 76 L105 75 L115 76" />
+      <path d="M95 82 L105 83 L115 85" />
+    </g>
   </g>
 </svg>

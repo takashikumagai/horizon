@@ -3,6 +3,8 @@
     transform="matrix(1.575,0, 0,1.575, 0,0)"
     stroke="#dadada"
     fill="#dadada">
+    <rect x="5" y="5" rx="6" ry="6" width="110" height="110"
+    style="fill-opacity:1.0;fill:#2e4147;stroke-opacity:0.0"></rect>
     <path
       d="M20 42.5 L27.5 15 L43 37.5 L60 36.2 L77 37.5 L92.5 15 L100 42.5 L107 70 L105 80 L95 90 L68 95.5 L52 95.5 L25 90 L15 80 L13 70 Z"
       style="fill-opacity:0.0;stroke-width:3.0;opacity:1.0" />
