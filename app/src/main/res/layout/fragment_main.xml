@@ -165,7 +165,7 @@
         <View
             android:id="@+id/divider1"
             android:layout_width="2dp"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
             app:layout_constraintStart_toEndOf="@id/prev_track"
             app:layout_constraintEnd_toStartOf="@id/play_pause_button"
             android:paddingTop="1dp"
@@ -186,7 +186,7 @@
         <View
             android:id="@+id/divider2"
             android:layout_width="2dp"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
             app:layout_constraintStart_toEndOf="@id/play_pause_button"
             app:layout_constraintEnd_toStartOf="@id/next_track"
             android:paddingTop="1dp"
