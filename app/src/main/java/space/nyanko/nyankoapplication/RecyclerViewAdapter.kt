@@ -289,7 +289,7 @@ class RecyclerViewAdapter(
 
         // Jump to the tapped/clicked track
         val mediaPlayerTab
-                = mainActivity.mediaPlayerTabs.get(mainActivity.currentPlayerIndex)
+                = mainActivity.mediaPlayerTabs.get(mainActivity.selectedTabIndex)
 
         if(mediaPlayerTab == null) {
             Log.w(TAG,"oECIPQM !mPT")
@@ -311,7 +311,7 @@ class RecyclerViewAdapter(
 
         val mainActivity = mContext as MainActivity
         val tabs = mainActivity.mediaPlayerTabs
-        val mediaPlayerTab = tabs.get(mainActivity.currentPlayerIndex)
+        val mediaPlayerTab = tabs.get(mainActivity.selectedTabIndex)
 
         val queue = mediaPlayerTab.playbackQueue.mediaFilePathQueue
         if (pos < 0) { // Sanity check
