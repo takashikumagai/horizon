@@ -1,23 +1,16 @@
 package space.nyanko.nyankoapplication
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.media.MediaMetadataRetriever
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.TextView
 
 import java.io.File
-import java.io.IOException
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.HashMap
 
 class RecyclerViewAdapter(
