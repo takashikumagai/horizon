@@ -400,7 +400,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
             // Show the controls suited for each view mode
             if (viewMode == 0) {
-                switchToFileSystemView()
+                switchToFolderView()
             } else if (viewMode == 1) {
                 switchToPlaybackQueueView()
             } else {
@@ -448,7 +448,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         if (viewMode == null) {
             Log.d(TAG, "oR vM!")
         } else if (viewMode == 0) {
-            switchToFileSystemView()
+            switchToFolderView()
         } else if (viewMode == 1) {
             switchToPlaybackQueueView()
         }
@@ -718,7 +718,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         val navigator = mediaPlayerTabs.get(pos).fileSystemNavigator
         setTitle(navigator?.currentDirectoryName ?: "")
 
-        // These are called in switchToFileSystemView() so no need
+        // These are called in switchToFolderView() so no need
         // to called them here.
         //recyclerViewAdapter!!.viewMode = mediaPlayerTabs.get(pos).viewMode
         //recyclerViewAdapter!!.notifyDataSetChanged()
@@ -726,7 +726,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // When the tab is selected, the view is always in the folder view mode
         mediaPlayerTabs.get(pos).viewMode = 0
 
-        switchToFileSystemView()
+        switchToFolderView()
 
         updateResumeButtonVisibility()
     }
@@ -748,7 +748,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 }
 
                 // hiding playlist control & showing playing track control
-                // are done in onTabSelection() via switchToFileSystemView()
+                // are done in onTabSelection() via switchToFolderView()
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -803,7 +803,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         } else if (viewMode == 1) {
             // User pressed the back button while the app is in the play queue view mode.
             // -> Go back to the file system view.
-            switchToFileSystemView()
+            switchToFolderView()
         } else {
             Log.e(TAG, "oBP !!vM")
         }
@@ -1166,7 +1166,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         //        }
     }
 
-    fun switchToFileSystemView() {
+    fun switchToFolderView() {
 
         if (currentPlayerIndex < 0 || mediaPlayerTabs.size <= currentPlayerIndex) {
             Log.d(TAG, "sTFSV !!cPI")
