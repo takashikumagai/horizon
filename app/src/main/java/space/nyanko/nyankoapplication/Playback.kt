@@ -312,14 +312,13 @@ class Playback : Serializable {
 //    }
 
     fun seekToCurrentPosition() {
-        Log.w(TAG, "sTCP " + playbackPosition)
+        Log.d(TAG, "sTCP " + playbackPosition)
         if (mediaPlayer == null) {
             Log.w(TAG, "seekToCurrentPosition !mP")
             return
         }
 
-        mediaPlayer!!.seekTo(playbackPosition)
-        //mediaPlayer!!.start()
+        mediaPlayer?.seekTo(playbackPosition)
     }
 
     companion object {
