@@ -469,8 +469,6 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             return false
         }
 
-        currentlyPlayed?.seekToCurrentPosition()
-
         // Play/resume
         // Note: android.media.MediaPlayer.start() does not have a return value
         mediaPlayer?.start()

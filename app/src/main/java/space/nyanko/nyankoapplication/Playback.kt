@@ -125,11 +125,13 @@ class Playback : Serializable {
             mediaPlayer.setDataSource(mediaFilepath)
             Log.d(TAG, "prepare")
             mediaPlayer.prepare()
+
             if(resume) {
-                // Do nothing; service.play() seeks to the current position
+                // Do not reset the playback position
             } else {
                 playbackPosition = 0
             }
+            seekToCurrentPosition()
 
             // Acquire audio focus and if it succeeds, start playing
             Log.d(TAG, "starting")
