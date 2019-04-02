@@ -160,7 +160,7 @@ class RecyclerViewAdapter(
             // Update the tab label
             mainActivity.setSelectedTabLabel(entry.getName())
 
-            onEntryClickedInFileSystemViewMode(entry, pos, navigator, mainActivity)
+            onEntryClickedInFolderView(entry, pos, navigator, mainActivity)
         }
     }
 
@@ -219,7 +219,7 @@ class RecyclerViewAdapter(
 
 
 
-    fun onEntryClickedInFileSystemViewMode(entry: File?,
+    fun onEntryClickedInFolderView(entry: File?,
                                            pos: Int,
                                            navigator: FileSystemNavigator?,
                                            mainActivity: MainActivity) {
@@ -276,7 +276,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    fun onEntryClickedInPlayQueueMode(entry: File?, pos: Int) {
+    fun onEntryClickedInPlaylistView(entry: File?, pos: Int) {
 
         val mainActivity = mContext as MainActivity
 
@@ -348,7 +348,7 @@ class RecyclerViewAdapter(
         holder.parentLayout.setOnClickListener() { v ->
             Log.d(TAG, "playlist onClick " + f.getName())
 
-            onEntryClickedInPlayQueueMode(f, pos)
+            onEntryClickedInPlaylistView(f, pos)
         }
     }
 

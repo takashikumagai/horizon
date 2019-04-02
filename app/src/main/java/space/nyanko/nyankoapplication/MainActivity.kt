@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         playingTrackName!!.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
                 Log.d(TAG, "oC")
-                switchToPlaybackQueueView()
+                switchToPlaylistView()
             }
         })
 
@@ -392,7 +392,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             if (viewMode == 0) {
                 switchToFolderView()
             } else if (viewMode == 1) {
-                switchToPlaybackQueueView()
+                switchToPlaylistView()
             } else {
                 Log.e(TAG, "!vM: $viewMode")
             }
@@ -440,7 +440,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         } else if (viewMode == 0) {
             switchToFolderView()
         } else if (viewMode == 1) {
-            switchToPlaybackQueueView()
+            switchToPlaylistView()
         }
 
     }
@@ -826,7 +826,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         player.resumeCurrentlyPointedMediaInQueue()
         onMediaStartedOnScreen()
 
-        switchToPlaybackQueueView()
+        switchToPlaylistView()
     }
 
     fun updateResumeButtonVisibility() {
@@ -1128,7 +1128,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
     }
 
-    fun switchToPlaybackQueueView() {
+    fun switchToPlaylistView() {
         Log.d(TAG, "sTPV")
 
         // Save the view mode
@@ -1252,11 +1252,11 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 if(started) {
                     onMediaStartedOnScreen()
 
-                    switchToPlaybackQueueView()
+                    switchToPlaylistView()
                 }
 
                 // Update background colors of queued tracks
-                // This is done in switchToPlaybackQueueView() so commented out.
+                // This is done in switchToPlaylistView() so commented out.
                 //recyclerViewAdapter.notifyDataSetChanged();
 
                 //if( mediaPlayer != null && mediaPlayer.isPlaying() ) {
