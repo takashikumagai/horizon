@@ -655,6 +655,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             // as no new tab is selected and as such onTabSelected() is not called.
             recyclerViewAdapter!!.notifyDataSetChanged()
 
+            // Hide FABs
+            floatingActionButton?.setVisibility(View.GONE)
+            resumeFab?.setVisibility(View.GONE)
+
             return true
         }
 
