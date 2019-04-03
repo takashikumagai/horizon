@@ -1060,6 +1060,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     fun updateSeekbarProgressAndTime(mediaPlayer: MediaPlayer?) {
 
         if (mediaPlayer == null) {
+            Log.w(TAG, "uSPAT !mP")
             return
         }
 
@@ -1297,10 +1298,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "play/pause")
-                        val self = view as ImageButton//findViewById(R.id.play_pause);
 
-                        //val playing =
                         togglePlayPauseState()
+
                         // The following is done in onAudioPlay callback
                         // called from the service
                         //updatePlayingTrackPlayPauseButton(playing)
@@ -1377,17 +1377,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn pressed (play/pause)")
-                        val self = view as ImageButton
 
-                        //val playing =
                         togglePlayPauseState()
-                        /*if(playing == null) {
-                            self.setImageResource(R.drawable.stop)
-                        } else if(playing) {
-                            self.setImageResource(R.drawable.pause)
-                        } else {
-                            self.setImageResource(R.drawable.play)
-                        }*/
                     }
                 })
 
