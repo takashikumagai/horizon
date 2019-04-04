@@ -172,7 +172,7 @@ internal object LockScreenMediaControl {
             return
         }
 
-        val n: Notification? = notification as? Notification;
+        val n: Notification? = notification
         if(n != null) {
             notificationManager.notify(NOTIFICATION_ID, n)
         }

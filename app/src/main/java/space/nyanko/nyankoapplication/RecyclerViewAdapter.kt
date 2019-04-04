@@ -2,13 +2,14 @@ package space.nyanko.nyankoapplication
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 
 import java.io.File
 import java.util.HashMap
@@ -49,12 +50,6 @@ class RecyclerViewAdapter(
                 return 0
             }
         }
-
-    fun refreshDirectoryContentList(directoryPath: String) {
-        //directoryNavigator.setCurrentDirectory(directoryPath);
-        //DirectoryNavigation.changeDirectory(directoryPath);
-        notifyDataSetChanged()
-    }
 
     fun setCurrentFileSystemNavigator(currentFileSystemNavigator: FileSystemNavigator?) {
         this.currentFileSystemNavigator = currentFileSystemNavigator
@@ -121,7 +116,7 @@ class RecyclerViewAdapter(
             color = 0xff2d393d.toInt()
         }
         holder.itemView.setBackgroundColor(color)
-        holder.fileName.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary))
+        holder.fileName.setTextColor(ContextCompat.getColor(mContext,R.color.textColorPrimary))
 
         // Set the icon based on the file type
         if (entry.isDirectory()) {
@@ -232,7 +227,7 @@ class RecyclerViewAdapter(
             val recyclerView: RecyclerView = mainActivity.findViewById(R.id.recycler_view)
             recyclerView.scrollToPosition(0)
 
-            refreshDirectoryContentList(entry.getPath())
+            notifyDataSetChanged()
 
             mainActivity.updateFloatingActionButtonVisibility()
 
@@ -276,7 +271,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    fun onEntryClickedInPlaylistView(entry: File?, pos: Int) {
+    fun onEntryClickedInPlaylistView(pos: Int) {
 
         val mainActivity = mContext as MainActivity
 
@@ -297,22 +292,20 @@ class RecyclerViewAdapter(
     }
 
     fun setMediaInQueueToHolder(holder: ViewHolder, position: Int) {
-        Log.d(TAG, "sMIQTH")
+        Log.d(TAG, "sMIQTH: " + position)
         //FileSystemNavigator currentFileSystemNavigator = null;
-
-        val pos = holder.getAdapterPosition()
 
         val mainActivity = mContext as MainActivity
         val tabs = mainActivity.mediaPlayerTabs
         val mediaPlayerTab = tabs.get(mainActivity.selectedTabIndex)
 
         val queue = mediaPlayerTab.playbackQueue.mediaFilePathQueue
-        if (pos < 0) { // Sanity check
-            Log.w(TAG, "sMIQTH pos: $pos")
+        if (position < 0) { // Sanity check
+            Log.w(TAG, "sMIQTH pos: $position")
             return
         }
 
-        if(queue.size <= pos) {
+        if(queue.size <= position) {
             // Make sure that the row is empty
             holder.fileName.setText("")
             holder.secondaryRow.setText("")
@@ -321,7 +314,7 @@ class RecyclerViewAdapter(
             return
         }
 
-        val path = queue.get(pos)
+        val path = queue.get(position)
         Log.d(TAG, "sMIQTH " + path)
 
         val f = File(path)
@@ -331,9 +324,9 @@ class RecyclerViewAdapter(
             clearViewHolder(holder)
         }
 
-        var color = 0xff2b2b2b.toInt()
-        var textColor = R.color.textColorPrimary
-        if(pos == mediaPlayerTab.playbackQueue.pointedMediaIndex) {
+        var color = 0//0xff2b2b2b.toInt()
+        var textColor = 0// Set the default R.color.textColorPrimary
+        if(position == mediaPlayerTab.playbackQueue.pointedMediaIndex) {
             //color = 0xff2d393d.toInt() // playing
             color = 0xff2b2b2b.toInt() // Use the same color for playing track
             textColor = R.color.colorAccent
@@ -343,12 +336,14 @@ class RecyclerViewAdapter(
         }
         holder.itemView.setBackgroundColor(color)
 
-        holder.fileName.setTextColor(mContext.getResources().getColor(textColor))
+        holder.fileName.setTextColor(ContextCompat.getColor(mContext,textColor))
 
         holder.parentLayout.setOnClickListener() { v ->
-            Log.d(TAG, "playlist onClick " + f.getName())
+            val pos = holder.getAdapterPosition()
 
-            onEntryClickedInPlaylistView(f, pos)
+            Log.d(TAG, "playlist onClick " + pos + " " + f.getName())
+
+            onEntryClickedInPlaylistView(pos)
         }
     }
 
