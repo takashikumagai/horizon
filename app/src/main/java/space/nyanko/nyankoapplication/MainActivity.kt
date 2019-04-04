@@ -212,7 +212,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         })
 
         // Some C/C++ functions access filesystem so request the user file r/w permissions
-        requestAppPermissions()
+        val permissionManager = AppPermissionManager()
+        permissionManager.requestAppPermissions(this)
 
         Log.d(TAG, "num mptabs: " + mediaPlayerTabs.size)
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
@@ -915,35 +916,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         } else {
             0
         }
-    }
-
-    private fun requestAppPermissions() {
-        Log.d(TAG, "rAPs")
-
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Log.d(TAG, "SDK_INT < LOLLIPOP")
-            return
-        }
-
-        if (hasReadPermissions() && hasWritePermissions()) {
-            Log.d(TAG, "Read/write permissions already granted")
-            return
-        }
-
-
-        val myRequestCode = 12
-
-        Log.d(TAG, "Requesting read/write permissions")
-        ActivityCompat.requestPermissions(this,
-                arrayOf<String>(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), myRequestCode) // your request code
-    }
-
-    private fun hasReadPermissions(): Boolean {
-        return ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) === PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun hasWritePermissions(): Boolean {
-        return ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) === PackageManager.PERMISSION_GRANTED
     }
 
     public fun getCurrentlySelectedMediaPlayerTab(): MediaPlayerTab? {
