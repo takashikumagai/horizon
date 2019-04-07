@@ -274,7 +274,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // becomes the selected tab and it invokes tab listener's onTabSelected callback.
         setTabListeners()
 
-        initPlayQueueMediaControlButtons()
+        initPlaylistViewMediaControlButtons()
 
         // TODO: do this only once at startup
         if (savedInstanceState == null) {
@@ -1007,19 +1007,19 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     override fun onAudioPlay() {
         Log.d(TAG, "onAudioPlay")
         updatePlayingTrackPlayPauseButton(true)
-        updatePlayQueuePlayPauseButton(true)
+        updatePlaylistViewPlayPauseButton(true)
     }
 
     override fun onAudioPause() {
         Log.d(TAG, "onAudioPause")
         updatePlayingTrackPlayPauseButton(false)
-        updatePlayQueuePlayPauseButton(false)
+        updatePlaylistViewPlayPauseButton(false)
     }
 
     override fun onAudioStop() {
         Log.d(TAG, "onAudioStop")
         updatePlayingTrackPlayPauseButton(false)
-        updatePlayQueuePlayPauseButton(false)
+        updatePlaylistViewPlayPauseButton(false)
     }
 
     /**
@@ -1110,7 +1110,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // Hide the playing track control and show the play queue
         // media control, after updating the play/pause button
         hidePlayingTrackControl()
-        updatePlayQueuePlayPauseButton(isMediaPlaying())
+        updatePlaylistViewPlayPauseButton(isMediaPlaying())
         showPlaybackQueueControl()
 
         recyclerViewAdapter!!.viewMode = 1
@@ -1338,7 +1338,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
     }
 
-    fun initPlayQueueMediaControlButtons() {
+    fun initPlaylistViewMediaControlButtons() {
         val btn = findViewById(R.id.play_pause_button) as ImageButton
         if (btn == null) {
             Log.d(TAG, "!play/pause btn")
@@ -1401,7 +1401,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 })
     }
 
-    fun updatePlayQueuePlayPauseButton(playing: Boolean?) {
+    fun updatePlaylistViewPlayPauseButton(playing: Boolean?) {
         val btn = findViewById(R.id.play_pause_button) as ImageButton?
         if(playing == null) {
             btn?.setImageResource(R.drawable.stop)
