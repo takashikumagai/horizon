@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             } else {
                 return service
             }
-            return BackgroundAudioService.instance
         }
 
     private var boundToService: Boolean = false
