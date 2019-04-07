@@ -7,3 +7,7 @@ Horizon is a media player for Android OS. Its aim is to be a lightweight and fas
 - Android version: 4.4 and up
 - Required storage: about 3MB of free space
 
+## Build Status
+- master:  [![CircleCI](https://circleci.com/gh/takashikumagai/horizon/tree/master.svg?style=svg)](https://circleci.com/gh/takashikumagai/horizon/tree/master)
+
+- develop: [![CircleCI](https://circleci.com/gh/takashikumagai/horizon/tree/develop.svg?style=svg)](https://circleci.com/gh/takashikumagai/horizon/tree/develop)
