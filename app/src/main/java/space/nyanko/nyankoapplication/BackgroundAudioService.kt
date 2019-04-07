@@ -87,7 +87,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 for (key in extras.keySet()) {
                     val value = extras.get(key)
                     Log.d(TAG, String.format("%s %s (%s)",
-                            key, value.toString(), value.javaClass.getName()))
+                            key, value?.toString(), value.javaClass.getName()))
                 }
                 val obj = extras.get("android.intent.extra.KEY_EVENT")
                 if (obj == null) {
@@ -416,13 +416,15 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     /**
      * @brief Called when the user taps the play/pause button on the notification.
+     * @return true if the intent is handled, false otherwise
      */
-    private fun handleIntent(intent: Intent) {
+    private fun handleIntent(intent: Intent): Boolean {
         Log.d(TAG,"hI " + intent.getAction())
         val action = intent.getAction()
+        var handled = false
         if (action === ACTION_PLAY_PAUSE) {
             if (mediaPlayer == null || currentlyPlayed == null) {
-                return
+                return false
             }
             if (mediaPlayer!!.isPlaying()) {
                 pause()
@@ -434,7 +436,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         } else if (action === ACTION_PREV_TRACK) {
             Log.d(TAG, "a:prev")
             if (currentlyPlayed != null) {
-                val result = currentlyPlayed!!.playPrevTrack()
+                handled = currentlyPlayed!!.playPrevTrack()
                 updateMediaControls()
                 showMediaControls()
             } else {
@@ -443,13 +445,17 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         } else if (action === ACTION_NEXT_TRACK) {
             Log.d(TAG, "a:next")
             if (currentlyPlayed != null) {
-                val result = currentlyPlayed!!.playNextTrack()
+                handled = currentlyPlayed!!.playNextTrack()
                 updateMediaControls()
                 showMediaControls()
             } else {
                 Log.d(TAG, "a:next cP!")
             }
+        } else {
+            Log.d(TAG, "hi a!")
         }
+
+        return handled
     }
 
     /**
