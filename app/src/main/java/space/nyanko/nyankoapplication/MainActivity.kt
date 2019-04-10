@@ -143,6 +143,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             return service.mediaPlayer
         }
 
+    private var mediaInfoPopup: MediaInfoPopupWindow? = null
+
     inner class MyFabBehavior : FloatingActionButton.Behavior() {
 
         override fun onDependentViewChanged(parent: CoordinatorLayout,
@@ -289,6 +291,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         folderViewPlayingTrackTime = findViewById(R.id.playing_track_time) as TextView
 
         initSeekBar();
+
+        mediaInfoPopup = MediaInfoPopupWindow(this)
     }
 
     override protected fun onStart() {
@@ -1484,6 +1488,15 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // Show the playing track info and control (pause/resume)
         val ptc: LinearLayout = findViewById(R.id.playing_track_control)
         ptc.setVisibility(View.GONE)
+    }
+
+    fun openMediaInfoPopup(mediaFile: File) {
+        if(mediaInfoPopup == null) {
+            Log.w(TAG,"!mIP")
+            return
+        }
+
+        mediaInfoPopup?.open(this, mediaFile)
     }
 
     companion object {

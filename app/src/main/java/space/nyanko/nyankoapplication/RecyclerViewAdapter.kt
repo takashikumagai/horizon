@@ -157,6 +157,17 @@ class RecyclerViewAdapter(
 
             onEntryClickedInFolderView(entry, pos, navigator, mainActivity)
         }
+
+        holder.fileTypeIcon?.setOnClickListener() { _ ->
+            Log.d(TAG, "fTI onclick")
+
+            if(entry.isDirectory) {
+                // Do nothing
+            } else {
+                mainActivity.openMediaInfoPopup(entry)
+            }
+
+        }
     }
 
     fun setMediaFileToViewHolder(entry: File, holder: ViewHolder) {
