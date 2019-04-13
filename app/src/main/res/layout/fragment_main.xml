@@ -39,9 +39,18 @@
         app:layout_constraintTop_toBottomOf="@+id/tabLayout"
         app:tabTextAppearance="@style/HorizonTabTitleTextAppearance" />
 
+    <SeekBar
+        android:id="@+id/playing_track_seek_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/playing_track_control"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view" />
+
     <!--
-    This linear layout houses two elements: a seek bar and another linear layout
-    which, in turn, houses the rest of the playing track control
+    This linear layout houses the playing track control panel at the bottom
+    which shows the title of the track, position, and the play/pause button.
     -->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/playing_track_control"
@@ -52,16 +61,7 @@
         app:layout_constraintBottom_toTopOf="@id/playback_control"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler_view">
-
-        <SeekBar
-            android:id="@+id/playing_track_seek_bar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/playing_track_info_and_play_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/playing_track_seek_bar">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/playing_track_info_and_play_button"
@@ -74,7 +74,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playing_track_seek_bar">
+            app:layout_constraintTop_toTopOf="parent">
 
             <!--
             This shows the song title/filename currently at the bottom
