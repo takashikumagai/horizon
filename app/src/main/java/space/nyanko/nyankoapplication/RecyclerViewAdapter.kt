@@ -149,24 +149,30 @@ class RecyclerViewAdapter(
 
         val navigator = currentFileSystemNavigator
 
-        holder.parentLayout.setOnClickListener() { v ->
-            Log.d(TAG, "onClick: clicked")
-
-            // Update the tab label
-            mainActivity.setSelectedTabLabel(entry.getName())
+        holder.parentLayout.setOnClickListener {
+            Log.d(TAG, "onClick")
 
             onEntryClickedInFolderView(entry, pos, navigator, mainActivity)
         }
 
-        holder.fileTypeIcon?.setOnClickListener() { _ ->
-            Log.d(TAG, "fTI onclick")
+        holder.fileTypeIcon?.setOnLongClickListener {
+            Log.d(TAG, "fTI onLC")
 
             if(entry.isDirectory) {
                 // Do nothing
+                false
             } else {
                 mainActivity.openMediaInfoPopup(entry)
+                true
             }
+        }
 
+        // The setOnLongClickListener above somehow disables the onclick listener
+        // over the parentLayout so had to add this
+        holder.fileTypeIcon?.setOnClickListener {
+            Log.d(TAG, "fTI onClick")
+
+            onEntryClickedInFolderView(entry, pos, navigator, mainActivity)
         }
     }
 
@@ -229,6 +235,10 @@ class RecyclerViewAdapter(
                                            pos: Int,
                                            navigator: FileSystemNavigator?,
                                            mainActivity: MainActivity) {
+
+        // Update the tab label
+        mainActivity.setSelectedTabLabel(entry?.name ?: "-")
+
         if (entry!!.isDirectory()) {
             navigator?.moveToChild(pos)
 
