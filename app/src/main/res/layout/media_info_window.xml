@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp"
     android:background="@color/bgSemiDark"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="15dp">
 
     <ImageView
         android:id="@+id/imageView"
@@ -21,25 +21,37 @@
 
     <TextView
         android:id="@+id/mi_title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Title"
         android:textColor="@color/textColorSecondary"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/mi_title_val"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
         android:id="@+id/mi_title_val"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="-"
         android:textColor="@color/textColorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintStart_toEndOf="@+id/mi_title"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:layout_editor_absoluteX="146dp" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="296dp" />
 
     <TextView
         android:id="@+id/mi_track"
@@ -50,18 +62,19 @@
         android:text="Track"
         android:textColor="@color/textColorSecondary"
         app:layout_constraintEnd_toStartOf="@+id/mi_track_val"
-        app:layout_constraintTop_toBottomOf="@+id/mi_title" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/mi_track_val"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
         android:text="-"
         android:textColor="@color/textColorPrimary"
         app:layout_constraintStart_toEndOf="@+id/mi_track"
-        app:layout_constraintTop_toBottomOf="@+id/mi_title_val"
-        tools:layout_editor_absoluteX="146dp" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/mi_artist"
@@ -72,18 +85,19 @@
         android:text="Artist"
         android:textColor="@color/textColorSecondary"
         app:layout_constraintEnd_toStartOf="@+id/mi_artist_val"
-        app:layout_constraintTop_toBottomOf="@+id/mi_track" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/barrier6" />
 
     <TextView
         android:id="@+id/mi_artist_val"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
         android:text="-"
         android:textColor="@color/textColorPrimary"
-        app:layout_constraintEnd_toStartOf="@+id/mi_artist"
-        app:layout_constraintTop_toBottomOf="@+id/mi_track_val"
-        tools:layout_editor_absoluteX="146dp" />
+        app:layout_constraintStart_toEndOf="@+id/mi_artist"
+        app:layout_constraintTop_toTopOf="@+id/barrier6" />
 
     <TextView
         android:id="@+id/mi_album"
@@ -94,18 +108,62 @@
         android:text="Album"
         android:textColor="@color/textColorSecondary"
         app:layout_constraintEnd_toStartOf="@+id/mi_album_val"
-        app:layout_constraintTop_toBottomOf="@+id/mi_artist" />
+        app:layout_constraintTop_toTopOf="@+id/barrier7" />
 
     <TextView
         android:id="@+id/mi_album_val"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
         android:text="-"
         android:textColor="@color/textColorPrimary"
-        app:layout_constraintEnd_toStartOf="@+id/mi_album"
-        app:layout_constraintTop_toBottomOf="@+id/mi_artist_val"
-        tools:layout_editor_absoluteX="146dp" />
+        app:layout_constraintStart_toEndOf="@+id/mi_album"
+        app:layout_constraintTop_toTopOf="@+id/barrier7" />
+
+    <TextView
+        android:id="@+id/mi_composer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="Composer"
+        android:textColor="@color/textColorSecondary"
+        app:layout_constraintEnd_toStartOf="@+id/mi_composer_val"
+        app:layout_constraintTop_toTopOf="@+id/barrier8" />
+
+    <TextView
+        android:id="@+id/mi_composer_val"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:text="-"
+        android:textColor="@color/textColorPrimary"
+        app:layout_constraintStart_toEndOf="@+id/mi_composer"
+        app:layout_constraintTop_toTopOf="@+id/barrier8" />
+
+    <TextView
+        android:id="@+id/mi_compilation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="Compilation"
+        android:textColor="@color/textColorSecondary"
+        app:layout_constraintEnd_toStartOf="@+id/mi_composer_val"
+        app:layout_constraintTop_toTopOf="@+id/barrier9" />
+
+    <TextView
+        android:id="@+id/mi_compilation_val"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:text="-"
+        android:textColor="@color/textColorPrimary"
+        app:layout_constraintStart_toEndOf="@+id/mi_composer"
+        app:layout_constraintTop_toTopOf="@+id/barrier9" />
 
     <TextView
         android:id="@+id/mi_year"
@@ -113,42 +171,101 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Year"
         android:textColor="@color/textColorSecondary"
         app:layout_constraintEnd_toStartOf="@+id/mi_year_val"
-        app:layout_constraintTop_toBottomOf="@+id/mi_album" />
+        app:layout_constraintTop_toTopOf="@+id/barrier10" />
 
     <TextView
         android:id="@+id/mi_year_val"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="-"
         android:textColor="@color/textColorPrimary"
         app:layout_constraintStart_toEndOf="@+id/mi_year"
-        app:layout_constraintTop_toBottomOf="@+id/mi_album_val"
-        tools:layout_editor_absoluteX="146dp" />
+        app:layout_constraintTop_toTopOf="@+id/barrier10" />
 
     <TextView
         android:id="@+id/mi_bitrate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="28dp"
         android:text="Bit rate"
         android:textColor="@color/textColorSecondary"
         app:layout_constraintEnd_toStartOf="@+id/mi_bitrate_val"
-        app:layout_constraintTop_toBottomOf="@+id/mi_year" />
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
+        />
 
     <TextView
         android:id="@+id/mi_bitrate_val"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
         android:text="-"
         android:textColor="@color/textColorPrimary"
         app:layout_constraintStart_toEndOf="@+id/mi_bitrate"
-        app:layout_constraintTop_toBottomOf="@+id/mi_year_val"
-        tools:layout_editor_absoluteX="146dp" />
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="mi_track,mi_track_val"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="415dp"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="mi_artist,mi_artist_val"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="460dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="mi_album,mi_album_val"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="500dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="mi_composer,mi_composer_val"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="540dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="mi_compilation,mi_compilation_val"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="580dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="mi_year,mi_year_val"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="620dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
