@@ -23,8 +23,7 @@ class MediaInfoPopupWindow(activity: MainActivity) {
                 = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         layout = inflater.inflate(
                 R.layout.media_info_window, // Resource ID
-                //null,
-                activity.findViewById(R.id.app_layout),
+                activity.findViewById(R.id.app_layout), // root
                 false
                 )
 
@@ -58,14 +57,24 @@ class MediaInfoPopupWindow(activity: MainActivity) {
                 MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER,
                 MediaMetadataRetriever.METADATA_KEY_ALBUM,
                 MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
+                MediaMetadataRetriever.METADATA_KEY_COMPOSER,
+                MediaMetadataRetriever.METADATA_KEY_COMPILATION,
+                MediaMetadataRetriever.METADATA_KEY_BITRATE,
                 MediaMetadataRetriever.METADATA_KEY_DURATION)
         val metaTags
                 = HorizonUtils.getMediaFileMetaTags(mediaFile, tags)
 
-        layout?.findViewById<TextView>(R.id.mi_title_val)?.setText(metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE))
-        layout?.findViewById<TextView>(R.id.mi_track_val)?.setText(metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER))
-        layout?.findViewById<TextView>(R.id.mi_album_val)?.setText(metaTags?.get(MediaMetadataRetriever.METADATA_KEY_ALBUM))
-        layout?.findViewById<TextView>(R.id.mi_artist_val)?.setText(metaTags?.get(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST))
+        layout?.findViewById<TextView>(R.id.mi_title_val)?.text = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
+        layout?.findViewById<TextView>(R.id.mi_track_val)?.text = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
+        layout?.findViewById<TextView>(R.id.mi_album_val)?.text = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+        layout?.findViewById<TextView>(R.id.mi_artist_val)?.text = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST)
+        layout?.findViewById<TextView>(R.id.mi_composer_val)?.text = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_COMPOSER)
+        //layout?.findViewById<TextView>(R.id.mi_compilation_val)?.setText(metaTags?.get(MediaMetadataRetriever.METADATA_KEY_COMPILATION))
+
+        val bitrate = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_BITRATE)
+        val kbps = if(bitrate != null) (bitrate.toInt() / 1000).toString() + " kbps" else "-"
+
+        layout?.findViewById<TextView>(R.id.mi_bitrate_val)?.text = kbps
 
         Log.d(TAG,"show")
         window.showAtLocation(
