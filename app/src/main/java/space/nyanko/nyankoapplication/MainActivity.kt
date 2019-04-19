@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     override protected fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "s.oC")
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "oC")
+        Log.d(TAG, "oC t" + Thread.currentThread().id)
         setContentView(R.layout.activity_main)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
