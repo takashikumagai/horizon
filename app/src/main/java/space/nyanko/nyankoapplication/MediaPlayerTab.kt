@@ -42,5 +42,18 @@ class MediaPlayerTab internal constructor() : Serializable {
 
     companion object {
         private val TAG = "MediaPlayerTab"
+
+        var tabs: ArrayList<MediaPlayerTab> = ArrayList()
+
+        var selectedTabIndex = -1
+
+        @JvmStatic
+        fun getSelected(): MediaPlayerTab? {
+            if(0 <= selectedTabIndex && selectedTabIndex < tabs.size) {
+                return tabs[selectedTabIndex]
+            } else {
+                return null
+            }
+        }
     }
 }

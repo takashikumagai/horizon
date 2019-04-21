@@ -53,11 +53,16 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     /**
      * @brief Index to the currently selected tab, i.e. tab on the screen
      */
-    var selectedTabIndex = -1
+    var selectedTabIndex: Int
+        get() = MediaPlayerTab.selectedTabIndex
+        set(value) {
+            MediaPlayerTab.selectedTabIndex = value
+        }
 
     //==================== Model ====================
 
-    var mediaPlayerTabs = ArrayList<MediaPlayerTab>()
+    var mediaPlayerTabs: ArrayList<MediaPlayerTab> = ArrayList()
+        get() = MediaPlayerTab.tabs
         private set
 
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
