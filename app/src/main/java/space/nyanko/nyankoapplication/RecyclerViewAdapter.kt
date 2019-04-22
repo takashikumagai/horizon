@@ -183,12 +183,21 @@ class RecyclerViewAdapter(
         // update it to metadata title asynchronously if needed
         holder.fileName.text = entry.name
 
-        //updateMediaMetadata(entry,holder)
-        MediaMetadataUpdateManager.updateMediaMetadataDeferred(entry,holder)
+        holder.secondaryRow.text = "-"
 
         setFileTypeIcon(holder,R.drawable.audio_file)
 
-        holder.secondaryRow.text = "-"
+        val cache = getMetadataCache()
+        if(cache != null && 0 < cache.tags.size) {
+            val metaTags = cache.tags[entry.name]
+            if(metaTags != null) {
+                updateMediaMetadata(entry,metaTags,holder,false)
+            } else {
+                MediaMetadataUpdateManager.updateMediaMetadataDeferred(entry,holder)
+            }
+        } else {
+            MediaMetadataUpdateManager.updateMediaMetadataDeferred(entry,holder)
+        }
     }
 
     fun clearViewHolder(holder: ViewHolder) {
@@ -209,6 +218,8 @@ class RecyclerViewAdapter(
 
         if (entry!!.isDirectory()) {
             navigator?.moveToChild(pos)
+
+            MediaPlayerTab.getSelected()?.metadataCache?.clear()
 
             mainActivity.setTitle(navigator?.currentDirectoryName ?: "")
 
@@ -336,6 +347,9 @@ class RecyclerViewAdapter(
         }
     }
 
+    private fun getMetadataCache(): MetadataCache? {
+        return MediaPlayerTab.getSelected()?.metadataCache
+    }
 
     //    private void resetBackgroundColors(View view) {
     //        ViewParent vp = view.getParent();
@@ -358,6 +372,9 @@ class RecyclerViewAdapter(
 
         internal var parentLayout: ConstraintLayout
 
+        // item views change on scroll so remembering the path like this does not work.
+        //internal var path: String = ""
+
         init {
 
             fileName = itemView.findViewById(R.id.file_name)
@@ -374,5 +391,52 @@ class RecyclerViewAdapter(
     companion object {
 
         private val TAG = "RecyclerViewAdapter"
+
+        @JvmStatic
+        fun updateMediaMetadata(entry: File,
+                                metaTags: HashMap<Int, String>?,
+                                holder: ViewHolder,
+                                cacheTags: Boolean) {
+
+            if (HorizonOptions.showMetaTagTitles) {
+
+                val title = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                if (title != null && 0 < title.length) {
+                    // The media file has a meta tag; use the title instead of its file name
+                    holder.fileName.setText(title)
+                } else {
+                    // Does not have the title tag; just set the file name
+                    holder.fileName.setText(entry.getName())
+                }
+            } else {
+                // User explicitly chose to see file name instead of title
+                holder.fileName.setText(entry.getName())
+            }
+
+            // Show the track number in the upper right corner of the media type icon
+            // if the media file has the track number metadata
+            val track = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
+            if (track != null) {
+                holder.fileTypeIcon?.setText(track)
+            } else {
+                holder.fileTypeIcon?.setText("")
+            }
+
+            // Track duration
+            var secondRow = ""
+            val duration = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            if (duration != null) {
+                val hhmmss = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
+                secondRow = "$hhmmss"
+            }
+            holder.secondaryRow.setText(secondRow)
+
+            if(cacheTags) {
+                val tab = MediaPlayerTab.getSelected()
+                if(metaTags != null) {
+                    tab?.metadataCache?.tags?.put(entry.name, metaTags)
+                }
+            }
+        }
     }
 }

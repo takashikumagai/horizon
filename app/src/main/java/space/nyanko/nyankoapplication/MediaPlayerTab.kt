@@ -33,6 +33,8 @@ class MediaPlayerTab internal constructor() : Serializable {
 
     val playbackQueue: Playback
 
+    var metadataCache: MetadataCache = MetadataCache()
+
     init {
         fileSystemNavigator = FileSystemNavigator()
         fileSystemNavigator.initialize()

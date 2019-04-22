@@ -779,6 +779,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 // ret = 0: successfully moved to the parent point
                 // ret = -1: was already at the root point
                 ret = navigator.moveToParent()
+                MediaPlayerTab.getSelected()?.metadataCache?.clear()
             } else {
                 // This happens when there are no tabs
                 ret = -1
