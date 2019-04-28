@@ -260,10 +260,13 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // We need a notification so just make an empty one for now.
         LockScreenMediaControl.init(this, mediaSession, false, "", "")
 
-        startForeground(
-                LockScreenMediaControl.NOTIFICATION_ID,
-                LockScreenMediaControl.notification
-        )
+        // Make this service run in the foreground
+        // Commented out: doing this makes the notification sticky and very difficult
+        // to dismiss by swiping it.
+//        startForeground(
+//                LockScreenMediaControl.NOTIFICATION_ID,
+//                LockScreenMediaControl.notification
+//        )
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {

@@ -97,6 +97,8 @@ internal object LockScreenMediaControl {
                         .setMediaSession(compatToken))
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
+                .setOngoing(false)
+                .setAutoCancel(true)
         //.setLargeIcon(albumArtBitmap)
 
         Log.d(TAG, "adding actions")
