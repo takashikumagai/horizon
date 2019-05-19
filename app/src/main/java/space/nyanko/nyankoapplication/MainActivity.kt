@@ -298,6 +298,12 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         initSeekBar();
 
         mediaInfoPopup = MediaInfoPopupWindow(this)
+
+        setSystemUiVisibilityChangeListener()
+
+        //LockScreenMediaControl.guideUserToEnableNotificationAccess(this,applicationContext)
+
+        LockScreenMediaControl.init(this, backgroundAudioService?.mediaSession)
     }
 
     override protected fun onStart() {
@@ -521,6 +527,36 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+
+        // handle when the user pull down the notification bar where
+        // (hasFocus will ='false') & if the user pushed the
+        // notification bar back to the top, then (hasFocus will ='true')
+        if (!hasFocus) {
+            Log.i(TAG, "Notification bar is pulled down")
+        } else {
+            Log.i(TAG, "Notification bar is pushed up")
+        }
+        super.onWindowFocusChanged(hasFocus)
+    }
+
+    private fun setSystemUiVisibilityChangeListener() {
+        Log.d(TAG,"sSUVCL")
+        // Detecting if the user swipe from the top down to the phone screen to show up the status bar
+        // (without showing the notification area); so we could set mStatusBarShow flat to true to allow
+        // us hide the status bar for the next onClick event
+        val decorView = window.decorView
+        decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+            // Note that system bars will only be "visible" if none of the
+            // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
+                Log.d(TAG,"status bar shown")
+            } else {
+                Log.d(TAG,"status bar hidden")
+            }
+        }
     }
 
     private fun setViewsToPlaybackManagers() {

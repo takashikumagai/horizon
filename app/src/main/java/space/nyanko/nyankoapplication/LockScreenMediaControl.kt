@@ -5,16 +5,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
-import androidx.core.content.ContextCompat
 import android.app.PendingIntent
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.NotificationChannel
-import androidx.media.app.NotificationCompat.MediaStyle
 //import android.support.v4.media.app.Notification.MediaStyle;
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 
 
@@ -62,6 +59,10 @@ internal object LockScreenMediaControl {
         return builder.build()
     }
 
+    fun init(context: Context, mediaSession: MediaSessionCompat?) {
+        init(context, mediaSession, false, "", "")
+    }
+
     /**
      * @brief Initializses the lock screen control without showing it on screen.
      *
@@ -80,6 +81,10 @@ internal object LockScreenMediaControl {
             return;
         }
 
+        val receiverIntent = Intent(context, HorizonBroadcastReceiver::class.java)
+        val deletePendingIntent = PendingIntent.getBroadcast(
+                context.applicationContext, 0, receiverIntent, 0)
+
         this.contentTitle = contentTitle ?: ""
         this.contentText = contentText ?: ""
 
@@ -97,9 +102,23 @@ internal object LockScreenMediaControl {
                         .setMediaSession(compatToken))
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
+                .setOngoing(false)
+
+                // This does not affect whether the notification can be dismissed by swiping
+                // When set to true, the notification disappears when the user taps it and
+                // MainActivity is launched
+                .setAutoCancel(false)
+
+                .setDeleteIntent(deletePendingIntent)
         //.setLargeIcon(albumArtBitmap)
 
         Log.d(TAG, "adding actions")
+
+
+        val dismissIntent
+                = NotificationActivity.getDismissIntent(NOTIFICATION_ID, context)
+
+        builder.addAction(R.drawable.close, "Dismiss", dismissIntent)
 
         builder.addAction(generateAction(
                 context,
@@ -190,14 +209,19 @@ internal object LockScreenMediaControl {
             return
         }
 
-        val notificationManager = NotificationManagerCompat.from(context)
+        //val notificationManager = NotificationManagerCompat.from(context)
+        val notificationManager
+                = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager == null) {
             Log.w(TAG, "!nM")
             return
         }
 
+        Log.d(TAG, "nM.cancel")
         notificationManager.cancel(NOTIFICATION_ID)
+
+        context.sendBroadcast(Intent("space.nyanko.nyankoapplication"));
     }
 
     /**
