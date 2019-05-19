@@ -15,6 +15,9 @@ class NotificationActivity : Activity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
 
+        // Pause the playback before sending the service to background
+        BackgroundAudioService.instance?.pause()
+
         // Send the service to background
         // This seems necessary in order to cancel the notification
         BackgroundAudioService.instance?.stopForegroundAndRemoveNotification()

@@ -120,11 +120,11 @@ internal object LockScreenMediaControl {
 
         builder.addAction(R.drawable.close, "Dismiss", dismissIntent)
 
-//        builder.addAction(generateAction(
-//                context,
-//                BackgroundAudioService.ACTION_PREV_TRACK,
-//                R.drawable.prev,
-//                "Prev"))
+        builder.addAction(generateAction(
+                context,
+                BackgroundAudioService.ACTION_PREV_TRACK,
+                R.drawable.prev,
+                "Prev"))
         builder.addAction(generateAction(
                 context,
                 BackgroundAudioService.ACTION_PLAY_PAUSE,
