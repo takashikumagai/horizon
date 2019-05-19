@@ -238,7 +238,7 @@ internal object LockScreenMediaControl {
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Log.d(TAG, "sdk>=codes.o")
-            val name = "channel-name"//getString(R.string.channel_name);
+            val name = "horizon-notification"//getString(R.string.channel_name);
             val description = "my-channel"//getString(R.string.channel_description);
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
