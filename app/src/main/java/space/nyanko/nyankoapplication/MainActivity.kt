@@ -678,6 +678,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
             hidePlayingTrackControl()
             hidePlaybackQueueControl()
+            hideSeekBar()
         }
 
         if (pos < mediaPlayerTabs.size) {
@@ -1044,6 +1045,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             updatePlayingTrackControlPanel(mediaPlayer)
         }
 
+        showSeekBar()
 
         //        View ptc = findViewById(R.id.playing_track_control);
         //        ptc.setVisibility(View.VISIBLE);
@@ -1158,6 +1160,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         updatePlaylistViewPlayPauseButton(isMediaPlaying())
         showPlaybackQueueControl()
 
+        showSeekBar()
+
         recyclerViewAdapter!!.viewMode = 1
 
         recyclerViewAdapter!!.notifyDataSetChanged()
@@ -1195,6 +1199,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // one track
         if (playbackQueue != null && 0 < playbackQueue.mediaFilePathQueue.size) {
             showPlayingTrackControl()
+            showSeekBar()
         }
 
         hidePlaybackQueueControl()
@@ -1215,6 +1220,16 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     fun hidePlaybackQueueControl() {
         val pc: LinearLayout = findViewById(R.id.playback_control)
         pc.setVisibility(View.GONE)
+    }
+
+    fun showSeekBar() {
+        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
+        folderViewSeekBar?.visibility = View.VISIBLE;
+    }
+
+    fun hideSeekBar() {
+        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
+        folderViewSeekBar?.visibility = View.GONE;
     }
 
     fun initFloatingActionButton() {
@@ -1353,6 +1368,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                         isTrackingSeekBar = false
                     }
                 })
+
+        // Do not show the seek bar when the app is started.
+        hideSeekBar()
 
         runOnUiThread(
                 object : Runnable {
