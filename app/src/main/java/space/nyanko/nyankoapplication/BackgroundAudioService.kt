@@ -38,7 +38,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     var mediaPlayer: MediaPlayer? = null
         private set
 
-    private var mediaSession: MediaSessionCompat? = null
+    public var mediaSession: MediaSessionCompat? = null
 
     private val playbackState: PlaybackStateCompat? = null
 
@@ -263,10 +263,10 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // Make this service run in the foreground
         // Commented out: doing this makes the notification sticky and very difficult
         // to dismiss by swiping it.
-//        startForeground(
-//                LockScreenMediaControl.NOTIFICATION_ID,
-//                LockScreenMediaControl.notification
-//        )
+        startForeground(
+                LockScreenMediaControl.NOTIFICATION_ID,
+                LockScreenMediaControl.notification
+        )
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -488,6 +488,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         LockScreenMediaControl.changeState(this,mediaSession,true); // playing
         LockScreenMediaControl.show(this)
 
+        startForeground(
+                LockScreenMediaControl.NOTIFICATION_ID,
+                LockScreenMediaControl.notification
+        )
+
         return true
     }
 
@@ -556,6 +561,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     fun setAudioServiceCallbacks(callbacks: AudioServiceCallbacks?) {
         Log.d(TAG, "sASC")
         this.callbacks = callbacks;
+    }
+
+    fun stopForegroundAndRemoveNotification() {
+        Log.d(TAG, "sFARN")
+        stopForeground(true)
     }
 
     companion object {

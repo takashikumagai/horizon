@@ -25,6 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NotificationActivity"
+            android:taskAffinity=""
+            android:excludeFromRecents="true">
+        </activity>
         <service
             android:name=".BackgroundAudioService"
             android:stopWithTask="false">
@@ -32,6 +37,11 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
                 <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+        <service android:label="Horizon Media Player" android:name=".HorizonNotificationListener" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
         <!--<receiver android:name=".RemoteControlReceiver">
@@ -44,6 +54,10 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
             </intent-filter>
+        </receiver>
+        <receiver
+            android:name="space.nyanko.nyankoapplication.HorizonBroadcastReceiver"
+            android:exported="false">
         </receiver>
     </application>
 </manifest>
