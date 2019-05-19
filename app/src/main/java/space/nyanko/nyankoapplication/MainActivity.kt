@@ -1543,9 +1543,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         val ptc: LinearLayout = findViewById(R.id.playing_track_control)
         ptc.setVisibility(View.VISIBLE)
 
-        // Update the track title and duration
-        updatePlayingTrackControlPanel(this.mediaPlayer)
-
         // Update button state (playing or paused)
         updatePlayingTrackPlayPauseButton(isMediaPlaying())
     }
