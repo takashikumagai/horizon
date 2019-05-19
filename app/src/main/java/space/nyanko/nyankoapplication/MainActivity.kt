@@ -437,6 +437,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         Log.d(TAG, "onPause")
     }
 
+    /**
+     * Note that this method is called not only when the app is resumed but also when
+     * it is first launched.
+     */
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
@@ -1116,6 +1120,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         val duration = mediaPlayer.getDuration()
 
+        Log.d(TAG, "sB max " + duration)
         folderViewSeekBar?.setMax(duration)
 
         val time = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
@@ -1183,6 +1188,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun switchToFolderView() {
+        Log.d(TAG,"sTFV")
 
         if (selectedTabIndex < 0 || mediaPlayerTabs.size <= selectedTabIndex) {
             Log.d(TAG, "sTFSV !!cPI")
@@ -1376,6 +1382,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : Runnable {
 
                     override fun run() {
+                        Log.d(TAG, "runOnUiThread run")
                         val mediaPlayer = mediaPlayer
                         if (mediaPlayer == null) {
                             Log.d(TAG, "rout !mP")
@@ -1528,6 +1535,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     fun showPlayingTrackControl() {
         Log.d(TAG, "sPTB")
 
+        // Update the track title and duration
         updatePlayingTrackControlPanel(this.mediaPlayer)
         updateSeekbarProgressAndTime(this.mediaPlayer)
 
