@@ -68,6 +68,10 @@ class Playback : Serializable {
             }
         }
 
+    interface MediaPlayerCallback {
+        fun onMediaStarted(started: Boolean) {}
+    }
+
     fun clearQueue() {
         Log.d(TAG, "clearing queue")
         mediaFilePathQueue.clear()
@@ -142,20 +146,12 @@ class Playback : Serializable {
         } catch (e: Exception) {
             Log.e(TAG, "caught an exception: " + e.toString() + " File: " + mediaFilepath)
         } finally {
-            // Repaint GUI as a currently played track has just been changed.
-            // or the failed-to-start track might need to show the status on its view
-            if (recyclerViewAdapter != null) {
-                recyclerViewAdapter!!.notifyDataSetChanged()
-            } else {
-                Log.e(TAG, "!rVA")
-            }
         }
 
-        if(started) {
-            if (playingTrackName != null) {
-                val f = File(mediaFilepath)
-                playingTrackName!!.setText(f.getName())
-            }
+        if(mediaPlayerCallback != null) {
+            mediaPlayerCallback?.onMediaStarted(started)
+        } else {
+            Log.d(TAG, "!mPC")
         }
 
         return started
@@ -331,5 +327,7 @@ class Playback : Serializable {
          * Set by the service
          */
         var mediaPlayer: MediaPlayer? = null
+
+        var mediaPlayerCallback: MediaPlayerCallback? = null
     }
 }

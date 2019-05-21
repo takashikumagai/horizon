@@ -38,7 +38,7 @@ import java.io.ObjectInputStream
 import java.util.ArrayList
 
 @SuppressLint("RestrictedApi")
-class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCallbacks {
+class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCallbacks, Playback.MediaPlayerCallback {
 
     /**
      * @brief Index to the tab where a track is playing
@@ -304,6 +304,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         //LockScreenMediaControl.guideUserToEnableNotificationAccess(this,applicationContext)
 
         LockScreenMediaControl.init(this, backgroundAudioService?.mediaSession)
+
+        Playback.mediaPlayerCallback = this
     }
 
     override protected fun onStart() {
@@ -343,7 +345,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         //Intent serviceIntent = new Intent(this,BackgroundAudioService.class);
         //stopService(serviceIntent);
 
-
+        Playback.mediaPlayerCallback = null
     }
 
     override protected fun onSaveInstanceState(savedInstanceState: Bundle) {
@@ -1071,6 +1073,22 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         Log.d(TAG, "onAudioStop")
         updatePlayingTrackPlayPauseButton(false)
         updatePlaylistViewPlayPauseButton(false)
+    }
+
+    override fun onMediaStarted(started: Boolean) {
+        super.onMediaStarted(started)
+
+            // Repaint GUI as a currently played track has just been changed.
+            // or the failed-to-start track might need to show the status on its view
+            if (recyclerViewAdapter != null) {
+                recyclerViewAdapter!!.notifyDataSetChanged()
+            } else {
+                Log.e(TAG, "oMS !rVA")
+            }
+
+        if(started) {
+            updatePlayingTrackControlPanel(this.mediaPlayer)
+        }
     }
 
     /**
