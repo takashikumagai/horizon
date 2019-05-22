@@ -91,8 +91,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
      * */
     private var serviceConnection: ServiceConnection? = null
 
-    private val handler = Handler()
-
     private val currentFileSystemNavigator: FileSystemNavigator?
         get() {
 
@@ -149,6 +147,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
     private var mediaInfoPopup: MediaInfoPopupWindow? = null
+
+    private var seekBarUpdateAgent: SeekBarUpdateAgent = SeekBarUpdateAgent()
 
     inner class MyFabBehavior : FloatingActionButton.Behavior() {
 
@@ -306,6 +306,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         LockScreenMediaControl.init(this, backgroundAudioService?.mediaSession)
 
         Playback.mediaPlayerCallback = this
+
+        seekBarUpdateAgent.enable(this)
     }
 
     override protected fun onStart() {
@@ -431,7 +433,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         updateFloatingActionButtonVisibility()
 
-        updateSeekbarProgressAndTime(mediaPlayer)
+        updateSeekbarProgressAndTime()
     }
 
     override fun onPause() {
@@ -1098,7 +1100,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
      *
      * @param mediaPlayer
      */
-    fun updateSeekbarProgressAndTime(mediaPlayer: MediaPlayer?) {
+    fun updateSeekbarProgressAndTime() {
+
+        val mediaPlayer = this.mediaPlayer
 
         if (mediaPlayer == null) {
             Log.w(TAG, "uSPAT !mP")
@@ -1396,23 +1400,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // Do not show the seek bar when the app is started.
         hideSeekBar()
 
-        runOnUiThread(
-                object : Runnable {
-
-                    override fun run() {
-                        Log.d(TAG, "runOnUiThread run")
-                        val mediaPlayer = mediaPlayer
-                        if (mediaPlayer == null) {
-                            Log.d(TAG, "rout !mP")
-                            return
-                        }
-
-                        updateSeekbarProgressAndTime(mediaPlayer)
-
-                        // Add this runnable to the message queue
-                        handler.postDelayed(this, 1000)
-                    }
-                })
     }
 
     fun updatePlayingTrackPlayPauseButton(playing: Boolean?) {
@@ -1555,7 +1542,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         // Update the track title and duration
         updatePlayingTrackControlPanel(this.mediaPlayer)
-        updateSeekbarProgressAndTime(this.mediaPlayer)
+        updateSeekbarProgressAndTime()
 
         // Show the playing track info and control (pause/resume)
         val ptc: LinearLayout = findViewById(R.id.playing_track_control)
