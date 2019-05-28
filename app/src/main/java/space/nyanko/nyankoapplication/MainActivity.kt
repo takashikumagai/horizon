@@ -1080,13 +1080,13 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     override fun onMediaStarted(started: Boolean) {
         super.onMediaStarted(started)
 
-            // Repaint GUI as a currently played track has just been changed.
-            // or the failed-to-start track might need to show the status on its view
-            if (recyclerViewAdapter != null) {
-                recyclerViewAdapter!!.notifyDataSetChanged()
-            } else {
-                Log.e(TAG, "oMS !rVA")
-            }
+        // Repaint GUI as a currently played track has just been changed.
+        // or the failed-to-start track might need to show the status on its view
+        if (recyclerViewAdapter != null) {
+            recyclerViewAdapter!!.notifyDataSetChanged()
+        } else {
+            Log.e(TAG, "oMS !rVA")
+        }
 
         if(started) {
             updatePlayingTrackControlPanel(this.mediaPlayer)
