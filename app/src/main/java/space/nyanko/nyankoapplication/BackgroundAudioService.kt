@@ -108,12 +108,10 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                             play()
                         } else if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_HEADSETHOOK) {
                             Log.d(TAG, "oMBE headsethook")
-                            val mediaPlayer = this@BackgroundAudioService.mediaPlayer
-                            if(mediaPlayer != null && mediaPlayer.isPlaying()) {
-                                pause()
-                            } else {
-                                play()
-                            }
+                            playOrPause()
+                        } else if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
+                            Log.d(TAG, "mp.p/p")
+                            playOrPause()
                         }
                     }
                 }
@@ -192,6 +190,16 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 }// Not sure what to do with this one...
             }
         }
+
+        private fun playOrPause() {
+            val mediaPlayer = this@BackgroundAudioService.mediaPlayer
+            if(mediaPlayer != null && mediaPlayer.isPlaying) {
+                pause()
+            } else {
+                play()
+            }
+        }
+
     }
 
     interface AudioServiceCallbacks {
