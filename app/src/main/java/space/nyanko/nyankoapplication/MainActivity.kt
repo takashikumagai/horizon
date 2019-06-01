@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         override fun onDependentViewChanged(parent: CoordinatorLayout,
                                             child: FloatingActionButton,
                                             dependency: View): Boolean {
-            Log.d(TAG, "fab_behavior oDVC")
+            //Log.d(TAG, "fab_behavior oDVC")
             return super.onDependentViewChanged(parent, child, dependency)
         }
 
@@ -976,7 +976,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         if (0 <= selectedTabIndex && selectedTabIndex < mediaPlayerTabs.size) {
             return mediaPlayerTabs[selectedTabIndex]
         } else {
-            Log.d(TAG, "gCSMPT: " + selectedTabIndex)
+            Log.d(TAG, "gCSMPT: " + selectedTabIndex + ", " + mediaPlayerTabs.size)
             return null
         }
     }
