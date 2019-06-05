@@ -437,6 +437,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         updateFloatingActionButtonVisibility()
 
+        updateResumeButtonVisibility()
+
         updateSeekbarProgressAndTime()
     }
 
@@ -780,8 +782,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         mediaPlayerTabs.get(pos).viewMode = 0
 
         switchToFolderView()
-
-        updateResumeButtonVisibility()
     }
 
     private fun setTabListeners() {
@@ -1242,6 +1242,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         recyclerViewAdapter!!.notifyDataSetChanged()
 
         updateFloatingActionButtonVisibility()
+
+        updateResumeButtonVisibility()
     }
 
     fun showPlaybackQueueControl() {
