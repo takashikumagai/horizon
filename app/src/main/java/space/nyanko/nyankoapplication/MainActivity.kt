@@ -327,11 +327,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             unbindService(serviceConnection)
             boundToService = false
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "oDestroy")
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE)
         val stateSaved = sharedPref.getInt("state_saved_to_bundle", 0)
@@ -341,6 +336,15 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         // Reset the flag
         setStateSavedToBundle(0)
+    }
+
+    /**
+     * onDestroy() is *NOT* always called:
+     * - http://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "oDestroy")
 
         // For now we stop the service so that we can test their behavior from the start
         // every time we close and restart the app
