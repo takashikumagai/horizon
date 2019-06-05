@@ -320,7 +320,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     override protected fun onStop() {
         super.onStop()
-        Log.d(TAG, "oStop")
+        Log.d(TAG, "oStop: ${currentlyPlayedQueueIndex} ${selectedTabIndex} ${mediaPlayerTabs.size}")
         // Unbind from service
         if (boundToService) {
             backgroundAudioService?.setAudioServiceCallbacks(null) // unregister
@@ -587,6 +587,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             Log.d(TAG, "adding tab. index: $selectedTabIndex")
             tabLayout.addTab(newTab)
         }
+        Log.d(TAG, "rTLT tabs: ${tabLayout.tabCount}")
     }
 
     private fun addNewLayoutTab(tabTitle: String): TabLayout.Tab? {
@@ -612,7 +613,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     private fun saveStateToFile() {
-        Log.d(TAG, "saveStateToFile")
+        Log.d(TAG, "sSTF: ${currentlyPlayedQueueIndex} ${selectedTabIndex} ${mediaPlayerTabs.size}")
         val file = File(getFilesDir(), APPLICATION_STATE_FILE_NAME)
         try {
             val f = FileOutputStream(file.getPath())
@@ -624,7 +625,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
             stream.close()
         } catch (e: Exception) {
-            Log.e(TAG, e.toString())
+            Log.e(TAG, "sSTF!: " + e.toString())
         }
 
     }
@@ -885,6 +886,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun updateResumeButtonVisibility() {
+        Log.d(TAG, "uRBV")
 
         val mediaPlayerTab = getCurrentlySelectedMediaPlayerTab()
 
