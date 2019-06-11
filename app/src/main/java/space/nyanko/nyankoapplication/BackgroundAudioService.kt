@@ -281,9 +281,12 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         )
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "oSC: $flags, $startId")
-        val keyEvent = MediaButtonReceiver.handleIntent(mediaSession, intent)
+        if(intent == null) {
+            Log.w(TAG,"oSC !sI")
+        } else {
+            val keyEvent = MediaButtonReceiver.handleIntent(mediaSession, intent)
 
             if (keyEvent == null) {
                 Log.d(TAG, "!kE")
@@ -451,9 +454,15 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         val action = intent.getAction()
         var handled = false
         if (action === ACTION_PLAY_PAUSE) {
-            if (mediaPlayer == null || currentlyPlayed == null) {
+            if (mediaPlayer == null) {
+                Log.d(TAG,"hI !mP")
                 return false
             }
+            if(currentlyPlayed == null) {
+                Log.d(TAG,"hI !cP")
+                return false
+            }
+
             if (mediaPlayer!!.isPlaying()) {
                 pause()
             } else {
