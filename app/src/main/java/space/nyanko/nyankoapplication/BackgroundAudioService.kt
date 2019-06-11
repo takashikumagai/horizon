@@ -269,7 +269,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         LockScreenMediaControl.init(this, mediaSession, false, "", "")
 
         // Make this service run in the foreground
-        // Commented out: doing this makes the notification sticky and very difficult
+        // Note that this makes the notification sticky and very difficult
         // to dismiss by swiping it.
         startForeground(
                 LockScreenMediaControl.NOTIFICATION_ID,
@@ -281,10 +281,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         Log.d(TAG, "oSC: $flags, $startId")
         val keyEvent = MediaButtonReceiver.handleIntent(mediaSession, intent)
 
-        if (keyEvent == null) {
-            Log.d(TAG, "!kE")
-            // custom actions we defined for the notification
-            handleIntent(intent)
+            if (keyEvent == null) {
+                Log.d(TAG, "!kE")
+                // custom actions we defined for the notification
+                handleIntent(intent)
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -313,6 +314,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     }
 
     fun initMediaPlayer() {
+        Log.d(TAG, "iMP")
+
+        if( mediaPlayer != null ) {
+            Log.w(TAG, "mP !null")
+        }
 
         mediaPlayer = MediaPlayer()
 
@@ -348,6 +354,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     }
 
     fun initMediaSession() {
+
+        if( mediaSession != null ) {
+            Log.w(TAG, "mS !null")
+        }
+
         val mediaButtonReceiver = ComponentName(getApplicationContext(), MediaButtonReceiver::class.java)
         mediaSession = MediaSessionCompat(
                 getApplicationContext(), "mySessionTag", mediaButtonReceiver, null)
@@ -389,6 +400,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
         val result = audioManager.requestAudioFocus(mediaSessionCallback,
                 AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+
+        Log.d(TAG,"rAF res: " + result)
 
         return result == AudioManager.AUDIOFOCUS_GAIN
     }
@@ -478,7 +491,9 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
      * @return false if it failed to start playing/resuming
      */
     fun play(): Boolean {
-        Log.d(TAG, "play")
+        Log.d(TAG, String.format("play t%d s%d",
+                Thread.currentThread().id,
+                mediaPlayer?.audioSessionId ?: "(null)"))
 
         val granted = retrievedAudioFocus()
         if (!granted) {
@@ -515,7 +530,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         callbacks?.onAudioPause() // Notify the activity class
 
         // Update the notification
-        LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
+        LockScreenMediaControl.changeState(this,mediaSession,false) // not playing
         LockScreenMediaControl.show(this)
     }
 
@@ -567,7 +582,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     }
 
     fun setAudioServiceCallbacks(callbacks: AudioServiceCallbacks?) {
-        Log.d(TAG, "sASC")
+        Log.d(TAG, "sASC: " + if (callbacks != null) "s" else "u")
         this.callbacks = callbacks;
     }
 
