@@ -1178,22 +1178,30 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             return
         }
 
+        // Duration
         val duration = mediaPlayer.getDuration()
+        if(duration == -1) {
+            // Duration was not available
+            folderViewSeekBar?.max = 0
+            folderViewPlayingTrackTime?.text = "\uD83D\uDC31 / \uD83D\uDC08"
+        } else {
+            Log.d(TAG, "sB max " + duration)
+            folderViewSeekBar?.setMax(duration)
 
-        Log.d(TAG, "sB max " + duration)
-        folderViewSeekBar?.setMax(duration)
+            val time = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
 
-        val time = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
-
-        // Update the duration, i.e. the 'BB:BB' part in 'AA:AA / BB:BB'
-        if (folderViewPlayingTrackTime != null) {
-            val text = folderViewPlayingTrackTime!!.getText().toString()
-            val separator = text.indexOf(" / ")
-            if (0 <= separator) {
-                folderViewPlayingTrackTime!!.setText(text.substring(0, separator + 3) + time)
+            // Update the duration, i.e. the 'BB:BB' part in 'AA:AA / BB:BB'
+            if (folderViewPlayingTrackTime != null) {
+                val text = folderViewPlayingTrackTime!!.getText().toString()
+                val separator = text.indexOf(" / ")
+                if (0 <= separator) {
+                    folderViewPlayingTrackTime!!.setText(text.substring(0, separator + 3) + time)
+                }
             }
+
         }
 
+        // Track title
         val name: String?
         if (0 <= currentlyPlayedQueueIndex && currentlyPlayedQueueIndex < mediaPlayerTabs.size) {
             val currentlyPlayed = mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
@@ -1204,12 +1212,15 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                     playingTrackName!!.setText(name)
                 } else {
                     Log.w(TAG, "uPTCP !pTN")
+                    playingTrackName?.text = "\uD83D\uDE40" // 🙀
                 }
             } else {
                 Log.w(TAG, "uPTCP !cP")
+                playingTrackName?.text = "\uD83D\uDC3C" // 🐼
             }
         } else {
             Log.d(TAG,"uPTCP !cPQI " + currentlyPlayedQueueIndex);
+            playingTrackName?.text = "\uD83D\uDC31" // 🐱
         }
     }
 
@@ -1411,7 +1422,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     fun initSeekBar() {
 
-        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
+        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar?
+        folderViewSeekBar?.max = 0
+        folderViewSeekBar?.progress = 0
         folderViewSeekBar!!.setOnSeekBarChangeListener(
                 object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
