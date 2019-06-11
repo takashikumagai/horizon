@@ -540,6 +540,9 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // Pause the currently playing track
         mediaPlayer?.pause()
 
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager?.abandonAudioFocus(mediaSessionCallback)
+
         callbacks?.onAudioPause() // Notify the activity class
 
         // Update the notification
