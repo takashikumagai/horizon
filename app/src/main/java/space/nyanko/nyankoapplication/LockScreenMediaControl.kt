@@ -114,9 +114,10 @@ internal object LockScreenMediaControl {
 
         Log.d(TAG, "adding actions")
 
+        val applicationContext = context.applicationContext
 
         val dismissIntent
-                = NotificationActivity.getDismissIntent(NOTIFICATION_ID, context)
+                = NotificationActivity.getDismissIntent(NOTIFICATION_ID, applicationContext)
 
         builder.addAction(R.drawable.close, "Dismiss", dismissIntent)
 

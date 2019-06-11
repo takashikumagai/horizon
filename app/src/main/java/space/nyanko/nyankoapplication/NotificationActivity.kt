@@ -5,6 +5,7 @@ import android.content.Intent
 import android.app.NotificationManager
 import android.os.Bundle
 import android.app.Activity
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.util.Log
 
@@ -33,12 +34,26 @@ class NotificationActivity : Activity() {
 
         val NOTIFICATION_ID = "NOTIFICATION_ID"
 
-        fun getDismissIntent(notificationId: Int, context: Context): PendingIntent {
+        fun getDismissIntent(notificationId: Int, context: Context): PendingIntent? {
             Log.d(TAG, "gDI: " + notificationId)
+
+            // Create an intent for this activity
             val intent = Intent(context, NotificationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             intent.putExtra(NOTIFICATION_ID, notificationId)
-            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+            // used to retrieve the same pending intent instance later on (for cancelling, etc)
+            val requestCode = 0//4253
+
+            val pendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+                addNextIntentWithParentStack(intent)
+                getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+
+            if(pendingIntent == null) {
+                Log.e(TAG, "!pI")
+            }
+
+            return pendingIntent
         }
     }
 
