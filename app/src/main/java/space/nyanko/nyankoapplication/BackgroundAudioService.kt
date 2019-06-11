@@ -228,6 +228,10 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         currentlySelected = selectedPlaybackQueue
     }
 
+    fun getCurrentlyPlayedPlaybackQueue(): Playback? {
+        return currentlyPlayed
+    }
+
     fun setCurrentlyPlayedPlaybackQueue(playedPlaybackQueue: Playback) {
         currentlyPlayed = playedPlaybackQueue
     }

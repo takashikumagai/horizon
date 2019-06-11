@@ -652,9 +652,34 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
             currentlyPlayedQueueIndex = stream.readInt()
             selectedTabIndex = stream.readInt()
-            mediaPlayerTabs = stream.readObject() as ArrayList<MediaPlayerTab>
-            Log.d(TAG,
-                    String.format("cPQI %d, cPI %d", currentlyPlayedQueueIndex, selectedTabIndex))
+            //mediaPlayerTabs = stream.readObject() as ArrayList<MediaPlayerTab>
+            val tabs = stream.readObject() as ArrayList<MediaPlayerTab>
+            Log.d(TAG, String.format("cPQI %d, cPI %d, tabs: %d",
+                    currentlyPlayedQueueIndex,
+                    selectedTabIndex,
+                    tabs.size))
+
+            // Remove all the tabs if there are any
+            mediaPlayerTabs.clear()
+
+            // Load the tabs from file
+            // Replace the tab on which a track has been playing
+            // because the playback state has been changed
+            for(i in 0 until tabs.size) { // tabs.size is excluded
+                if(i == currentlyPlayedQueueIndex) {
+                    val currentlyPlayed = BackgroundAudioService.instance?.getCurrentlyPlayedPlaybackQueue()
+                    if(currentlyPlayed != null) {
+                        var newTab = MediaPlayerTab()
+                        newTab.fileSystemNavigator = tabs[i].fileSystemNavigator
+                        newTab.playbackQueue = currentlyPlayed
+                        mediaPlayerTabs.add(newTab)
+                    } else {
+                        mediaPlayerTabs.add(tabs[i])
+                    }
+                } else {
+                    mediaPlayerTabs.add(tabs[i])
+                }
+            }
             stream.close()
         } catch (e: Exception) {
             Log.e(TAG, e.toString())
@@ -998,18 +1023,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             if (service == null) {
                 Log.e(TAG, "oMSROS Failed to restart service")
                 return false
-            }
-
-            // Since we created a service, we have to set the reference to currently played queue.
-            // Since this function is for play request made on screen, we assume that
-            // currently selected tab == playing tab
-            if (0 <= selectedTabIndex && selectedTabIndex < mediaPlayerTabs.size) {
-
-                service.setCurrentlyPlayedPlaybackQueue(
-                        mediaPlayerTabs.get(selectedTabIndex).playbackQueue
-                )
-            } else {
-                Log.d(TAG, "oMSROS !cPQI")
             }
         }
 

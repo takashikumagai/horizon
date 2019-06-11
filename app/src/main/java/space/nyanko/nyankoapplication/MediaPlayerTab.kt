@@ -24,14 +24,14 @@ import java.util.HashMap
 
 class MediaPlayerTab internal constructor() : Serializable {
 
-    val fileSystemNavigator: FileSystemNavigator
+    var fileSystemNavigator: FileSystemNavigator
 
     /**
      * @breif 0: filesystem, 1: play queue
      */
     var viewMode = 0
 
-    val playbackQueue: Playback
+    var playbackQueue: Playback
 
     var metadataCache: MetadataCache = MetadataCache()
 
