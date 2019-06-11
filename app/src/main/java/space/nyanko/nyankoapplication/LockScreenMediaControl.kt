@@ -163,6 +163,7 @@ internal object LockScreenMediaControl {
     }
 
     fun changeState(context: Context, mediaSession: MediaSessionCompat?, isPlaying: Boolean) {
+        Log.d(TAG, "cS ${contentTitle} ${contentText}")
         init(context, mediaSession, isPlaying, contentTitle, contentText);
     }
 
