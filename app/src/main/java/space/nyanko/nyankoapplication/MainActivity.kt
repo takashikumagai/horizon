@@ -290,6 +290,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             } else {
                 // Could this be possible?
                 Log.d(TAG, "oC service != null")
+                BackgroundAudioService.instance?.updateMediaControls()
             }
         }
 
@@ -303,7 +304,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         //LockScreenMediaControl.guideUserToEnableNotificationAccess(this,applicationContext)
 
-        LockScreenMediaControl.init(this, backgroundAudioService?.mediaSession)
+        backgroundAudioService?.updateMediaControls()
 
         Playback.mediaPlayerCallback = this
 

@@ -572,6 +572,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             val player = mediaPlayer
             val isPlaying = if(player != null) player.isPlaying() else false
             LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
+        } else {
+            LockScreenMediaControl.init(this, mediaSession, false, "", "")
         }
     }
 
