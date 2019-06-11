@@ -616,6 +616,24 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // multiple calls of startService does not result in multiple instance
         // of the service.
         startService(serviceIntent)
+
+        val service = BackgroundAudioService.instance
+        if (service == null) {
+            Log.e(TAG, "sAS !service")
+            return
+        }
+
+        // Since we created a service, we have to set the reference to currently played queue.
+        // Since this function is for play request made on screen, we assume that
+        // currently selected tab == playing tab
+        if (0 <= selectedTabIndex && selectedTabIndex < mediaPlayerTabs.size) {
+
+            service.setCurrentlyPlayedPlaybackQueue(
+                    mediaPlayerTabs.get(selectedTabIndex).playbackQueue
+            )
+        } else {
+            Log.d(TAG, "sAS !cPQI")
+        }
     }
 
     private fun saveStateToFile() {
