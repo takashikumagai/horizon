@@ -12,6 +12,7 @@ fi
 
 adb logcat \
 MainActivity:D \
+NotificationActivity:D \
 BackgroundAudioService:D \
 mySessionTag:D \
 RecyclerViewAdapter:D \
@@ -22,5 +23,11 @@ DirectoryNavigator:D \
 Playback:D \
 HorizonUtils:D \
 LockScreenMediaControl:D \
+MediaInfoPopupWindow:D \
+MetadataUpdateManager:D \
+MediaMetadataUpdateTask:D \
+MetadataUpdateRunnable:D \
+HrzBroadcastReceiver:D \
+HrzNotificationListener:D \
 AndroidRuntime:E \
 *:S
