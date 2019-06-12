@@ -5,7 +5,15 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "space.nyanko.nyankoapplication"
+
+        // minSdkVersion determines how backward compatible the app will be
+        // Some of the recent Android versions and API levels
+        // API level  Android version
+        // 19         4.4 (KitKat)
+        // 21         5.0 (KLollipop)
+        // 23         6.0 (Marshmallow)
         minSdkVersion 19
+
         targetSdkVersion 28
         versionCode 3
         versionName "0.9.2"
