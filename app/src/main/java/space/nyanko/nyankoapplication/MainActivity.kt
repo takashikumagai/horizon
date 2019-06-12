@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         override fun onLayoutChild(parent: CoordinatorLayout,
                                    child: FloatingActionButton,
                                    layoutDirection: Int): Boolean {
-            Log.d(TAG, "fab_behavior oLC")
+            //Log.d(TAG, "fab_behavior oLC")
             return super.onLayoutChild(parent, child, layoutDirection)
         }
 
