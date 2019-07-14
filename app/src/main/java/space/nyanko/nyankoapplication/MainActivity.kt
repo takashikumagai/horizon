@@ -1,20 +1,14 @@
 package space.nyanko.nyankoapplication
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.media.MediaPlayer
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
 import com.google.android.material.tabs.TabLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log

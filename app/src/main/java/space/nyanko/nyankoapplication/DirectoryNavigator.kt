@@ -4,8 +4,6 @@ import android.util.Log
 
 import java.io.File
 import java.util.ArrayList
-import java.util.Arrays
-import java.util.Collections
 
 class DirectoryNavigator internal constructor(private val baseDeviceDirectory: String) : AbstractDirectoryNavigator() {
 

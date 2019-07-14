@@ -9,7 +9,6 @@ import android.app.PendingIntent
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.NotificationChannel
-//import android.support.v4.media.app.Notification.MediaStyle;
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import android.util.Log

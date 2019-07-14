@@ -1,10 +1,8 @@
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 
 

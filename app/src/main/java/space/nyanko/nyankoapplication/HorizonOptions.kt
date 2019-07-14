@@ -1,7 +1,5 @@
 package space.nyanko.nyankoapplication
 
-import java.util.ArrayList
-
 /**
  * \brief Stors the playback information
  *

@@ -3,14 +3,12 @@ package space.nyanko.nyankoapplication
 import android.os.Bundle
 import android.os.Binder
 import android.os.IBinder
-import android.app.Service
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ComponentName
-import android.service.media.MediaBrowserService.BrowserRoot
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.MediaPlayer.OnSeekCompleteListener

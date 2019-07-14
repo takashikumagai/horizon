@@ -1,8 +1,5 @@
 package space.nyanko.nyankoapplication
 
-import android.os.Environment
-//import android.os.storage.StorageVolume;
-//import android.os.storage.StorageManager;
 import android.util.Log
 
 import java.io.File

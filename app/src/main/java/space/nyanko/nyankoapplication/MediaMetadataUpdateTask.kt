@@ -1,6 +1,5 @@
 package space.nyanko.nyankoapplication
 
-import android.media.MediaMetadataRetriever
 import android.util.Log
 import java.io.File
 import java.util.HashMap
