@@ -48,24 +48,6 @@ class FileSystemNavigator : Serializable {
         return 0
     }
 
-    internal fun initialize(path: String): Int {
-
-        return -1
-
-        //        try() {
-        //
-        //        } catch(Exception e) {
-        //
-        //        }
-        //        if( dirs == null ) {
-        //            return -1;
-        //        }
-    }
-
-    //    String getCurrentPath() {
-    //        return navigator.getCurrentDi();
-    //    }
-
     internal fun moveToParent(): Int {
 
         // Make a call on the root navigator because currentNavigator alone does not

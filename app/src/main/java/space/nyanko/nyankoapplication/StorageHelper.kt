@@ -144,7 +144,7 @@ object StorageHelper {
         val volumeList = ArrayList<StorageVolume>()
         for (entry in deviceVolumeMap) {//.entrySet()) {
             val volumes = entry.value
-            if (volumes.size === 1) {
+            if (volumes.size == 1) {
                 // go ahead and add
                 val v = volumes.get(0)
                 val isPrimaryStorage = v.file!!.equals(externalStorage)

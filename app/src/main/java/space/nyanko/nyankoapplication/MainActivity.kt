@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
     }
 
-    override protected fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "s.oC")
         super.onCreate(savedInstanceState)
         Log.d(TAG, "oC t" + Thread.currentThread().id)
@@ -305,7 +305,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         seekBarUpdateAgent.enable(this)
     }
 
-    override protected fun onStart() {
+    override fun onStart() {
         super.onStart()
         Log.d(TAG, "oStart")
         // bind to Service
@@ -313,7 +313,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    override protected fun onStop() {
+    override fun onStop() {
         super.onStop()
         Log.d(TAG, "oStop: ${currentlyPlayedQueueIndex} ${selectedTabIndex} ${mediaPlayerTabs.size}")
         // Unbind from service
@@ -349,7 +349,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         Playback.mediaPlayerCallback = null
     }
 
-    override protected fun onSaveInstanceState(savedInstanceState: Bundle) {
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
 
         savedInstanceState.putSerializable("mediaPlayerTabs", mediaPlayerTabs)
         savedInstanceState.putInt("selectedTabIndex", selectedTabIndex)
@@ -861,7 +861,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         val viewMode = recyclerViewAdapter!!.viewMode
         if (viewMode == 0) {
             val navigator = currentFileSystemNavigator
-            var ret = 0
+            var ret: Int
             if (navigator != null) {
                 // Try moving to the parent point
                 // ret = 0: successfully moved to the parent point
@@ -1340,7 +1340,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 val mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs)
                 Log.d(TAG, "mFs.sz: " + mediaFiles.size)
 
-                if (mediaFiles.size === 0) {
+                if (mediaFiles.size == 0) {
                     Log.w(TAG, "0!mFs.sz")
                     return
                 }
@@ -1486,7 +1486,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (prev)")
-                        val self = view as ImageButton
 
                         if (selectedTabIndex < 0 || mediaPlayerTabs.size <= selectedTabIndex) {
                             return
@@ -1509,7 +1508,6 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
                         Log.d(TAG, "btn:p (next)")
-                        val self = view as ImageButton
 
                         if (selectedTabIndex < 0 || mediaPlayerTabs.size <= selectedTabIndex) {
                             return

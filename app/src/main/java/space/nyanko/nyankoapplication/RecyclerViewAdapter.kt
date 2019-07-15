@@ -324,8 +324,8 @@ class RecyclerViewAdapter(
             clearViewHolder(holder)
         }
 
-        var color = 0//0xff2b2b2b.toInt()
-        var textColor = 0// Set the default R.color.textColorPrimary
+        var color: Int
+        var textColor: Int
         if(position == mediaPlayerTab.playbackQueue.pointedMediaIndex) {
             //color = 0xff2d393d.toInt() // playing
             color = 0xff2b2b2b.toInt() // Use the same color for playing track
@@ -338,7 +338,7 @@ class RecyclerViewAdapter(
 
         holder.fileName.setTextColor(ContextCompat.getColor(mContext,textColor))
 
-        holder.parentLayout.setOnClickListener() { v ->
+        holder.parentLayout.setOnClickListener() { _ ->
             val pos = holder.getAdapterPosition()
 
             Log.d(TAG, "playlist onClick " + pos + " " + f.getName())
