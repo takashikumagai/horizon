@@ -12,10 +12,6 @@ import com.google.android.material.tabs.TabLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.SeekBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,6 +19,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.view.View
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.*
 
 import java.io.File
 import java.io.FileOutputStream
@@ -583,19 +580,31 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // Unlike other views, these tabs need to be manually re-created.
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         for (mptab in mediaPlayerTabs) {
-            val newTab = tabLayout.newTab()
-            newTab.setText(mptab.fileSystemNavigator.currentDirectoryName)
-            Log.d(TAG, "adding tab. index: $selectedTabIndex")
-            tabLayout.addTab(newTab)
+            addNewLayoutTab(mptab.fileSystemNavigator.currentDirectoryName)
         }
         Log.d(TAG, "rTLT tabs: ${tabLayout.tabCount}")
     }
 
     private fun addNewLayoutTab(tabTitle: String): TabLayout.Tab? {
+        Log.d(TAG, "addNewLayoutTab")
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         tabLayout.addTab(tabLayout.newTab())
         val newTab = tabLayout.getTabAt(tabLayout.getTabCount() - 1)
         newTab?.setText(tabTitle)
+
+        // Set the on long click listener
+        var tabStrip = tabLayout.getChildAt(0) as LinearLayout
+        Log.d(TAG, "tabStrip ${tabStrip.childCount}")
+        val tabIndex = tabStrip.childCount - 1
+
+        // Set the listener to the tab we just added
+        tabStrip.getChildAt(tabIndex).setOnLongClickListener{
+            Log.d(TAG, "tab onLongClick")
+            Toast.makeText(this, "Long click on tab $tabIndex", Toast.LENGTH_SHORT).show()
+            mediaPlayerTabs[tabIndex].fileSystemNavigator
+            true
+        }
+
         return newTab;
     }
 
