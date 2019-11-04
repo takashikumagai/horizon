@@ -39,4 +39,21 @@ class MediaPlayerTab internal constructor() : Serializable {
             }
         }
     }
+
+    /**
+     * @brief Clones the tab
+     *
+     * - Special logic for selectively copying fields and cloning tabs
+     * -
+     */
+    fun cloneTab(): MediaPlayerTab {
+
+        var tab = MediaPlayerTab()
+
+        tab.fileSystemNavigator = this.fileSystemNavigator.cloneNavigator()
+
+        tab.viewMode = 0
+
+        return tab
+    }
 }

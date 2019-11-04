@@ -28,4 +28,8 @@ abstract class AbstractDirectoryNavigator : Serializable {
     internal abstract fun moveToChild(pos: Int): AbstractDirectoryNavigator?
 
     //abstract int changeDirectory(String childDirPath);
+
+    internal abstract fun cloneNavigator(): AbstractDirectoryNavigator?
+
+    internal abstract fun getCurrentNavigator(): AbstractDirectoryNavigator?
 }

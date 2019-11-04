@@ -109,6 +109,22 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
         }
     }
 
+    override fun cloneNavigator(): AbstractDirectoryNavigator? {
+        var clone = StorageSelector()
+
+        clone.childDirectoryNavigator = childDirectoryNavigator?.cloneNavigator()
+
+        return clone
+    }
+
+    override fun getCurrentNavigator(): AbstractDirectoryNavigator? {
+        if(childDirectoryNavigator != null) {
+            return childDirectoryNavigator
+        } else {
+            return this
+        }
+    }
+
     companion object {
 
         private val TAG = "StorageSelector"

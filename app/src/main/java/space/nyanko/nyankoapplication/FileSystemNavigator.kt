@@ -80,6 +80,16 @@ class FileSystemNavigator : Serializable {
         return 0
     }
 
+    fun cloneNavigator(): FileSystemNavigator {
+        var clone = FileSystemNavigator()
+
+        clone.navigator = this.navigator?.cloneNavigator()
+
+        clone.currentNavigator = clone.navigator?.getCurrentNavigator()
+
+        return clone
+    }
+
     companion object {
 
         private val TAG = "FileSystemNavigator"

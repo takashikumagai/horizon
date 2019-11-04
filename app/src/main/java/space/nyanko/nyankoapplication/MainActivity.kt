@@ -487,49 +487,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             return closeTab()
 
         } else if (id == R.id.new_tab) {
-            Log.d(TAG, "R.id.new_tab")
-
-            // Add a new media player tab
-            mediaPlayerTabs.add(MediaPlayerTab())
-            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
-                    .setRecyclerViewAdapter(recyclerViewAdapter)
-
-            mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
-                    .setPlayingTrackName(playingTrackName)
-
-            // Add a new layout tab
-            val tabTitle = mediaPlayerTabs.get(mediaPlayerTabs.size - 1)
-                    .fileSystemNavigator.currentDirectoryName
-            val newTab = addNewLayoutTab(tabTitle)
-            if (newTab == null) {
-                Log.d(TAG, "!newTab")
-                return true
-            }
-
-            //newTab.setId(tabIdCounter);
-            tabIdCounter += 1
-            //            View child = tabLayout.getChildAt(tabLayout.getTabCount()-1);
-            //            if(child == null) {
-            //                Log.d(TAG,"!child");
-            //                return true;
-            //            }
-            //            child.setOnLongClickListener( new View.OnLongClickListener() {
-            //                @Override
-            //                public boolean onLongClick(View v) {
-            //                    Log.d(TAG,"onLC");
-            //                    return true;
-            //                }
-            //            });
-
-            // Add an FS navigator and a player
-
-            newTab.select()
-
-            onTabSelection(newTab)
-
-
-
-            return true
+            return addNewTab(MediaPlayerTab(), true)
         }
 
         return super.onOptionsItemSelected(item)
@@ -592,20 +550,28 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         val newTab = tabLayout.getTabAt(tabLayout.getTabCount() - 1)
         newTab?.setText(tabTitle)
 
+        setLongClickListenersToTabs()
+
+        return newTab;
+    }
+
+    private fun setLongClickListenersToTabs() {
+
         // Set the on long click listener
+        val tabLayout: TabLayout = findViewById(R.id.tabLayout)
         var tabStrip = tabLayout.getChildAt(0) as LinearLayout
         Log.d(TAG, "tabStrip ${tabStrip.childCount}")
         val tabIndex = tabStrip.childCount - 1
 
-        // Set the listener to the tab we just added
-        tabStrip.getChildAt(tabIndex).setOnLongClickListener{
-            Log.d(TAG, "tab onLongClick")
-            Toast.makeText(this, "Long click on tab $tabIndex", Toast.LENGTH_SHORT).show()
-            mediaPlayerTabs[tabIndex].fileSystemNavigator
-            true
+        // Set the listeners to the tabs
+        for(i in 0 until tabStrip.childCount) {
+            tabStrip.getChildAt(i).setOnLongClickListener{
+                Log.d(TAG, "tab onLClk $i")
+                Toast.makeText(this, "LC $i", Toast.LENGTH_SHORT).show()
+                addNewTab(mediaPlayerTabs[i].cloneTab(),false)
+                true
+            }
         }
-
-        return newTab;
     }
 
     private fun startAudioService() {
@@ -709,6 +675,52 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     }
 
+    private fun addNewTab(mediaPlayerTab: MediaPlayerTab, selectAddedTab: Boolean): Boolean {
+        Log.d(TAG, "R.id.new_tab")
+
+        // Add a new media player tab
+        mediaPlayerTabs.add(mediaPlayerTab)
+        mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
+                .setRecyclerViewAdapter(recyclerViewAdapter)
+
+        mediaPlayerTabs.get(mediaPlayerTabs.size - 1).playbackQueue
+                .setPlayingTrackName(playingTrackName)
+
+        // Add a new layout tab
+        val tabTitle = mediaPlayerTabs.get(mediaPlayerTabs.size - 1)
+                .fileSystemNavigator.currentDirectoryName
+        val newTab = addNewLayoutTab(tabTitle)
+        if (newTab == null) {
+            Log.d(TAG, "!newTab")
+            return true
+        }
+
+        //newTab.setId(tabIdCounter);
+        tabIdCounter += 1
+        //            View child = tabLayout.getChildAt(tabLayout.getTabCount()-1);
+        //            if(child == null) {
+        //                Log.d(TAG,"!child");
+        //                return true;
+        //            }
+        //            child.setOnLongClickListener( new View.OnLongClickListener() {
+        //                @Override
+        //                public boolean onLongClick(View v) {
+        //                    Log.d(TAG,"onLC");
+        //                    return true;
+        //                }
+        //            });
+
+        // Add an FS navigator and a player
+
+        if(selectAddedTab) {
+            newTab.select()
+
+            onTabSelection(newTab)
+        }
+
+        return true
+    }
+
     private fun closeTab(): Boolean {
         Log.d(TAG, "closeTab")
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
@@ -753,6 +765,9 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         tabLayout.removeTab(tab)
         // If there are any tab(s) left, onTabSelected has already been invoked
         Log.d(TAG, "tab removed")
+
+        // Need to re-calculate the indices of the open tabs
+        setLongClickListenersToTabs()
 
         if (tabLayout.getTabCount() === 0) {
             Log.d(TAG, "All tabs removed")

@@ -189,6 +189,15 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
         return entries
     }
 
+    override fun cloneNavigator(): AbstractDirectoryNavigator? {
+        var clone = DirectoryNavigator(currentDirectory?.path ?: "")
+        return clone
+    }
+
+    override fun getCurrentNavigator(): AbstractDirectoryNavigator? {
+        return null
+    }
+
     companion object {
 
         private val TAG = "DirectoryNavigator"
