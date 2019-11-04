@@ -153,56 +153,109 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playing_track_control">
 
-        <ImageButton
-            android:id="@+id/prev_track"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:padding="16dp"
-            android:scaleType="fitCenter"
-            android:background="@android:color/transparent"
-            android:src="@drawable/prev" />
+        <LinearLayout
+            android:id="@+id/playback_control_left"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:background="@color/bgSemiDark"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/playback_control_center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent">
+        </LinearLayout>
 
-        <View
-            android:id="@+id/divider1"
-            android:layout_width="2dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@id/prev_track"
-            app:layout_constraintEnd_toStartOf="@id/play_pause_button"
-            android:paddingTop="1dp"
-            android:paddingLeft="1dp"
-            android:layout_margin="0dp"
-            android:background="@color/bgMidDark"
-            />
+        <LinearLayout
+            android:id="@+id/playback_control_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/bgSemiDark"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/playback_control_right"
+            app:layout_constraintStart_toEndOf="@id/playback_control_left"
+            app:layout_constraintTop_toBottomOf="parent">
+            <ImageButton
+                android:id="@+id/prev_track"
+                android:layout_width="60dp"
+                android:layout_height="52dp"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:src="@drawable/prev" />
 
-        <ImageButton
-            android:id="@+id/play_pause_button"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:padding="16dp"
-            android:scaleType="fitCenter"
-            android:background="@android:color/transparent"
-            android:src="@drawable/play" />
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="2dp"
+                android:layout_height="36dp"
+                app:layout_constraintStart_toEndOf="@id/prev_track"
+                app:layout_constraintEnd_toStartOf="@id/play_pause_button"
+                android:paddingTop="1dp"
+                android:paddingLeft="1dp"
+                android:layout_margin="0dp"
+                android:background="@color/bgMidDark"
+                />
 
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="2dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@id/play_pause_button"
-            app:layout_constraintEnd_toStartOf="@id/next_track"
-            android:paddingTop="1dp"
-            android:paddingLeft="1dp"
-            android:layout_margin="0dp"
-            android:background="@color/bgMidDark"
-            />
+            <ImageButton
+                android:id="@+id/play_pause_button"
+                android:layout_width="60dp"
+                android:layout_height="52dp"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:src="@drawable/play" />
 
-        <ImageButton
-            android:id="@+id/next_track"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:padding="16dp"
-            android:scaleType="fitCenter"
-            android:background="@android:color/transparent"
-            android:src="@drawable/next" />
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="2dp"
+                android:layout_height="36dp"
+                app:layout_constraintStart_toEndOf="@id/play_pause_button"
+                app:layout_constraintEnd_toStartOf="@id/next_track"
+                android:paddingTop="1dp"
+                android:paddingLeft="1dp"
+                android:layout_margin="0dp"
+                android:background="@color/bgMidDark"
+                />
 
+            <ImageButton
+                android:id="@+id/next_track"
+                android:layout_width="60dp"
+                android:layout_height="52dp"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:src="@drawable/next" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/playback_control_right"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@color/bgSemiDark"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/playback_control_center"
+            app:layout_constraintTop_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/loop"
+                android:layout_width="60dp"
+                android:layout_height="52dp"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:src="@drawable/loop" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

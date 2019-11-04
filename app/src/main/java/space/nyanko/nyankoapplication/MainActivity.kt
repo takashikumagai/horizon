@@ -16,6 +16,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import android.view.View
 import android.view.Menu
 import android.view.MenuItem
@@ -1312,6 +1314,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         pc.setVisibility(View.VISIBLE)
 
         updatePlayingTrackPlayPauseButton(isMediaPlaying())
+
+        updateLoopButton()
     }
 
     fun hidePlaybackQueueControl() {
@@ -1543,6 +1547,32 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                         onMediaStartedOnScreen()
                     }
                 })
+
+        val loopBtn = findViewById<ImageButton>(R.id.loop)
+        if (loopBtn == null) {
+            Log.d(TAG, "!loopBtn")
+            return
+        }
+
+        loopBtn.setOnClickListener(
+                object : View.OnClickListener {
+                    override fun onClick(v: View?) {
+                        Log.d(TAG, "btn:p (loop)")
+                        getCurrentlyPlayingTab()?.playbackQueue?.toggleLoop()
+                        updateLoopButton()
+                    }
+                })
+    }
+
+    fun updateLoopButton() {
+        val loopBtn = findViewById<ImageButton>(R.id.loop)
+        val loop = getCurrentlyPlayingTab()?.playbackQueue?.loop ?: false
+        val colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                        if (loop) 0xffffffff.toInt() else 0x50ffffff.toInt(),
+                        BlendModeCompat.MODULATE
+                )
+        loopBtn.setColorFilter(colorFilter)
     }
 
     fun updatePlaylistViewPlayPauseButton(playing: Boolean?) {

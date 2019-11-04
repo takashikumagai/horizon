@@ -42,6 +42,8 @@ class Playback : Serializable {
      */
     var mediaFilePathQueue = ArrayList<String>()
 
+    var loop = false
+
     // Views (not serialized)
     // TODO there has to be a better way to update view from outside the activity
     @Transient
@@ -179,11 +181,18 @@ class Playback : Serializable {
         if (pointedMediaIndex < 0) {
             return false
         }
-        if (mediaFilePathQueue.size - 1 <= pointedMediaIndex) {
-            return false
-        }
 
-        pointedMediaIndex += 1
+        if (loop) {
+            pointedMediaIndex = (pointedMediaIndex + 1) % mediaFilePathQueue.size
+        }
+        else {
+            if (mediaFilePathQueue.size - 1 <= pointedMediaIndex) {
+                Log.d(TAG, "pNT end")
+                return false
+            }
+
+            pointedMediaIndex += 1
+        }
 
         return playCurrentlyPointedMediaInQueue()
     }
@@ -317,6 +326,10 @@ class Playback : Serializable {
         }
 
         mediaPlayer?.seekTo(playbackPosition)
+    }
+
+    fun toggleLoop() {
+        loop = !loop
     }
 
     companion object {

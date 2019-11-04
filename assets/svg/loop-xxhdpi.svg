@@ -1,0 +1,12 @@
+<svg id="stop-xxhdpi" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <g id="arc-arrow" transform="matrix(0.75,0, 0,0.75, 0,0)">
+      <path d=" M 19 27 A 36 36 0 0 1 84 50"
+      style="fill-opacity:0.0;stroke:#a1a9ad;stroke-width:10;opacity:1.0"/>
+      <polygon points="74,48 94,48 84,66"
+      style="fill:#a1a9ad;opacity:1.0"></polygon>
+    </g>
+  </defs>
+  <use href="#arc-arrow"/>
+  <use href="#arc-arrow" transform="rotate(180 36 36)"/>
+</svg>
