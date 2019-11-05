@@ -2,5 +2,6 @@
 
 . set_device_ip_address.sh
 
-adb kill-server
-adb connect ${device_ip_address}
+sudo adb kill-server
+sudo adb start-server
+#sudo adb connect ${device_ip_address}
