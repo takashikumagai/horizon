@@ -57,9 +57,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d(TAG, "oR")
-            //if( mMediaPlayer != null && mMediaPlayer.isPlaying() ) {
-            //    mMediaPlayer.pause();
-            //}
+            pause()
         }
     }
 
@@ -532,6 +530,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     fun pause() {
         Log.d(TAG, "pause")
+
+        if(mediaPlayer?.isPlaying == false) {
+            Log.d(TAG, "mP !playing")
+            return
+        }
 
         currentlyPlayed?.saveCurrentPlaybackPosition()
 
