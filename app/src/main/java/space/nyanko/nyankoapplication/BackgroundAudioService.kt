@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ComponentName
+import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.MediaPlayer.OnSeekCompleteListener
@@ -266,7 +267,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // Make this a foreground service
 
         // We need a notification so just make an empty one for now.
-        LockScreenMediaControl.init(this, mediaSession, false, "", "")
+        LockScreenMediaControl.init(this, mediaSession, false, "", "", null)
 
         // Make this service run in the foreground
         // Note that this makes the notification sticky and very difficult
@@ -567,17 +568,19 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             val mediaName = currentlyPlayed!!.currentlyPlayedMediaPath
             val title = getMediaTitle(mediaName)
             var text: String? = ""
+            var bitmap: Bitmap? = null
             if(mediaName != null) {
                 // File(null) would throw a NPE
                 val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
                         intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
                 text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                bitmap = HorizonUtils.getEmbeddedPicture(mediaName)
             }
             val player = mediaPlayer
             val isPlaying = if(player != null) player.isPlaying() else false
-            LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
+            LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text, bitmap)
         } else {
-            LockScreenMediaControl.init(this, mediaSession, false, "", "")
+            LockScreenMediaControl.init(this, mediaSession, false, "", "", null)
         }
     }
 
@@ -585,7 +588,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         val isPlaying = false
         val title = ""
         val text = ""
-        LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
+        val bitmap = null
+        LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text, bitmap)
     }
 
     fun showMediaControls() {
