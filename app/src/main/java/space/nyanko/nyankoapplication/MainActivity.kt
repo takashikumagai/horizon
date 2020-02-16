@@ -1489,12 +1489,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun initPlaylistViewMediaControlButtons() {
-        val btn = findViewById(R.id.play_pause_button) as ImageButton
-        if (btn == null) {
-            Log.d(TAG, "!play/pause btn")
-            return
-        }
-
+        val btn = findViewById<ImageButton>(R.id.play_pause_button)
         btn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
@@ -1504,12 +1499,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                     }
                 })
 
-        val prevTrackBtn = findViewById(R.id.prev_track) as ImageButton
-        if (prevTrackBtn == null) {
-            Log.d(TAG, "!pTB")
-            return
-        }
-
+        val prevTrackBtn = findViewById<ImageButton>(R.id.prev_track)
         prevTrackBtn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
@@ -1526,12 +1516,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                     }
                 })
 
-        val nextTrackBtn = findViewById(R.id.next_track) as ImageButton
-        if (nextTrackBtn == null) {
-            Log.d(TAG, "!nTB")
-            return
-        }
-
+        val nextTrackBtn = findViewById<ImageButton>(R.id.next_track)
         nextTrackBtn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
