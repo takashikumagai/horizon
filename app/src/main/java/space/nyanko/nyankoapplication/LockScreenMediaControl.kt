@@ -82,7 +82,7 @@ internal object LockScreenMediaControl {
         Log.d(TAG, String.format("init %b %s %s",isPlaying,contentTitle,contentText))
 
         if(mediaSession == null) {
-            return;
+            return
         }
 
         val receiverIntent = Intent(context, HorizonBroadcastReceiver::class.java)
@@ -233,7 +233,7 @@ internal object LockScreenMediaControl {
         Log.d(TAG, "nM.cancel")
         notificationManager.cancel(NOTIFICATION_ID)
 
-        context.sendBroadcast(Intent("space.nyanko.nyankoapplication"));
+        context.sendBroadcast(Intent("space.nyanko.nyankoapplication"))
     }
 
     /**

@@ -518,7 +518,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         callbacks?.onAudioPlay() // Notify the activity class
 
         // Update the notification
-        LockScreenMediaControl.changeState(this,mediaSession,true); // playing
+        LockScreenMediaControl.changeState(this,mediaSession,true) // playing
         LockScreenMediaControl.show(this)
 
         startForeground(
@@ -559,7 +559,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         callbacks?.onAudioStop() // Notify the activity class
 
         // Update the notification
-        LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
+        LockScreenMediaControl.changeState(this,mediaSession,false) // not playing
         LockScreenMediaControl.show(this)
     }
 
@@ -606,7 +606,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     fun setAudioServiceCallbacks(callbacks: AudioServiceCallbacks?) {
         Log.d(TAG, "sASC: " + if (callbacks != null) "s" else "u")
-        this.callbacks = callbacks;
+        this.callbacks = callbacks
     }
 
     fun stopForegroundAndRemoveNotification() {
