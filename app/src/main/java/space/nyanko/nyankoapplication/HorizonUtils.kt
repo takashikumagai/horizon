@@ -13,7 +13,7 @@ import android.media.MediaMetadataRetriever
 
 object HorizonUtils {
 
-    private val TAG = "HorizonUtils"
+    private const val TAG = "HorizonUtils"
 
     fun getExtension(fileName: String): String {
         val i = fileName.lastIndexOf('.')

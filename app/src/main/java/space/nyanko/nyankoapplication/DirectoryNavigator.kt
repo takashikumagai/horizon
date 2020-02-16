@@ -200,6 +200,6 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
     companion object {
 
-        private val TAG = "DirectoryNavigator"
+        private const val TAG = "DirectoryNavigator"
     }
 }

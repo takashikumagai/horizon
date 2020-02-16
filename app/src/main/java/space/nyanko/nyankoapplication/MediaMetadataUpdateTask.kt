@@ -45,6 +45,6 @@ class MediaMetadataUpdateTask {
 
     companion object {
 
-        private val TAG = "MediaMetadataUpdateTask"
+        private const val TAG = "MediaMetadataUpdateTask"
     }
 }

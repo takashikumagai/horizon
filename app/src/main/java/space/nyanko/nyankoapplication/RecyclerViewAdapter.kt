@@ -390,7 +390,7 @@ class RecyclerViewAdapter(
 
     companion object {
 
-        private val TAG = "RecyclerViewAdapter"
+        private const val TAG = "RecyclerViewAdapter"
 
         @JvmStatic
         fun updateMediaMetadata(entry: File,

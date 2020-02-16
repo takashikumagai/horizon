@@ -616,7 +616,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     companion object {
 
-        private val TAG = "BackgroundAudioService"
+        private const val TAG = "BackgroundAudioService"
 
         val ACTION_PLAY = "play"
         val ACTION_PLAY_PAUSE = "playPause"

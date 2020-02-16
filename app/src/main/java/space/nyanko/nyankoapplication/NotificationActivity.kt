@@ -30,9 +30,9 @@ class NotificationActivity : Activity() {
 
     companion object {
 
-        val TAG = "NotificationActivity"
+        private const val TAG = "NotificationActivity"
 
-        val NOTIFICATION_ID = "NOTIFICATION_ID"
+        private const val NOTIFICATION_ID = "NOTIFICATION_ID"
 
         fun getDismissIntent(notificationId: Int, context: Context): PendingIntent? {
             Log.d(TAG, "gDI: " + notificationId)

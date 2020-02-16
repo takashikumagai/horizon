@@ -41,6 +41,6 @@ class SeekBarUpdateAgent {
     }
 
     companion object {
-        private val TAG = "SeekBarUpdateAgent"
+        private const val TAG = "SeekBarUpdateAgent"
     }
 }

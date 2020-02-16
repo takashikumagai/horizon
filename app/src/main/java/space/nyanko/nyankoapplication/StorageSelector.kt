@@ -127,6 +127,6 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
 
     companion object {
 
-        private val TAG = "StorageSelector"
+        private const val TAG = "StorageSelector"
     }
 }

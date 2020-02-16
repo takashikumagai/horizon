@@ -15,6 +15,6 @@ class MetadataCache : Serializable {
 
     companion object {
 
-        private val TAG = "MetadataCache"
+        private const val TAG = "MetadataCache"
     }
 }

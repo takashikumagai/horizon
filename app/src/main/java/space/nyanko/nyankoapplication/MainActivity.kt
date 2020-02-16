@@ -1655,7 +1655,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     companion object {
 
-        private val TAG = "MainActivity"
+        private const val TAG = "MainActivity"
 
         //private ServiceConnection serviceConnection = null;
 

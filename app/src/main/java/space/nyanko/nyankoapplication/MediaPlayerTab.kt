@@ -24,7 +24,7 @@ class MediaPlayerTab internal constructor() : Serializable {
     }
 
     companion object {
-        private val TAG = "MediaPlayerTab"
+        private const val TAG = "MediaPlayerTab"
 
         var tabs: ArrayList<MediaPlayerTab> = ArrayList()
 

@@ -334,7 +334,7 @@ class Playback : Serializable {
 
     companion object {
 
-        private val TAG = "Playback"
+        private const val TAG = "Playback"
 
         /**
          * Set by the service
