@@ -90,8 +90,8 @@ class Playback : Serializable {
      * Plays from the start or resumes the playback at the last paused position
      *
      */
-    fun startCurrentlyPointedMediaInQueue(resume: Boolean): Boolean {
-        Log.d(TAG, "sCPMIQ")
+    fun loadCurrentlyPointedMediaInQueue(resume: Boolean): Boolean {
+        Log.d(TAG, "lCPMIQ")
 
         val mediaPlayer = mediaPlayer
         if (mediaPlayer == null) {
@@ -139,14 +139,29 @@ class Playback : Serializable {
             }
             seekToCurrentPosition()
 
-            // Acquire audio focus and if it succeeds, start playing
-            Log.d(TAG, "starting")
-            started = service.play()
-
         } catch (ioe: IOException) {
             Log.e(TAG, "caught an IO exception: " + ioe.toString() + " File: " + mediaFilepath)
         } catch (e: Exception) {
             Log.e(TAG, "caught an exception: " + e.toString() + " File: " + mediaFilepath)
+        } finally {
+        }
+
+        return true
+    }
+
+    fun play(): Boolean {
+        var started = false
+        try {
+            // Acquire audio focus and if it succeeds, start playing
+            Log.d(TAG, "starting")
+            val service = BackgroundAudioService.instance
+            if (service == null) {
+                return false
+            } else {
+                started = service.play()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "caught an exception: " + e.toString())
         } finally {
         }
 
@@ -160,11 +175,17 @@ class Playback : Serializable {
     }
 
     fun playCurrentlyPointedMediaInQueue(): Boolean {
-        return startCurrentlyPointedMediaInQueue(false)
+        loadCurrentlyPointedMediaInQueue(false)
+        return play()
     }
 
     fun resumeCurrentlyPointedMediaInQueue(): Boolean {
-        return startCurrentlyPointedMediaInQueue(true)
+        loadCurrentlyPointedMediaInQueue(true)
+        return play()
+    }
+
+    fun setCurrentlyPointedMediaInQueue(): Boolean {
+        return false
     }
 
     fun playPrevTrack(): Boolean {
