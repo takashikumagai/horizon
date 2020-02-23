@@ -742,6 +742,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // - Stop the playback
         // - Hide the notification
         // - Hide playing track control and playlist view control
+        var playingTabClosed = false
         if(pos == currentlyPlayedQueueIndex) {
             Log.d(TAG, "ct pos==cPQI")
             currentlyPlayedQueueIndex = -1
@@ -755,6 +756,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             hidePlayingTrackControl()
             hidePlaybackQueueControl()
             hideSeekBar()
+
+            playingTabClosed = true
         }
 
         if (pos < mediaPlayerTabs.size) {
@@ -767,6 +770,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         tabLayout.removeTab(tab)
         // If there are any tab(s) left, onTabSelected has already been invoked
         Log.d(TAG, "tab removed")
+
+        if(playingTabClosed) {
+            setSelectedTabAsCurrentlyPlayedTab()
+        }
 
         // Need to re-calculate the indices of the open tabs
         setLongClickListenersToTabs()
@@ -803,6 +810,21 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
         return true
+    }
+
+    private fun setSelectedTabAsCurrentlyPlayedTab() {
+
+        currentlyPlayedQueueIndex = selectedTabIndex
+
+        val currentPlayback = mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
+        currentPlayback.loadCurrentlyPointedMediaInQueue(true)
+
+        val service = BackgroundAudioService.instance
+        if(service != null) {
+            service.setCurrentlyPlayedPlaybackQueue(currentPlayback)
+            service.updateMediaControls()
+            service.showMediaControls()
+        }
     }
 
     private fun initRecyclerView() {
