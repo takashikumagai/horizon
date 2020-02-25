@@ -299,6 +299,10 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
         unregisterReceiver(noisyReceiver)
 
+        mediaSession?.release()
+
+        mediaPlayer?.release()
+
         instance = null
         super.onDestroy()
     }
