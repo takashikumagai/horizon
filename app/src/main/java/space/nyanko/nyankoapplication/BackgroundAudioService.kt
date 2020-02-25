@@ -325,7 +325,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         Log.d(TAG, "iMP")
 
         if( mediaPlayer != null ) {
-            Log.w(TAG, "mP !null")
+            Log.w(TAG, "!!!!!!!!!!!!!!!!!!!!! mediaPlayer !null !!!!!!!!!!!!!!!!!!!!!")
         }
 
         mediaPlayer = MediaPlayer()
@@ -364,7 +364,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     fun initMediaSession() {
 
         if( mediaSession != null ) {
-            Log.w(TAG, "mS !null")
+            Log.w(TAG, "!!!!!!!!!!!!!!!!!!!!! mediaSession !null !!!!!!!!!!!!!!!!!!!!!")
         }
 
         val mediaButtonReceiver = ComponentName(getApplicationContext(), MediaButtonReceiver::class.java)

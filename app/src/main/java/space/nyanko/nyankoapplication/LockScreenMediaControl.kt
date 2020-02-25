@@ -79,9 +79,14 @@ internal object LockScreenMediaControl {
             contentTitle: String?,
             contentText: String?,
             bitmap: Bitmap?) {
-        Log.d(TAG, String.format("init %b %s %s",isPlaying,contentTitle,contentText))
+        Log.d(TAG, String.format("init %b '%s' '%s' %dx%d",
+                isPlaying, contentTitle, contentText,
+                bitmap?.width ?: 0,
+                bitmap?.height ?: 0
+        ))
 
         if(mediaSession == null) {
+            Log.d(TAG, "init !mS")
             return
         }
 
