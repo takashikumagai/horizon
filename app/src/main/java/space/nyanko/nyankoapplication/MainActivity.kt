@@ -483,6 +483,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         if (id == R.id.action_settings) {
             Log.d(TAG, "R.id.action_settings")
+            val intent = Intent(this, HorizonSettingsActivity::class.java).apply {
+                Log.d(TAG, "intent apply")
+            }
+            startActivity(intent)
             return true
         } else if (id == R.id.close_tab) {
 
