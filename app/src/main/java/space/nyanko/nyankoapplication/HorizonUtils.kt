@@ -41,7 +41,7 @@ object HorizonUtils {
 
         val mediaFiles = ArrayList<File>()
         for (entry in filesAndDirs) {
-            if (isMediaFile(entry.getName())) {
+            if (entry.isFile && isMediaFile(entry.getName())) {
                 mediaFiles.add(entry)
             }
         }
