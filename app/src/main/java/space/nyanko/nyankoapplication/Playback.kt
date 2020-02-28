@@ -30,7 +30,7 @@ class Playback : Serializable {
     /**
      * @brief Index to the currently played or paused media file in queue
      */
-    var pointedMediaIndex = -1
+    private var pointedMediaIndex = -1
 
     // Play position in milliseconds
     private var playbackPosition = 0
@@ -256,6 +256,17 @@ class Playback : Serializable {
         if (0 < mediaFiles.size && pointedMediaIndex == -1) {
             pointedMediaIndex = 0
         }
+    }
+
+    fun getPointedMediaIndex(): Int {
+        return pointedMediaIndex
+    }
+
+    fun setPointedMediaIndex(index: Int) {
+        if(index < 0 || mediaFilePathQueue.size <= index) {
+            Log.w(TAG, "Invalid index: " + index)
+        }
+        pointedMediaIndex = index
     }
     //    public void startFirstInQueue() {
     //        if(mediaFilePathQueue.size == 0) {

@@ -25,4 +25,6 @@ object HorizonOptions {
      *
      */
     var showMetaTagTitles = true
+
+    var autoQueueMediaFiles = false
 }
