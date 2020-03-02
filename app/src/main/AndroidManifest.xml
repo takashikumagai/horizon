@@ -57,8 +57,8 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="space.nyanko.nyankoapplication.HorizonBroadcastReceiver"
-            android:exported="false">
-        </receiver>
+            android:name=".HorizonBroadcastReceiver"
+            android:exported="false" />
     </application>
+
 </manifest>
