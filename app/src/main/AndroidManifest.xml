@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="space.nyanko.nyankoapplication">
-
-    <!--uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/ -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -14,23 +13,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".HorizonSettingsActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <!--action android:name="android.intent.action.MEDIA_BUTTON" /-->
-                <!--action android:name="android.media.AUDIO_BECOMING_NOISY" /-->
+                <!-- action android:name="android.intent.action.MEDIA_BUTTON" / -->
+                <!-- action android:name="android.media.AUDIO_BECOMING_NOISY" / -->
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".NotificationActivity"
-            android:taskAffinity=""
-            android:excludeFromRecents="true">
-        </activity>
+            android:excludeFromRecents="true"
+            android:taskAffinity="" />
+
         <service
             android:name=".BackgroundAudioService"
             android:stopWithTask="false">
@@ -40,16 +40,21 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-        <service android:label="Horizon Media Player" android:name=".HorizonNotificationListener" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+        <service
+            android:name=".HorizonNotificationListener"
+            android:label="Horizon Media Player"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <!--<receiver android:name=".RemoteControlReceiver">
+        <!--
+<receiver android:name=".RemoteControlReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
         <receiver android:name="androidx.media.session.MediaButtonReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
