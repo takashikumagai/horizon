@@ -10,6 +10,11 @@ import android.content.Context
 import android.util.Log
 
 
+/**
+ * @brief This activity exists for the sole purpose of dismissing the notification
+ *
+ * - Sends the audio service to the background in onCreate() and swiftly destroys itself.
+ */
 class NotificationActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +35,9 @@ class NotificationActivity : Activity() {
 
     companion object {
 
-        val TAG = "NotificationActivity"
+        private const val TAG = "NotificationActivity"
 
-        val NOTIFICATION_ID = "NOTIFICATION_ID"
+        private const val NOTIFICATION_ID = "NOTIFICATION_ID"
 
         fun getDismissIntent(notificationId: Int, context: Context): PendingIntent? {
             Log.d(TAG, "gDI: " + notificationId)

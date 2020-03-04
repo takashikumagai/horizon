@@ -42,6 +42,6 @@ class MediaMetadataUpdateRunnable(
 
     companion object {
 
-        private val TAG = "MetadataUpdateRunnable"
+        private const val TAG = "MetadataUpdateRunnable"
     }
 }

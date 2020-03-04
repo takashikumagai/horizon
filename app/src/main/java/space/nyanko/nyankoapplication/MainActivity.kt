@@ -231,6 +231,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 Log.d(TAG, "oC apf")
                 // De-serialize the app state from file
                 restoreStateFromFile()
+                HorizonOptions.loadOptionsFromFile(filesDir)
             } else {
                 Log.d(TAG, "oC !apf " + mediaPlayerTabs.size) // a sanity check; should be 0
                 // There is no saved state file either;
@@ -326,6 +327,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         val stateSaved = sharedPref.getInt("state_saved_to_bundle", 0)
         if (stateSaved == 0) {
             saveStateToFile()
+            HorizonOptions.saveOptionsToFile(filesDir)
         }
 
         // Reset the flag
@@ -483,6 +485,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
         if (id == R.id.action_settings) {
             Log.d(TAG, "R.id.action_settings")
+            val intent = Intent(this, HorizonSettingsActivity::class.java).apply {
+                Log.d(TAG, "intent apply")
+            }
+            startActivity(intent)
             return true
         } else if (id == R.id.close_tab) {
 
@@ -742,6 +748,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // - Stop the playback
         // - Hide the notification
         // - Hide playing track control and playlist view control
+        var playingTabClosed = false
         if(pos == currentlyPlayedQueueIndex) {
             Log.d(TAG, "ct pos==cPQI")
             currentlyPlayedQueueIndex = -1
@@ -755,6 +762,8 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             hidePlayingTrackControl()
             hidePlaybackQueueControl()
             hideSeekBar()
+
+            playingTabClosed = true
         }
 
         if (pos < mediaPlayerTabs.size) {
@@ -767,6 +776,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         tabLayout.removeTab(tab)
         // If there are any tab(s) left, onTabSelected has already been invoked
         Log.d(TAG, "tab removed")
+
+        if(playingTabClosed) {
+            setSelectedTabAsCurrentlyPlayedTab()
+        }
 
         // Need to re-calculate the indices of the open tabs
         setLongClickListenersToTabs()
@@ -803,6 +816,21 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         }
 
         return true
+    }
+
+    private fun setSelectedTabAsCurrentlyPlayedTab() {
+
+        currentlyPlayedQueueIndex = selectedTabIndex
+
+        val currentPlayback = mediaPlayerTabs.get(currentlyPlayedQueueIndex).playbackQueue
+        currentPlayback.loadCurrentlyPointedMediaInQueue(true)
+
+        val service = BackgroundAudioService.instance
+        if(service != null) {
+            service.setCurrentlyPlayedPlaybackQueue(currentPlayback)
+            service.updateMediaControls()
+            service.showMediaControls()
+        }
     }
 
     private fun initRecyclerView() {
@@ -1489,12 +1517,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun initPlaylistViewMediaControlButtons() {
-        val btn = findViewById(R.id.play_pause_button) as ImageButton
-        if (btn == null) {
-            Log.d(TAG, "!play/pause btn")
-            return
-        }
-
+        val btn = findViewById<ImageButton>(R.id.play_pause_button)
         btn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
@@ -1504,12 +1527,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                     }
                 })
 
-        val prevTrackBtn = findViewById(R.id.prev_track) as ImageButton
-        if (prevTrackBtn == null) {
-            Log.d(TAG, "!pTB")
-            return
-        }
-
+        val prevTrackBtn = findViewById<ImageButton>(R.id.prev_track)
         prevTrackBtn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
@@ -1526,12 +1544,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                     }
                 })
 
-        val nextTrackBtn = findViewById(R.id.next_track) as ImageButton
-        if (nextTrackBtn == null) {
-            Log.d(TAG, "!nTB")
-            return
-        }
-
+        val nextTrackBtn = findViewById<ImageButton>(R.id.next_track)
         nextTrackBtn.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
@@ -1670,7 +1683,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     companion object {
 
-        private val TAG = "MainActivity"
+        private const val TAG = "MainActivity"
 
         //private ServiceConnection serviceConnection = null;
 

@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ComponentName
+import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.MediaPlayer.OnSeekCompleteListener
@@ -57,9 +58,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d(TAG, "oR")
-            //if( mMediaPlayer != null && mMediaPlayer.isPlaying() ) {
-            //    mMediaPlayer.pause();
-            //}
+            pause()
         }
     }
 
@@ -268,7 +267,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         // Make this a foreground service
 
         // We need a notification so just make an empty one for now.
-        LockScreenMediaControl.init(this, mediaSession, false, "", "")
+        LockScreenMediaControl.init(this, mediaSession, false, "", "", null)
 
         // Make this service run in the foreground
         // Note that this makes the notification sticky and very difficult
@@ -300,6 +299,10 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
         unregisterReceiver(noisyReceiver)
 
+        mediaSession?.release()
+
+        mediaPlayer?.release()
+
         instance = null
         super.onDestroy()
     }
@@ -322,7 +325,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         Log.d(TAG, "iMP")
 
         if( mediaPlayer != null ) {
-            Log.w(TAG, "mP !null")
+            Log.w(TAG, "!!!!!!!!!!!!!!!!!!!!! mediaPlayer !null !!!!!!!!!!!!!!!!!!!!!")
         }
 
         mediaPlayer = MediaPlayer()
@@ -361,7 +364,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     fun initMediaSession() {
 
         if( mediaSession != null ) {
-            Log.w(TAG, "mS !null")
+            Log.w(TAG, "!!!!!!!!!!!!!!!!!!!!! mediaSession !null !!!!!!!!!!!!!!!!!!!!!")
         }
 
         val mediaButtonReceiver = ComponentName(getApplicationContext(), MediaButtonReceiver::class.java)
@@ -519,7 +522,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         callbacks?.onAudioPlay() // Notify the activity class
 
         // Update the notification
-        LockScreenMediaControl.changeState(this,mediaSession,true); // playing
+        LockScreenMediaControl.changeState(this,mediaSession,true) // playing
         LockScreenMediaControl.show(this)
 
         startForeground(
@@ -532,6 +535,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     fun pause() {
         Log.d(TAG, "pause")
+
+        if(mediaPlayer?.isPlaying == false) {
+            Log.d(TAG, "mP !playing")
+            return
+        }
 
         currentlyPlayed?.saveCurrentPlaybackPosition()
 
@@ -555,7 +563,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         callbacks?.onAudioStop() // Notify the activity class
 
         // Update the notification
-        LockScreenMediaControl.changeState(this,mediaSession,false); // not playing
+        LockScreenMediaControl.changeState(this,mediaSession,false) // not playing
         LockScreenMediaControl.show(this)
     }
 
@@ -564,17 +572,19 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             val mediaName = currentlyPlayed!!.currentlyPlayedMediaPath
             val title = getMediaTitle(mediaName)
             var text: String? = ""
+            var bitmap: Bitmap? = null
             if(mediaName != null) {
                 // File(null) would throw a NPE
                 val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
                         intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
                 text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                bitmap = HorizonUtils.getEmbeddedPicture(mediaName)
             }
             val player = mediaPlayer
             val isPlaying = if(player != null) player.isPlaying() else false
-            LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
+            LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text, bitmap)
         } else {
-            LockScreenMediaControl.init(this, mediaSession, false, "", "")
+            LockScreenMediaControl.init(this, mediaSession, false, "", "", null)
         }
     }
 
@@ -582,7 +592,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         val isPlaying = false
         val title = ""
         val text = ""
-        LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text)
+        val bitmap = null
+        LockScreenMediaControl.init(this, mediaSession, isPlaying, title, text, bitmap)
     }
 
     fun showMediaControls() {
@@ -599,7 +610,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     fun setAudioServiceCallbacks(callbacks: AudioServiceCallbacks?) {
         Log.d(TAG, "sASC: " + if (callbacks != null) "s" else "u")
-        this.callbacks = callbacks;
+        this.callbacks = callbacks
     }
 
     fun stopForegroundAndRemoveNotification() {
@@ -609,7 +620,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
 
     companion object {
 
-        private val TAG = "BackgroundAudioService"
+        private const val TAG = "BackgroundAudioService"
 
         val ACTION_PLAY = "play"
         val ACTION_PLAY_PAUSE = "playPause"

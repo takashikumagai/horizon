@@ -246,13 +246,18 @@ class RecyclerViewAdapter(
                     return
                 }
                 player.clearQueue()
-                player.addToQueue(entry.getPath())
+                if(HorizonOptions.autoQueueMediaFiles) {
+                    queueMediaFilesInDirectory(entry, player)
+                } else {
+                    // Note that this is the default behavior
+                    player.addToQueue(entry.getPath())
+                }
                 player.resetSavedPlaybackPosition()
                 val started = player.playCurrentlyPointedMediaInQueue()
                 if(started) {
                     mainActivity.onMediaStartedOnScreen()
-
-                    mainActivity.showPlayingTrackControl()
+                    mainActivity.switchToPlaylistView()
+                    //mainActivity.showPlayingTrackControl()
                 } else {
                     Log.d(TAG, "oECIFSV !started")
                 }
@@ -268,6 +273,29 @@ class RecyclerViewAdapter(
                 //btn.setText("||");
                 //Log.d(TAG, "started playing");
             }
+        }
+    }
+
+    private fun queueMediaFilesInDirectory(entry: File, player: Playback) {
+        val filesAndDirs = File(entry.parent).listFiles().toCollection(ArrayList())
+        var mediaFiles = HorizonUtils.pickMediaFiles(filesAndDirs)
+        if(mediaFiles.isEmpty()) {
+            Log.e(TAG, "!!!mediaFiles")
+            player.addToQueue(ArrayList<File>())
+            player.setPointedMediaIndex(-1)
+            return
+        }
+        mediaFiles.sortWith(compareBy {it.name})
+
+        player.addToQueue(mediaFiles)
+
+        val index = mediaFiles.indexOfFirst { f -> f.path == entry.path }
+        if(index == -1) {
+            Log.e(TAG, "Clicked media not found")
+            player.setPointedMediaIndex(0)
+            return;
+        } else {
+            player.setPointedMediaIndex(index)
         }
     }
 
@@ -326,7 +354,7 @@ class RecyclerViewAdapter(
 
         var color: Int
         var textColor: Int
-        if(position == mediaPlayerTab.playbackQueue.pointedMediaIndex) {
+        if(position == mediaPlayerTab.playbackQueue.getPointedMediaIndex()) {
             //color = 0xff2d393d.toInt() // playing
             color = 0xff2b2b2b.toInt() // Use the same color for playing track
             textColor = R.color.colorAccent
@@ -390,7 +418,7 @@ class RecyclerViewAdapter(
 
     companion object {
 
-        private val TAG = "RecyclerViewAdapter"
+        private const val TAG = "RecyclerViewAdapter"
 
         @JvmStatic
         fun updateMediaMetadata(entry: File,

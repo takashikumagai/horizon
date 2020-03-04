@@ -97,6 +97,6 @@ class MediaInfoPopupWindow(activity: MainActivity) {
 
     companion object {
 
-        private val TAG = "MediaInfoPopupWindow"
+        private const val TAG = "MediaInfoPopupWindow"
     }
 }

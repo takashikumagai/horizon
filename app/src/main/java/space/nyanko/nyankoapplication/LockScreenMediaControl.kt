@@ -9,6 +9,8 @@ import android.app.PendingIntent
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.NotificationChannel
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import android.util.Log
@@ -35,6 +37,8 @@ internal object LockScreenMediaControl {
 
     private var contentText: String = ""
 
+    private var bitmap: Bitmap? = null
+
     private fun generateAction(context: Context, action: String, icon: Int, title: CharSequence): NotificationCompat.Action {
 
         val intent = Intent(context.getApplicationContext(), BackgroundAudioService::class.java)
@@ -59,7 +63,7 @@ internal object LockScreenMediaControl {
     }
 
     fun init(context: Context, mediaSession: MediaSessionCompat?) {
-        init(context, mediaSession, false, "", "")
+        init(context, mediaSession, false, "", "", null)
     }
 
     /**
@@ -73,11 +77,17 @@ internal object LockScreenMediaControl {
             mediaSession: MediaSessionCompat?,
             isPlaying: Boolean,
             contentTitle: String?,
-            contentText: String?) {
-        Log.d(TAG, String.format("init %b %s %s",isPlaying,contentTitle,contentText))
+            contentText: String?,
+            bitmap: Bitmap?) {
+        Log.d(TAG, String.format("init %b '%s' '%s' %dx%d",
+                isPlaying, contentTitle, contentText,
+                bitmap?.width ?: 0,
+                bitmap?.height ?: 0
+        ))
 
         if(mediaSession == null) {
-            return;
+            Log.d(TAG, "init !mS")
+            return
         }
 
         val receiverIntent = Intent(context, HorizonBroadcastReceiver::class.java)
@@ -86,9 +96,13 @@ internal object LockScreenMediaControl {
 
         this.contentTitle = contentTitle ?: ""
         this.contentText = contentText ?: ""
+        this.bitmap = bitmap
 
         // Token to hand to the builder
         val compatToken = mediaSession.getSessionToken()
+
+        val largeIcon
+                = bitmap ?: BitmapFactory.decodeResource(context.resources, R.drawable.app_icon)
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 // Show controls on lock screen even when user hides sensitive content.
@@ -97,10 +111,13 @@ internal object LockScreenMediaControl {
                 // Add media control buttons that invoke intents in your media service
                 // Apply the media style template
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1 /* #1: pause button */)
+                        // Show the buttons except the dismiss button (index 0)
+                        .setShowActionsInCompactView(1, 2, 3)
                         .setMediaSession(compatToken))
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
+                .setLargeIcon(largeIcon)
+
                 .setOngoing(false)
 
                 // This does not affect whether the notification can be dismissed by swiping
@@ -109,7 +126,6 @@ internal object LockScreenMediaControl {
                 .setAutoCancel(false)
 
                 .setDeleteIntent(deletePendingIntent)
-        //.setLargeIcon(albumArtBitmap)
 
         Log.d(TAG, "adding actions")
 
@@ -163,7 +179,7 @@ internal object LockScreenMediaControl {
 
     fun changeState(context: Context, mediaSession: MediaSessionCompat?, isPlaying: Boolean) {
         Log.d(TAG, "cS ${contentTitle} ${contentText}")
-        init(context, mediaSession, isPlaying, contentTitle, contentText);
+        init(context, mediaSession, isPlaying, contentTitle, contentText, bitmap)
     }
 
     /**
@@ -222,7 +238,7 @@ internal object LockScreenMediaControl {
         Log.d(TAG, "nM.cancel")
         notificationManager.cancel(NOTIFICATION_ID)
 
-        context.sendBroadcast(Intent("space.nyanko.nyankoapplication"));
+        context.sendBroadcast(Intent("space.nyanko.nyankoapplication"))
     }
 
     /**

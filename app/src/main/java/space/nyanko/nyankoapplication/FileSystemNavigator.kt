@@ -92,7 +92,7 @@ class FileSystemNavigator : Serializable {
 
     companion object {
 
-        private val TAG = "FileSystemNavigator"
+        private const val TAG = "FileSystemNavigator"
 
         internal fun createNavigator(type: Int, path: String): AbstractDirectoryNavigator? {
             if (type == 1)

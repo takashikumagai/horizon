@@ -1,5 +1,7 @@
 package space.nyanko.nyankoapplication
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 
 import java.io.File
@@ -11,7 +13,7 @@ import android.media.MediaMetadataRetriever
 
 object HorizonUtils {
 
-    private val TAG = "HorizonUtils"
+    private const val TAG = "HorizonUtils"
 
     fun getExtension(fileName: String): String {
         val i = fileName.lastIndexOf('.')
@@ -39,7 +41,7 @@ object HorizonUtils {
 
         val mediaFiles = ArrayList<File>()
         for (entry in filesAndDirs) {
-            if (isMediaFile(entry.getName())) {
+            if (entry.isFile && isMediaFile(entry.getName())) {
                 mediaFiles.add(entry)
             }
         }
@@ -103,6 +105,13 @@ object HorizonUtils {
             Log.d(TAG, "not a media file")
         }
         return tagMaps
+    }
+
+    fun getEmbeddedPicture(mediaFilePath: String?): Bitmap? {
+        val mmr = MediaMetadataRetriever()
+        mmr.setDataSource(mediaFilePath)
+        val data = mmr.embeddedPicture
+        return if(data != null) BitmapFactory.decodeByteArray(data, 0, data.size) else null
     }
 
     fun millisecondsToHhmmss(milliseconds: Long): String {
