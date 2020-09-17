@@ -84,7 +84,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 for (key in extras.keySet()) {
                     val value = extras.get(key)
                     Log.d(TAG, String.format("%s %s (%s)",
-                            key, value?.toString(), value.javaClass.getName()))
+                            key, value?.toString(), value?.javaClass?.getName()))
                 }
                 val obj = extras.get("android.intent.extra.KEY_EVENT")
                 if (obj == null) {

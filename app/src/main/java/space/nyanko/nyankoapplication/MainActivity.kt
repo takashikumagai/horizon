@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         Log.d(TAG, "oStart")
         // bind to Service
         val intent = Intent(this, BackgroundAudioService::class.java)
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        bindService(intent, serviceConnection!!, Context.BIND_AUTO_CREATE)
     }
 
     override fun onStop() {
@@ -319,7 +319,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         // Unbind from service
         if (boundToService) {
             backgroundAudioService?.setAudioServiceCallbacks(null) // unregister
-            unbindService(serviceConnection)
+            unbindService(serviceConnection!!)
             boundToService = false
         }
 
