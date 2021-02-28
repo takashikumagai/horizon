@@ -35,6 +35,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
     init {
 
         currentDirectory = File(baseDeviceDirectory)
+        Log.d(TAG, "init cD: $currentDirectory")
 
         if (currentDirectory == null) {
             Log.d(TAG, "ctor: cD!")
@@ -44,6 +45,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
     }
 
     private fun updateCurrentDirectoryEntries() {
+        Log.d(TAG, "uCDE: ${currentDirectory?.path}")
         val f = currentDirectory// new File(this.currentDirectory);
         if (f == null) {
             currentDirectoryEntries.clear()
@@ -56,6 +58,13 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
         // directory so decided not to bethoer
 
         val entries = f.listFiles()
+        if(entries == null) {
+            // The app failed to read files in the directory.
+            // This happens on some devices when android:requestLegacyExternalStorage
+            // is not set to true in AndroidManifest.xml
+            Log.d(TAG, "uCDE !entries")
+            return
+        }
 
         val displayOnlyMediaFiles = true
         var dirsAndFilesToShow: MutableList<File> =
