@@ -310,7 +310,10 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         Log.d(TAG, "oStart")
         // bind to Service
         val intent = Intent(this, BackgroundAudioService::class.java)
-        bindService(intent, serviceConnection!!, Context.BIND_AUTO_CREATE)
+        val bindingStarted = bindService(intent, serviceConnection!!, Context.BIND_AUTO_CREATE)
+        if(!bindingStarted) {
+            Log.w(TAG, "Failed to bind service")
+        }
     }
 
     override fun onStop() {
