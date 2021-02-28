@@ -26,7 +26,7 @@ object HorizonUtils {
 
     fun isMediaFile(fileName: String): Boolean {
         val ext = getExtension(fileName).toLowerCase()
-        return if (ext.equals("mp3") || ext.equals("ogg") || ext.equals("flac") || ext.equals("wav")) {
+        return if (ext.equals("mp3") || ext.equals("ogg") || ext.equals("flac") || ext.equals("wav") || ext.equals("m4a")) {
             true
         } else {
             false
