@@ -109,19 +109,18 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             }
         }
 
-    internal// Sanity check
-    val floatingActionButton: FloatingActionButton?
+    private val floatingActionButton: FloatingActionButton?
         get() {
-            val fab = findViewById(R.id.fab) as FloatingActionButton
+            val fab = findViewById<FloatingActionButton>(R.id.fab)
             if (fab == null) {
                 Log.e(TAG, "!fab")
             }
             return fab
         }
 
-    val resumeFab: FloatingActionButton?
+    private val resumeFab: FloatingActionButton?
         get() {
-            val fab = findViewById(R.id.resume) as FloatingActionButton
+            val fab = findViewById<FloatingActionButton>(R.id.resume)
             if (fab == null) {
                 Log.e(TAG, "!resumeFab")
             }
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         super.onCreate(savedInstanceState)
         Log.d(TAG, "oC t" + Thread.currentThread().id)
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         initFloatingActionButton()
@@ -202,7 +201,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         hidePlaybackQueueControl()
         hidePlayingTrackControl()
 
-        playingTrackName = findViewById(R.id.playing_track_name) as TextView
+        playingTrackName = findViewById<TextView>(R.id.playing_track_name)
         playingTrackName!!.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
                 Log.d(TAG, "oC")
@@ -288,7 +287,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
             }
         }
 
-        folderViewPlayingTrackTime = findViewById(R.id.playing_track_time) as TextView
+        folderViewPlayingTrackTime = findViewById<TextView>(R.id.playing_track_time)
 
         initSeekBar();
 
@@ -1355,19 +1354,19 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun showSeekBar() {
-        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
+        folderViewSeekBar = findViewById<SeekBar>(R.id.playing_track_seek_bar)
         folderViewSeekBar?.visibility = View.VISIBLE;
     }
 
     fun hideSeekBar() {
-        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar
+        folderViewSeekBar = findViewById<SeekBar>(R.id.playing_track_seek_bar)
         folderViewSeekBar?.visibility = View.GONE;
     }
 
     fun initFloatingActionButton() {
         Log.d(TAG, "iFAB")
 
-        val fab = findViewById(R.id.fab) as FloatingActionButton
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener(object : View.OnClickListener {
 
             /**
@@ -1445,7 +1444,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun initResumeFab() {
-        val fab = findViewById(R.id.resume) as FloatingActionButton
+        val fab = findViewById<FloatingActionButton>(R.id.resume)
         fab.setOnClickListener(object : View.OnClickListener {
 
             override fun onClick(view: View) {
@@ -1457,7 +1456,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun initPlayingTrackControl() {
-        val btn = findViewById(R.id.playing_track_play_pause_button) as ImageButton?
+        val btn = findViewById<ImageButton>(R.id.playing_track_play_pause_button)
         btn?.setOnClickListener(
                 object : View.OnClickListener {
                     override fun onClick(view: View) {
@@ -1475,7 +1474,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
 
     fun initSeekBar() {
 
-        folderViewSeekBar = findViewById(R.id.playing_track_seek_bar) as SeekBar?
+        folderViewSeekBar = findViewById<SeekBar>(R.id.playing_track_seek_bar)
         folderViewSeekBar?.max = 0
         folderViewSeekBar?.progress = 0
         folderViewSeekBar!!.setOnSeekBarChangeListener(
@@ -1509,7 +1508,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun updatePlayingTrackPlayPauseButton(playing: Boolean?) {
-        val btn = findViewById(R.id.playing_track_play_pause_button) as ImageButton?
+        val btn = findViewById<ImageButton>(R.id.playing_track_play_pause_button)
         if(playing == null) {
             btn?.setImageResource(R.drawable.stop)
         } else if(playing) {
@@ -1592,7 +1591,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
     }
 
     fun updatePlaylistViewPlayPauseButton(playing: Boolean?) {
-        val btn = findViewById(R.id.play_pause_button) as ImageButton?
+        val btn = findViewById<ImageButton>(R.id.play_pause_button)
         if(playing == null) {
             btn?.setImageResource(R.drawable.stop)
         } else if(playing) {
