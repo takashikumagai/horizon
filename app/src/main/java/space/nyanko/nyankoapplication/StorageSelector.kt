@@ -21,7 +21,7 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
         get() = false
 
     init {
-        // This should be unneessary as StorageHelper's getStorages() contains the primary storage.
+        // This should be unnecessary as StorageHelper's getStorages() contains the primary storage.
         //        File f = new File("/storage/emulated/0");
         //        if(f == null) {
         //            Log.d(TAG,"!/s/e/0");
@@ -39,10 +39,10 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
         //}
 
         val vols = StorageHelper.getStorages(true)
-        Log.d(TAG, Integer.toString(vols.size) + " storage volumes found.")
+        Log.d(TAG, vols.size.toString() + " storage volumes found.")
         for (vol in vols) {
             Log.d(TAG, "Device name: '" + vol.device + "'")
-            Log.d(TAG, "  Path: " + vol.file!!.getPath())
+            Log.d(TAG, "  Path: " + vol.file!!.path)
             //Log.d(TAG, "  Type: " + vol.getType())
 
             currentDirectoryEntries.add(vol.file)

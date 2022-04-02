@@ -14,17 +14,17 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
     //val isValid: Boolean
     //    get() = currentDirectory != null
     fun isValid(): Boolean {
-        return if (currentDirectory != null) true else false
+        return (currentDirectory != null)
     }
 
     override val currentDirectoryName: String
-        get() = currentDirectory!!.getName()
+        get() = currentDirectory!!.name
 
     override val isAtLeastOneMediaFilePresent: Boolean
         get() {
             Log.d(TAG, "iALOMFP: " + currentDirectoryEntries.size)
             for (entry in currentDirectoryEntries) {
-                if (HorizonUtils.isMediaFile(entry.getName())) {
+                if (HorizonUtils.isMediaFile(entry.name)) {
                     return true
                 }
             }
@@ -55,7 +55,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
         // Tried to do this with f.walkTopDown().maxDepth(1) but the results
         // were not ordered in directory first plus they include the argument
-        // directory so decided not to bethoer
+        // directory so decided not to bother
 
         val entries = f.listFiles()
         if(entries == null) {
@@ -79,7 +79,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
         var names = ""
         for (file in fileList) {
-            names += file.getName() + ", "
+            names += file.name + ", "
         }
         Log.d(TAG, "names (" + fileList.size + "): " + names)
 
@@ -130,8 +130,8 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
 
         if (currentDirectory!!.getPath().equals(baseDeviceDirectory)) {
             // Currently at the root and can't go up the tree any more
-            // -> Return null to indicate that control has be handed back
-            // to the storage selector (no error)
+            // -> Return null to indicate that control has to be handed
+            // back to the storage selector (no error)
             return null
         }
 
