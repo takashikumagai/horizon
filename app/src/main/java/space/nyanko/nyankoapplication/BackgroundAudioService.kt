@@ -577,7 +577,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 // File(null) would throw a NPE
                 val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
                         intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
-                text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                text = if(tags?.containsKey(MediaMetadataRetriever.METADATA_KEY_ALBUM) == true) {
+                    tags.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                } else {
+                    "\uD83D\uDC08unknown album"
+                }
                 bitmap = HorizonUtils.getEmbeddedPicture(mediaName)
             }
             val player = mediaPlayer
