@@ -98,7 +98,7 @@ object HorizonUtils {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(f.getPath())
             for (tag in tags) {
-                val value = mmr.extractMetadata(tag)
+                val value = mmr.extractMetadata(tag) ?: continue
                 tagMaps.put(tag, value)
             }
         } else {
