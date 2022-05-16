@@ -5,15 +5,27 @@ import android.graphics.BitmapFactory
 import android.util.Log
 
 import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.concurrent.TimeUnit
 
 import android.media.MediaMetadataRetriever
+import java.lang.Exception
+import java.util.*
 
 object HorizonUtils {
 
     private const val TAG = "HorizonUtils"
+
+    private fun createMediaMetadataRetriever(filePath: String?): MediaMetadataRetriever {
+        val mmr = MediaMetadataRetriever()
+        try {
+            mmr.setDataSource(filePath)
+        } catch (e: Exception) {
+            Log.d(TAG, "exception: ${e.message}")
+        } finally {
+            Log.d(TAG, "An exception was thrown")
+        }
+        return mmr
+    }
 
     fun getExtension(fileName: String): String {
         val i = fileName.lastIndexOf('.')
@@ -63,8 +75,7 @@ object HorizonUtils {
         }
 
         if (isMediaFile(f.getName())) {
-            val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(f.getPath())
+            val mmr = createMediaMetadataRetriever(f.path)
             val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
             if (title == null) {
                 Log.d(TAG, "!t")
@@ -86,7 +97,7 @@ object HorizonUtils {
      * or null if arg is invalid
      */
     fun getMediaFileMetaTags(f: File?, tags: IntArray): HashMap<Int, String>? {
-        Log.v(TAG, "gMFMTs")
+//        Log.d(TAG, "gMFMTs file: ${f?.path}")
 
         val tagMaps = HashMap<Int, String>()
 
@@ -95,8 +106,7 @@ object HorizonUtils {
         }
 
         if (isMediaFile(f.getName())) {
-            val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(f.getPath())
+            val mmr = createMediaMetadataRetriever(f.path)
             for (tag in tags) {
                 val value = mmr.extractMetadata(tag) ?: continue
                 tagMaps.put(tag, value)
@@ -108,8 +118,8 @@ object HorizonUtils {
     }
 
     fun getEmbeddedPicture(mediaFilePath: String?): Bitmap? {
-        val mmr = MediaMetadataRetriever()
-        mmr.setDataSource(mediaFilePath)
+
+        val mmr = createMediaMetadataRetriever(mediaFilePath)
         val data = mmr.embeddedPicture
         return if(data != null) BitmapFactory.decodeByteArray(data, 0, data.size) else null
     }
