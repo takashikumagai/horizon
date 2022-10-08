@@ -446,8 +446,14 @@ class RecyclerViewAdapter(
             val track = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
             if (track != null) {
                 holder.fileTypeIcon?.setText(track)
+                if(track.length <= 2) {
+                    holder.fileTypeIcon?.textSize = 12.0F
+                } else {
+                    holder.fileTypeIcon?.textSize = 9.0F
+                }
             } else {
                 holder.fileTypeIcon?.setText("")
+                holder.fileTypeIcon?.textSize = 12.0F
             }
 
             // Track duration
