@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 //apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "space.nyanko.nyankoapplication"
 
@@ -15,7 +15,7 @@ android {
         // 23         6.0 (Marshmallow)
         minSdkVersion 19
 
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 10
         versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
