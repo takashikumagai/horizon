@@ -23,17 +23,17 @@ object MediaStyleHelper {
      */
     fun from(
             context: Context, mediaSession: MediaSessionCompat): NotificationCompat.Builder {
-        val controller = mediaSession.getController()
-        val mediaMetadata = controller.getMetadata()
-        val description = mediaMetadata.getDescription()
+        val controller = mediaSession.controller
+        val mediaMetadata = controller.metadata
+        val description = mediaMetadata.description
 
         val builder = NotificationCompat.Builder(context)
         builder
-                .setContentTitle(description.getTitle())
-                .setContentText(description.getSubtitle())
-                .setSubText(description.getDescription())
-                .setLargeIcon(description.getIconBitmap())
-                .setContentIntent(controller.getSessionActivity())
+                .setContentTitle(description.title)
+                .setContentText(description.subtitle)
+                .setSubText(description.description)
+                .setLargeIcon(description.iconBitmap)
+                .setContentIntent(controller.sessionActivity)
                 .setDeleteIntent(
                         MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

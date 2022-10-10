@@ -66,7 +66,7 @@ class StorageSelector internal constructor() : AbstractDirectoryNavigator() {
             return null
         }
 
-        val path = currentDirectoryEntries.get(pos).getPath()
+        val path = currentDirectoryEntries.get(pos).path
         if (path == null) {
             Log.d(TAG, "!path")
             return null

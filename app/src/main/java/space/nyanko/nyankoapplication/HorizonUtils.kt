@@ -53,7 +53,7 @@ object HorizonUtils {
 
         val mediaFiles = ArrayList<File>()
         for (entry in filesAndDirs) {
-            if (entry.isFile && isMediaFile(entry.getName())) {
+            if (entry.isFile && isMediaFile(entry.name)) {
                 mediaFiles.add(entry)
             }
         }
@@ -74,7 +74,7 @@ object HorizonUtils {
             return ""
         }
 
-        if (isMediaFile(f.getName())) {
+        if (isMediaFile(f.name)) {
             val mmr = createMediaMetadataRetriever(f.path)
             val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
             if (title == null) {
@@ -105,7 +105,7 @@ object HorizonUtils {
             return null
         }
 
-        if (isMediaFile(f.getName())) {
+        if (isMediaFile(f.name)) {
             val mmr = createMediaMetadataRetriever(f.path)
             for (tag in tags) {
                 val value = mmr.extractMetadata(tag) ?: continue

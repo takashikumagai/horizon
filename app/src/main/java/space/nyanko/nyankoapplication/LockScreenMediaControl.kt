@@ -41,8 +41,8 @@ internal object LockScreenMediaControl {
 
     private fun generateAction(context: Context, action: String, icon: Int, title: CharSequence): NotificationCompat.Action {
 
-        val intent = Intent(context.getApplicationContext(), BackgroundAudioService::class.java)
-        intent.setAction(action)
+        val intent = Intent(context.applicationContext, BackgroundAudioService::class.java)
+        intent.action = action
 
         // As per the documentation, this 'retrieves a PendingIntent that will start a service'
         // https://developer.android.com/reference/android/app/PendingIntent.html
@@ -52,7 +52,7 @@ internal object LockScreenMediaControl {
         val requestCode = 1
         val flags = 0
         val pendingIntent = PendingIntent.getService(
-                context.getApplicationContext(),
+                context.applicationContext,
                 requestCode,
                 intent,
                 flags)
@@ -99,7 +99,7 @@ internal object LockScreenMediaControl {
         this.bitmap = bitmap
 
         // Token to hand to the builder
-        val compatToken = mediaSession.getSessionToken()
+        val compatToken = mediaSession.sessionToken
 
         val largeIcon
                 = bitmap ?: BitmapFactory.decodeResource(context.resources, R.drawable.app_icon)
@@ -259,13 +259,13 @@ internal object LockScreenMediaControl {
             val description = "my-channel"//getString(R.string.channel_description);
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
-            channel.setDescription(description)
+            channel.description = description
 
             // Disable vibration
             // Note that we have to set the arg of enableVibration() to true in order to disable
             // the vibration. See this SO post for more details:
             // https://stackoverflow.com/questions/46402510/notification-vibrate-issue-for-android-8-0
-            channel.setVibrationPattern(longArrayOf(0))
+            channel.vibrationPattern = longArrayOf(0)
             channel.enableVibration(true)
 
             // Register the channel with the system; you can't change the importance

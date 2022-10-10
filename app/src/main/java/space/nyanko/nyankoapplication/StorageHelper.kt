@@ -29,8 +29,7 @@ object StorageHelper {
     private val DISALLOWED_FILESYSTEMS = arrayOf("tmpfs", "rootfs", "romfs", "devpts", "sysfs", "proc", "cgroup", "debugfs")
 
     init {
-        val primaryStoragePath = Environment.getExternalStorageDirectory()
-                .getAbsolutePath()
+        val primaryStoragePath = Environment.getExternalStorageDirectory().absolutePath
         val index = primaryStoragePath.indexOf(File.separatorChar, 1)
         if (index != -1) {
             STORAGES_ROOT = primaryStoragePath.substring(0, index + 1)
@@ -228,7 +227,7 @@ object StorageHelper {
     private fun resolveType(v: StorageVolume): StorageVolume.Type {
         return if (v.file!!.equals(Environment.getExternalStorageDirectory()) && Environment.isExternalStorageEmulated()) {
             StorageVolume.Type.INTERNAL
-        } else if (containsIgnoreCase(v.file.getAbsolutePath(), "usb")) {
+        } else if (containsIgnoreCase(v.file.absolutePath, "usb")) {
             StorageVolume.Type.USB
         } else {
             StorageVolume.Type.EXTERNAL
@@ -417,7 +416,7 @@ object StorageHelper {
         }
 
         override fun toString(): String {
-            return (file!!.getAbsolutePath() + (if (isReadOnly) " ro " else " rw ") + type + (if (isRemovable) " R " else "")
+            return (file!!.absolutePath + (if (isReadOnly) " ro " else " rw ") + type + (if (isRemovable) " R " else "")
                     + (if (isEmulated) " E " else "") + fileSystem)
         }
     }

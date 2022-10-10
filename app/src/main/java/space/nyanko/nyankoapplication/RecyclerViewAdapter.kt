@@ -58,7 +58,7 @@ class RecyclerViewAdapter(
     //@NonNull
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.v(TAG, "onCVH")
-        val view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_listitem, parent, false)
         return ViewHolder(view)
     }
 
@@ -91,7 +91,7 @@ class RecyclerViewAdapter(
         Log.v(TAG, "sFODTH: $position")
         //FileSystemNavigator currentFileSystemNavigator = null;
 
-        val pos = holder.getAdapterPosition()
+        val pos = holder.adapterPosition
 
         if (currentFileSystemNavigator == null) {
             Log.d(TAG, "!cFSN")
@@ -106,7 +106,7 @@ class RecyclerViewAdapter(
         }
 
         val mainActivity = mContext as MainActivity
-        val st = mainActivity.getMediaFileStatus(entry.getPath())
+        val st = mainActivity.getMediaFileStatus(entry.path)
         var color: Int = 0xffff00ff.toInt()
         if (st == 0) {
             color = 0xff2b2b2b.toInt()
@@ -119,30 +119,30 @@ class RecyclerViewAdapter(
         holder.fileName.setTextColor(ContextCompat.getColor(mContext,R.color.textColorPrimary))
 
         // Set the icon based on the file type
-        if (entry.isDirectory()) {
+        if (entry.isDirectory) {
 
             // Set the name of the directory
-            Log.d(TAG, "setting text: " + entry.getName())
-            holder.fileName.setText(entry.getName())
+            Log.d(TAG, "setting text: " + entry.name)
+            holder.fileName.text = entry.name
 
-            holder.secondaryRow.setText("Folder")
+            holder.secondaryRow.text = "Folder"
 
             setFileTypeIcon(holder, R.drawable.folder)
 
-            holder.fileTypeIcon?.setText("")
+            holder.fileTypeIcon?.text = ""
 
         } else {
             // We are dealing with a file.
 
 
             // See if this one is a media file, e.g. mp3
-            val isMediaFile = HorizonUtils.isMediaFile(entry.getName())
+            val isMediaFile = HorizonUtils.isMediaFile(entry.name)
             if (isMediaFile) {
                 setMediaFileToViewHolder(entry,holder)
             } else {
                 // This should not happen as entries are supposed to contain
                 // only directories and media files
-                Log.w(TAG, "sFODTH !!!media file " + entry.getPath())
+                Log.w(TAG, "sFODTH !!!media file " + entry.path)
                 setFileTypeIcon(holder, R.drawable.ic_file)
             }
         }
@@ -201,9 +201,9 @@ class RecyclerViewAdapter(
     }
 
     fun clearViewHolder(holder: ViewHolder) {
-        holder.fileTypeIcon?.setText("")
-        holder.fileName.setText("")
-        holder.secondaryRow.setText("")
+        holder.fileTypeIcon?.text = ""
+        holder.fileName.text = ""
+        holder.secondaryRow.text = ""
     }
 
 
@@ -216,12 +216,12 @@ class RecyclerViewAdapter(
         // Update the tab label
         mainActivity.setSelectedTabLabel(entry?.name ?: "-")
 
-        if (entry!!.isDirectory()) {
+        if (entry!!.isDirectory) {
             navigator?.moveToChild(pos)
 
             MediaPlayerTab.getSelected()?.metadataCache?.clear()
 
-            mainActivity.setTitle(navigator?.currentDirectoryName ?: "")
+            mainActivity.title = navigator?.currentDirectoryName ?: ""
 
             // Reset the scroll position when opening a directory
             val recyclerView: RecyclerView = mainActivity.findViewById(R.id.recycler_view)
@@ -231,8 +231,8 @@ class RecyclerViewAdapter(
 
             mainActivity.updateFloatingActionButtonVisibility()
 
-        } else if (entry.isFile()) {
-            if (HorizonUtils.isMediaFile(entry.getName())) {
+        } else if (entry.isFile) {
+            if (HorizonUtils.isMediaFile(entry.name)) {
                 // A playable media file, e.g. an mp3 fle, was tapped/clicked
                 Log.d(TAG, "is media file")
                 val player = mainActivity.playerOfSelectedTab
@@ -250,7 +250,7 @@ class RecyclerViewAdapter(
                     queueMediaFilesInDirectory(entry, player)
                 } else {
                     // Note that this is the default behavior
-                    player.addToQueue(entry.getPath())
+                    player.addToQueue(entry.path)
                 }
                 player.resetSavedPlaybackPosition()
                 val started = player.playCurrentlyPointedMediaInQueue()
@@ -335,8 +335,8 @@ class RecyclerViewAdapter(
 
         if(queue.size <= position) {
             // Make sure that the row is empty
-            holder.fileName.setText("")
-            holder.secondaryRow.setText("")
+            holder.fileName.text = ""
+            holder.secondaryRow.text = ""
             holder.itemView.setBackgroundColor(0xff2b2b2b.toInt())
             setFileTypeIcon(holder,0)
             return
@@ -367,9 +367,9 @@ class RecyclerViewAdapter(
         holder.fileName.setTextColor(ContextCompat.getColor(mContext,textColor))
 
         holder.parentLayout.setOnClickListener() { _ ->
-            val pos = holder.getAdapterPosition()
+            val pos = holder.adapterPosition
 
-            Log.d(TAG, "playlist onClick " + pos + " " + f.getName())
+            Log.d(TAG, "playlist onClick " + pos + " " + f.name)
 
             onEntryClickedInPlaylistView(pos)
         }
@@ -431,28 +431,28 @@ class RecyclerViewAdapter(
                 val title = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_TITLE)
                 if (title != null && 0 < title.length) {
                     // The media file has a meta tag; use the title instead of its file name
-                    holder.fileName.setText(title)
+                    holder.fileName.text = title
                 } else {
                     // Does not have the title tag; just set the file name
-                    holder.fileName.setText(entry.getName())
+                    holder.fileName.text = entry.name
                 }
             } else {
                 // User explicitly chose to see file name instead of title
-                holder.fileName.setText(entry.getName())
+                holder.fileName.text = entry.name
             }
 
             // Show the track number in the upper right corner of the media type icon
             // if the media file has the track number metadata
             val track = metaTags?.get(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
             if (track != null) {
-                holder.fileTypeIcon?.setText(track)
+                holder.fileTypeIcon?.text = track
                 if(track.length <= 2) {
                     holder.fileTypeIcon?.textSize = 12.0F
                 } else {
                     holder.fileTypeIcon?.textSize = 9.0F
                 }
             } else {
-                holder.fileTypeIcon?.setText("")
+                holder.fileTypeIcon?.text = ""
                 holder.fileTypeIcon?.textSize = 12.0F
             }
 
@@ -463,7 +463,7 @@ class RecyclerViewAdapter(
                 val hhmmss = HorizonUtils.millisecondsToHhmmssOrMmss(duration.toLong())
                 secondRow = "$hhmmss"
             }
-            holder.secondaryRow.setText(secondRow)
+            holder.secondaryRow.text = secondRow
 
             if(cacheTags) {
                 val tab = MediaPlayerTab.getSelected()

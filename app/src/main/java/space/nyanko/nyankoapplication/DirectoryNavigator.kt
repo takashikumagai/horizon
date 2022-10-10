@@ -128,14 +128,14 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
             return null // Something is wrong; return to the storage seletor
         }
 
-        if (currentDirectory!!.getPath().equals(baseDeviceDirectory)) {
+        if (currentDirectory!!.path.equals(baseDeviceDirectory)) {
             // Currently at the root and can't go up the tree any more
             // -> Return null to indicate that control has to be handed
             // back to the storage selector (no error)
             return null
         }
 
-        val p = currentDirectory!!.getParent()
+        val p = currentDirectory!!.parent
         if (p == null) {
             Log.w(TAG, "!getParent")
             return null // Something is wrong; return to the storage selector
@@ -164,7 +164,7 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
         // Error: Call requires API level 24 (current min is 19): java.util.ArrayList#removeIf [NewApi]
         //entries.removeIf(e -> !e.isDirectory() && !);
         for (fileOrDir in dirsAndFiles) {
-            if (fileOrDir.isDirectory() || HorizonUtils.isMediaFile(fileOrDir.getPath())) {
+            if (fileOrDir.isDirectory || HorizonUtils.isMediaFile(fileOrDir.path)) {
                 filtered.add(fileOrDir)
             }
         }
@@ -177,15 +177,15 @@ class DirectoryNavigator internal constructor(private val baseDeviceDirectory: S
     fun sortDirsFirst(entries: MutableList<File>): List<File> {
         entries.sortWith(object: Comparator<File>{
             override fun compare(f1: File, f2: File): Int {
-                if(f1.isDirectory()) {
-                    if(f2.isDirectory()) {
+                if(f1.isDirectory) {
+                    if(f2.isDirectory) {
                         // Both f1 and f2 are directories
                         return if (f1.toString() < f2.toString()) -1 else 1
                     } else {
                         return -1
                     }
                 } else {
-                    if(f2.isDirectory()) {
+                    if(f2.isDirectory) {
                         return 1
                     } else {
                         // Both f1 and f2 are files
