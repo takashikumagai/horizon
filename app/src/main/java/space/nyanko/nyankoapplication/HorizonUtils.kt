@@ -5,15 +5,27 @@ import android.graphics.BitmapFactory
 import android.util.Log
 
 import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.concurrent.TimeUnit
 
 import android.media.MediaMetadataRetriever
+import java.lang.Exception
+import java.util.*
 
 object HorizonUtils {
 
     private const val TAG = "HorizonUtils"
+
+    private fun createMediaMetadataRetriever(filePath: String?): MediaMetadataRetriever {
+        val mmr = MediaMetadataRetriever()
+        try {
+            mmr.setDataSource(filePath)
+        } catch (e: Exception) {
+            Log.d(TAG, "exception: ${e.message}")
+        } finally {
+            Log.d(TAG, "An exception was thrown")
+        }
+        return mmr
+    }
 
     fun getExtension(fileName: String): String {
         val i = fileName.lastIndexOf('.')
@@ -25,8 +37,8 @@ object HorizonUtils {
     }
 
     fun isMediaFile(fileName: String): Boolean {
-        val ext = getExtension(fileName).toLowerCase()
-        return if (ext.equals("mp3") || ext.equals("ogg") || ext.equals("flac") || ext.equals("wav") || ext.equals("m4a")) {
+        val ext = getExtension(fileName).lowercase(Locale.getDefault())
+        return if (ext.equals("mp3") || ext.equals("ogg") || ext.equals("flac") || ext.equals("wav") || ext.equals("m4a") || ext.equals("aac")) {
             true
         } else {
             false
@@ -41,7 +53,7 @@ object HorizonUtils {
 
         val mediaFiles = ArrayList<File>()
         for (entry in filesAndDirs) {
-            if (entry.isFile && isMediaFile(entry.getName())) {
+            if (entry.isFile && isMediaFile(entry.name)) {
                 mediaFiles.add(entry)
             }
         }
@@ -62,9 +74,8 @@ object HorizonUtils {
             return ""
         }
 
-        if (isMediaFile(f.getName())) {
-            val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(f.getPath())
+        if (isMediaFile(f.name)) {
+            val mmr = createMediaMetadataRetriever(f.path)
             val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
             if (title == null) {
                 Log.d(TAG, "!t")
@@ -86,7 +97,7 @@ object HorizonUtils {
      * or null if arg is invalid
      */
     fun getMediaFileMetaTags(f: File?, tags: IntArray): HashMap<Int, String>? {
-        Log.v(TAG, "gMFMTs")
+//        Log.d(TAG, "gMFMTs file: ${f?.path}")
 
         val tagMaps = HashMap<Int, String>()
 
@@ -94,11 +105,10 @@ object HorizonUtils {
             return null
         }
 
-        if (isMediaFile(f.getName())) {
-            val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(f.getPath())
+        if (isMediaFile(f.name)) {
+            val mmr = createMediaMetadataRetriever(f.path)
             for (tag in tags) {
-                val value = mmr.extractMetadata(tag)
+                val value = mmr.extractMetadata(tag) ?: continue
                 tagMaps.put(tag, value)
             }
         } else {
@@ -108,8 +118,8 @@ object HorizonUtils {
     }
 
     fun getEmbeddedPicture(mediaFilePath: String?): Bitmap? {
-        val mmr = MediaMetadataRetriever()
-        mmr.setDataSource(mediaFilePath)
+
+        val mmr = createMediaMetadataRetriever(mediaFilePath)
         val data = mmr.embeddedPicture
         return if(data != null) BitmapFactory.decodeByteArray(data, 0, data.size) else null
     }

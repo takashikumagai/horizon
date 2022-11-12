@@ -94,8 +94,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                     if (keyEvent == null) {
                         Log.d(TAG, "!kE")
                     } else {
-                        val action = keyEvent.getAction()
-                        val code = keyEvent.getKeyCode()
+                        val action = keyEvent.action
+                        val code = keyEvent.keyCode
                         Log.d(TAG, String.format("kE a: %d, kc: %d", action, code))
                         if (action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_MEDIA_PAUSE) {
                             Log.d(TAG, "mp.pause")
@@ -113,9 +113,9 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                     }
                 }
             }
-            val cats = mediaButtonEvent.getCategories()
+            val cats = mediaButtonEvent.categories
             Log.d(TAG, "categories: " + if (cats != null) cats.toString() else "null")
-            Log.d(TAG, "data uri: " + mediaButtonEvent.getDataString())
+            Log.d(TAG, "data uri: " + mediaButtonEvent.dataString)
             return super.onMediaButtonEvent(mediaButtonEvent)
         }
 
@@ -234,7 +234,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        return if (TextUtils.equals(clientPackageName, getPackageName())) {
+        return if (TextUtils.equals(clientPackageName, packageName)) {
             BrowserRoot(getString(R.string.app_name), null)
         } else null
 
@@ -367,9 +367,9 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
             Log.w(TAG, "!!!!!!!!!!!!!!!!!!!!! mediaSession !null !!!!!!!!!!!!!!!!!!!!!")
         }
 
-        val mediaButtonReceiver = ComponentName(getApplicationContext(), MediaButtonReceiver::class.java)
+        val mediaButtonReceiver = ComponentName(applicationContext, MediaButtonReceiver::class.java)
         mediaSession = MediaSessionCompat(
-                getApplicationContext(), "mySessionTag", mediaButtonReceiver, null)
+            applicationContext, "mySessionTag", mediaButtonReceiver, null)
 
         mediaSessionCallback = MyMediaSessionCallback()
         val msc = mediaSessionCallback
@@ -385,7 +385,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         val pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0)
         mediaSession!!.setMediaButtonReceiver(pendingIntent)
 
-        mediaSession!!.setActive(true)
+        mediaSession!!.isActive = true
 
         metadataBuilder = android.support.v4.media.MediaMetadataCompat.Builder()
     }
@@ -441,7 +441,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
         return if (title != null && !title.equals("")) {
             title
         } else {
-            f.getName()
+            f.name
         }
 
     }
@@ -451,8 +451,8 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
      * @return true if the intent is handled, false otherwise
      */
     private fun handleIntent(intent: Intent): Boolean {
-        Log.d(TAG,"hI " + intent.getAction())
-        val action = intent.getAction()
+        Log.d(TAG,"hI " + intent.action)
+        val action = intent.action
         var handled = false
         if (action === ACTION_PLAY_PAUSE) {
             if (mediaPlayer == null) {
@@ -464,7 +464,7 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 return false
             }
 
-            if (mediaPlayer!!.isPlaying()) {
+            if (mediaPlayer!!.isPlaying) {
                 pause()
             } else {
                 play()
@@ -577,7 +577,11 @@ class BackgroundAudioService : MediaBrowserServiceCompat() {
                 // File(null) would throw a NPE
                 val tags = HorizonUtils.getMediaFileMetaTags(File(mediaName),
                         intArrayOf(MediaMetadataRetriever.METADATA_KEY_ALBUM))
-                text = tags?.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                text = if(tags?.containsKey(MediaMetadataRetriever.METADATA_KEY_ALBUM) == true) {
+                    tags.getValue(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                } else {
+                    "\uD83D\uDC08unknown album"
+                }
                 bitmap = HorizonUtils.getEmbeddedPicture(mediaName)
             }
             val player = mediaPlayer
