@@ -230,7 +230,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
                 Log.d(TAG, "oC apf")
                 // De-serialize the app state from file
                 restoreStateFromFile()
-                HorizonOptions.loadOptionsFromFile(filesDir)
+                HorizonOptions.loadOptionsFromFile(getPreferences(Context.MODE_PRIVATE))
             } else {
                 Log.d(TAG, "oC !apf " + mediaPlayerTabs.size) // a sanity check; should be 0
                 // There is no saved state file either;
@@ -329,7 +329,7 @@ class MainActivity : AppCompatActivity(), BackgroundAudioService.AudioServiceCal
         val stateSaved = sharedPref.getInt("state_saved_to_bundle", 0)
         if (stateSaved == 0) {
             saveStateToFile()
-            HorizonOptions.saveOptionsToFile(filesDir)
+            HorizonOptions.saveOptionsToFile(getPreferences(Context.MODE_PRIVATE))
         }
 
         // Reset the flag

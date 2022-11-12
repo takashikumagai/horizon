@@ -1,5 +1,6 @@
 package space.nyanko.nyankoapplication
 
+import android.content.SharedPreferences
 import android.util.Log
 import java.io.*
 
@@ -12,8 +13,11 @@ import java.io.*
 object HorizonOptions {
 
     private val TAG = "HorizonOptions"
+    private const val retrieveMediaMetadataKey = "retrieve_media_metadata"
+    private const val showMetaTagTitlesKey = "show_meta_tag_titles"
+    private const val autoQueueMediaFilesKey = "auto_queue_media_files"
 
-    private val OPTIONS_FILE = "horizon-options"
+//    private val OPTIONS_FILE = "horizon-options"
 
     /**
      * @brief Whether or not to attempt to metadata from media files.
@@ -33,37 +37,21 @@ object HorizonOptions {
 
     var autoQueueMediaFiles = false
 
-    fun saveOptionsToFile(parentDir: File) {
+    fun saveOptionsToFile(pref: SharedPreferences) {
         Log.d(TAG, "sOTF")
-        val file = File(parentDir, OPTIONS_FILE)
-        try {
-            val f = FileOutputStream(file.path)
-            val stream = ObjectOutputStream(f)
-
-            stream.writeBoolean(retrieveMediaMetadata)
-            stream.writeBoolean(showMetaTagTitles)
-            stream.writeBoolean(autoQueueMediaFiles)
-
-            stream.close()
-        } catch (e: Exception) {
-            Log.e(TAG, "sOTF!: " + e.toString())
+//        val file = File(parentDir, OPTIONS_FILE)
+        with (pref.edit()) {
+            putBoolean(retrieveMediaMetadataKey, retrieveMediaMetadata)
+            putBoolean(showMetaTagTitlesKey, showMetaTagTitles)
+            putBoolean(autoQueueMediaFilesKey, autoQueueMediaFiles)
+            apply()
         }
     }
 
-    fun loadOptionsFromFile(parentDir: File) {
+    fun loadOptionsFromFile(pref: SharedPreferences) {
         Log.d(TAG, "lOFF")
-        val file = File(parentDir, OPTIONS_FILE)
-        try {
-            val f = FileInputStream(file.path)
-            val stream = ObjectInputStream(f)
-
-            retrieveMediaMetadata = stream.readBoolean()
-            showMetaTagTitles = stream.readBoolean()
-            autoQueueMediaFiles = stream.readBoolean()
-
-            stream.close()
-        } catch (e: Exception) {
-            Log.e(TAG, "lOFF!: " + e.toString())
-        }
+        retrieveMediaMetadata = pref.getBoolean(retrieveMediaMetadataKey, true)
+        showMetaTagTitles = pref.getBoolean(showMetaTagTitlesKey, true)
+        autoQueueMediaFiles = pref.getBoolean(autoQueueMediaFilesKey, false)
     }
 }
